@@ -7,7 +7,7 @@ Version 1.8
 License
 ───────
 This source code to this software is licensed under the GNU General Public License.
-See the COPYING.txt for more information.
+See License.txt for more information.
 
 Runtime Files
 ─────────────
@@ -34,7 +34,7 @@ In contrast to the original versions of Asteroid Cresta, which were geared mainl
 testing and development have been done, here, on and primarily for Linux platforms.
 
 This is an application made on QT, which has a 2-tier building process that involves first generating a Makefile from a *.pro file.
-For our configuration, a makefile was generated with the command:
+For our configuration, a Makefile was generated with the command:
         /usr/lib64/qt4/bin/qmake -makefile Asteroid.pro
 It would have to be modified to suit your system.
 
