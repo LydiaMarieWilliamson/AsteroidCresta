@@ -1,0 +1,26 @@
+Asteroid Style Game
+━━━━━━━━━━━━━━━━━━━
+These files are part of the "Asteroid Cresta" program.
+	Engine.{h,cpp}		Engine holds & updates game artifacts
+	Objects.{h,cpp}		Objects to hold state of game artifacts
+	Window.{h,cpp}		About Window
+	Version.h		Application Version Information
+	Asteroid.cpp		Main Program
+	Game.{h,cpp}		Gaming Visible Area
+	Arena.{h,cpp}		Application Main Window
+Copyrights:
+	Andy Thomas (c)		IconWin.rc
+	Andy Thomas (c) 2009	Asteroid.cpp
+	Big Angry Dog (c) 2010	Asteroid.pro
+	Big Angry Dog (c) 2009	All other files
+	Darth Ninja (c) 2016	Initial recoding
+	Darth Spectra (c) 2021	Implementation on Linux
+
+Asteroid Cresta is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+Asteroid Cresta is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with Asteroid Cresta.
+If not, see <http://www.gnu.org/licenses/>.

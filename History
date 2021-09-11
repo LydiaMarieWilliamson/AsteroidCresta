@@ -1,2 +1,10 @@
+Version 1.8.0: Original copyrights (c) 2009-2011 Big Angry Dog (Andy Thomas)
+∙	2011/11/30 Written in Qt/Phonon, originally ported to Windows.
 The original source link (distributed as a self-extracting Windows *.EXE installation file):
-Version 1.8.0 2011/11/30	https://asteroid-cresta.software.informer.com/download/
+	https://asteroid-cresta.software.informer.com/download/
+Version 1.9.0: (c) 2016 Darth Ninja
+∙	Cleaned up and modernized the code.
+Version 1.9.1: (c) 2021 Darth Spectra (Lydia Marie Williams)
+∙	Further clean-up and simplification.
+∙	2021/06/23 Established baseline for the Linux port.
+∙	2021/06/24 Upgraded the Phonon routines (to revise calls to "deprecated" functions).
