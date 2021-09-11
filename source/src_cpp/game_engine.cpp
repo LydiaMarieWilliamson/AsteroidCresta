@@ -88,6 +88,33 @@ void Engine::m_rebound(const Obj& o1, const Obj& o2,
     Obj::limitAbs(nd2, MAX_SPEED);
   }
 }
+
+#if 1
+// itoa() is not a standard part of C++.
+// https://www.journaldev.com/40684/itoa-function-c-plus-plus
+char *ItoA(int N, char *Buf, int Base) {
+   int Bx = 0;
+// The base case.
+   if (N == 0) { Buf[Bx++] = '0', Buf[Bx] = '\0'; return Buf; }
+   int Bs = 0;
+// Flip the sign on negative values, after tacking on a '-' sign.
+   if (N < 0) Bs++, Buf[Bx++] = '-', N = -N;
+   Bs += (int)floor(log(N)/log(Base)) + 1;
+// Go through the digits one by one from left to right.
+   while (Bx < Bs) {
+   // The base exponent; e.g., 10² = 1000, for the third digit.
+      int Exp = (int)pow(Base, Bs - 1 - Bx);
+   // The base digit.
+      int D = N/Exp;
+      Buf[Bx++] = D + '0', N -= Exp*D;
+   }
+   Buf[Bx] = '\0';
+   return Buf;
+}
+#else
+#   define ItoA(N, Buf, Base) itoa((N), (Buf), (Base))
+#endif
+
 //---------------------------------------------------------------------------
 void Engine::m_stateTick()
 {
@@ -227,7 +254,7 @@ void Engine::m_stateTick()
               // Generates warning in VC2005. This is OK.
               // NB. GCC doesn't support _itoa_s().
               char s[100];
-              itoa(as, s, 10);
+              ItoA(as, s, 10);
               l->caption(s);
             }
           }

@@ -19,7 +19,7 @@
 // INCLUDES
 //---------------------------------------------------------------------------
 #include <QtGui>
-#include <Phonon>
+#include <phonon>
 #include <math.h>
 #include "game_widget.h"
 #include "game_engine.h"

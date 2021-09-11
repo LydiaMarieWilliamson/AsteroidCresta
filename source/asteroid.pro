@@ -77,7 +77,7 @@ HEADERS += src_qt/app_version.h
 HEADERS += src_qt/main_window.h
 HEADERS += src_qt/about_window.h
 HEADERS += src_qt/game_widget.h
-HEADERS += src_cpp/app_version.h
+# HEADERS += src_cpp/app_version.h
 HEADERS += src_cpp/game_objects.h
 HEADERS += src_cpp/game_engine.h
 
@@ -90,4 +90,3 @@ SOURCES += src_qt/about_window.cpp
 SOURCES += src_qt/game_widget.cpp
 SOURCES += src_cpp/game_objects.cpp
 SOURCES += src_cpp/game_engine.cpp
-
