@@ -364,10 +364,10 @@ void GameWidget::m_poll()
 {
   // Internal poller. Called repeatedly to update game state. Also
   // responsible for page through the intro screens.
-  
+
   // Media path
   const QString path = QCoreApplication::applicationDirPath() + "/media/";
-  
+
   if (mp_engine->active())
   {
     // The game is active, i.e. in play or showing demo.
@@ -467,23 +467,23 @@ void GameWidget::m_poll()
     {
       mp_musicAudio->setCurrentSource(Phonon::MediaSource(path + "intro.mp3"));
     }
-      
+
     mp_musicAudio->play();
   }
   else
-  if (!m_music && mp_musicAudio->state() == Phonon::PlayingState)  
+  if (!m_music && mp_musicAudio->state() == Phonon::PlayingState)
   {
     // Stop music
     mp_musicAudio->stop();
   }
-  
+
   // Stop lingering sounds
   if ((!m_sounds || !mp_engine->playing()) &&
-    mp_thrustAudio->state() == Phonon::PlayingState)  
+    mp_thrustAudio->state() == Phonon::PlayingState)
   {
     mp_thrustAudio->stop();
   }
-  
+
   // Hold last state to detect change
   m_playing = mp_engine->playing();
 }

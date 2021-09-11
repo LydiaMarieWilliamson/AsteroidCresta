@@ -7,26 +7,16 @@
 
 class QPixmap;
 
-class AboutWindow : public QDialog
-{
-  Q_OBJECT
-public:
+class AboutWindow: public QDialog {
+Q_OBJECT
 private:
-  // Private members
-  QPixmap* mp_artwork;
-  int m_spacer;
-private slots:
-  // Private slots
+   QPixmap *mp_artwork;
+   int m_spacer;
 protected:
-  // Protected members
-  virtual void paintEvent(QPaintEvent* event);
+   virtual void paintEvent(QPaintEvent *event);
 public:
-
-  // Construction
-  AboutWindow(QWidget* parent);
-  ~AboutWindow();
-
-  // Public members
+   AboutWindow(QWidget *parent);
+   ~AboutWindow();
 };
 
 #endif // OnceOnly

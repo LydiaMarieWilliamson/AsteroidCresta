@@ -147,7 +147,7 @@ void Engine::m_stateTick()
   {
     m_objects[n]->tick();
   }
-  
+
   // COLLISIONS
   // See who has collided with who & set explosion sounds
   // Note that the tick() calls above may have added objects
@@ -301,7 +301,7 @@ int Engine::m_typeCnt(OType t) const
   // Return count of particular object type
   int rslt = 0;
   size_t sz = m_objects.size();
-  
+
   for(size_t n = 0; n < sz; ++n)
   {
     if (m_objects[n]->type() == t)
@@ -322,17 +322,17 @@ Ship* Engine::m_getShip() const
   // our saved indexed indeed holds the ship
   // index, and if not, we search for it.
   size_t sz = m_objects.size();
-  
+
   if (m_shipIdx >= 0 && static_cast<size_t>(m_shipIdx) < sz &&
     m_objects[m_shipIdx]->type() == otShip)
   {
-    // Here we hold an index to 
+    // Here we hold an index to
     return static_cast<Ship*>(m_objects[m_shipIdx]);
   }
   else
   {
     for(size_t n = 0; n < sz; ++n)
-    {  
+    {
       if (m_objects[n]->type() == otShip)
       {
         // Allow const method to set property
@@ -344,7 +344,7 @@ Ship* Engine::m_getShip() const
       }
     }
   }
-  
+
   return 0;
 }
 
@@ -377,7 +377,7 @@ Engine::~Engine()
   {
     size_t sz = m_objects.size();
     for(size_t n = 0; n < sz; ++n)
-    {  
+    {
       delete m_objects[n];
     }
   }
@@ -432,7 +432,7 @@ Obj* Engine::add(OType ot)
   {
     m_objects.push_back(newObj);
   }
-  
+
   return newObj;
 }
 

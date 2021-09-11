@@ -12,8 +12,8 @@ void AboutWindow::paintEvent(QPaintEvent* event)
   QPainter painter(this);
   painter.drawPixmap(0, 0, *mp_artwork);
 
-  painter.setPen( QPen(Qt::white) );  
-  
+  painter.setPen( QPen(Qt::white) );
+
   QFont f("serif");
   f.setPointSizeF(16);
   f.setBold(true);
@@ -34,7 +34,7 @@ void AboutWindow::paintEvent(QPaintEvent* event)
   f.setPointSizeF(10);
   f.setBold(false);
   painter.setFont(f);
-  
+
   s = APP_COPYRIGHT_STR;
   r = painter.boundingRect(sr, 0, s);
   painter.drawText(x, y, sw, r.height(), Qt::AlignLeft | Qt::AlignTop, s);
@@ -81,15 +81,15 @@ AboutWindow::AboutWindow(QWidget* parent)
   QGridLayout* layout = new QGridLayout(this);
   layout->setHorizontalSpacing(0);
   layout->setVerticalSpacing(0);
-  
+
   int cl, ct, cr, cb;
   layout->getContentsMargins(&cl, &ct, &cr, &cb);
   QSpacerItem* displayArea = new QSpacerItem( mp_artwork->width() - cl - cr,
     mp_artwork->height() );
-  
+
   layout->addItem(displayArea, 0, 0);
   layout->addWidget( buttonBox, 1, 0 );
-  
+
   // Hold contents spacing
   m_spacer = cl;
 }

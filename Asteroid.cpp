@@ -9,7 +9,7 @@ int main(int argc, char **argv)
   {
     QApplication app(argc, argv);
     QPixmap pixmap(":/artwork.bmp");
-  
+
     MainWindow main_win;
     main_win.show();
 
