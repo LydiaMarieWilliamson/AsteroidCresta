@@ -18,8 +18,8 @@
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
-#include "game_objects.h"
-#include "game_engine.h"
+#include "Objects.h"
+#include "Engine.h"
 
 using namespace std;
 using namespace asteroid;

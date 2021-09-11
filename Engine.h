@@ -26,7 +26,7 @@
 //---------------------------------------------------------------------------
 #include <time.h>
 #include <vector>
-#include "game_objects.h"
+#include "Objects.h"
 
 namespace asteroid {
 

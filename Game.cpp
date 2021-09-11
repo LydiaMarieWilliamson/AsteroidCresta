@@ -21,9 +21,9 @@
 #include <QtGui>
 #include <phonon>
 #include <math.h>
-#include "game_widget.h"
-#include "game_engine.h"
-#include "app_version.h"
+#include "Game.h"
+#include "Engine.h"
+#include "Version.h"
 //---------------------------------------------------------------------------
 // NON-CLASS MEMBERS
 //---------------------------------------------------------------------------

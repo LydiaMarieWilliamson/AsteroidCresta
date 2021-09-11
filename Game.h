@@ -27,7 +27,7 @@
 #include <time.h>
 #include <QWidget>
 #include <QColor>
-#include "game_engine.h"
+#include "Engine.h"
 //---------------------------------------------------------------------------
 // NON-CLASS MEMBERS
 //---------------------------------------------------------------------------

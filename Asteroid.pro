@@ -50,43 +50,42 @@ CONFIG += qt windows warn_on release
 QT += phonon
 
 # Paths
-TARGET = asteroid
-DESTDIR = ./bin
-INCLUDEPATH = src_cpp src_qt
+TARGET = Asteroid
+DESTDIR = .
+INCLUDEPATH = .
 
 # Defines
 win32:DEFINES *= WINDOWS WIN32 UNICODE NO_DEBUG
 #debug:DEFINES *= _DEBUG
 
 # Resources
-RESOURCES = ./res/res_qt.qrc
-RC_FILE = ./res/res_win.rc
+RESOURCES = Image.qrc
+RC_FILE = Icon.rc
 
 # Objects and temp files
-debug:OBJECTS_DIR = ./tmp/debug_obj
-release:OBJECTS_DIR = ./tmp/release_obj
-debug:RCC_DIR = ./tmp/debug_rcc
-release:RCC_DIR = ./tmp/release_rcc
-debug:MOC_DIR = ./tmp/debug_moc
-release:MOC_DIR = ./tmp/release_moc
+debug:OBJECTS_DIR = Temp
+release:OBJECTS_DIR = Temp
+debug:RCC_DIR = Temp
+release:RCC_DIR = Temp
+debug:MOC_DIR = Temp
+release:MOC_DIR = Temp
 
 # -----------------------------------------------------------------------------
 # HEADER FILES
 # -----------------------------------------------------------------------------
-HEADERS += src_qt/app_version.h
-HEADERS += src_qt/main_window.h
-HEADERS += src_qt/about_window.h
-HEADERS += src_qt/game_widget.h
-# HEADERS += src_cpp/app_version.h
-HEADERS += src_cpp/game_objects.h
-HEADERS += src_cpp/game_engine.h
+HEADERS += Version.h
+HEADERS += Arena.h
+HEADERS += About.h
+HEADERS += Game.h
+HEADERS += Objects.h
+HEADERS += Engine.h
 
 # -----------------------------------------------------------------------------
 # SOURCE FILES
 # -----------------------------------------------------------------------------
-SOURCES += src_qt/main.cpp
-SOURCES += src_qt/main_window.cpp
-SOURCES += src_qt/about_window.cpp
-SOURCES += src_qt/game_widget.cpp
-SOURCES += src_cpp/game_objects.cpp
-SOURCES += src_cpp/game_engine.cpp
+SOURCES += Asteroid.cpp
+SOURCES += Arena.cpp
+SOURCES += About.cpp
+SOURCES += Game.cpp
+SOURCES += Objects.cpp
+SOURCES += Engine.cpp

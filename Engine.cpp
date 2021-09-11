@@ -17,7 +17,7 @@
 //---------------------------------------------------------------------------
 #include <math.h>
 #include <stdlib.h>
-#include "game_engine.h"
+#include "Engine.h"
 
 using namespace std;
 using namespace asteroid;

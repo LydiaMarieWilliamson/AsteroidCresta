@@ -19,10 +19,10 @@
 // INCLUDES
 //---------------------------------------------------------------------------
 #include <QtGui>
-#include "main_window.h"
-#include "app_version.h"
-#include "about_window.h"
-#include "game_widget.h"
+#include "Arena.h"
+#include "Version.h"
+#include "About.h"
+#include "Game.h"
 //---------------------------------------------------------------------------
 // NON-CLASS MEMBERS
 //---------------------------------------------------------------------------
