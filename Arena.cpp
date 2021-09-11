@@ -1,31 +1,10 @@
-//---------------------------------------------------------------------------
-// PROJECT     : Asteroid Style Game
-// FILE NAME   : main_window.cpp
-// DESCRIPTION : Application main window
-// COPYRIGHT   : Big Angry Dog (C) 2009
-// This file is part of the "Asteroid Cresta" program.
-// Asteroid Cresta is free software: you can redistribute it and/or
-// modify it under the terms of the GNU General Public License as published
-// by the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// Asteroid Cresta is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License
-// along with Asteroid Cresta.  If not, see <http://www.gnu.org/licenses/>.
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-// INCLUDES
-//---------------------------------------------------------------------------
+// Asteroid Style Game: The game arena.
+// Copyright (c) 2009 Big Angry Dog, (c) 2016-2018 Darth Ninja, (c) 2021 Darth Spectra
 #include <QtGui>
 #include "Arena.h"
 #include "Version.h"
 #include "About.h"
 #include "Game.h"
-//---------------------------------------------------------------------------
-// NON-CLASS MEMBERS
-//---------------------------------------------------------------------------
 
 // Window constants
 const int DEF_WIDTH = 580;
@@ -49,9 +28,7 @@ const double DIFF_EASY = 0.25;
 const double DIFF_NORM = 0.5;
 const double DIFF_HARD = 0.75;
 
-//---------------------------------------------------------------------------
-// CLASS MainWindow : PRIVATE MEMBERS
-//---------------------------------------------------------------------------
+// class MainWindow: private members
 void MainWindow::m_createMainMenu()
 {
   // Create & setup main menu
@@ -100,7 +77,7 @@ void MainWindow::m_createMainMenu()
   m_ptr->addAction( tr("&On the Web"), this, SLOT(m_weburl()) );
   m_ptr->addAction( tr("&About..."), this, SLOT(m_about()) );
 }
-//---------------------------------------------------------------------------
+
 void MainWindow::m_readSettings()
 {
   // Read settings
@@ -130,7 +107,7 @@ void MainWindow::m_readSettings()
   // Apply menu settings
   m_setOptions();
 }
-//---------------------------------------------------------------------------
+
 void MainWindow::m_writeSettings()
 {
   // Write settings
@@ -147,27 +124,27 @@ void MainWindow::m_writeSettings()
 
   mp_settings->setValue( SET_HISCORE, mp_gameWidget->hiscore() );
 }
-//---------------------------------------------------------------------------
-// CLASS MainWindow : PRIVATE SLOTS
-//---------------------------------------------------------------------------
+
+// class MainWindow: private slots
+// ───────────────────────────────
 void MainWindow::m_newGame()
 {
   // New game event
   mp_gameWidget->play(true);
 }
-//---------------------------------------------------------------------------
+
 void MainWindow::m_endGame()
 {
   // End game event
   mp_gameWidget->play(false);
 }
-//---------------------------------------------------------------------------
+
 void MainWindow::m_exit()
 {
   // Exit event
   close();
 }
-//---------------------------------------------------------------------------
+
 void MainWindow::m_setOptions()
 {
   // Options state changed
@@ -188,13 +165,13 @@ void MainWindow::m_setOptions()
   mp_gameWidget->setSounds(mp_soundsAct->isChecked());
   mp_gameWidget->setMusic(mp_musicAct->isChecked());
 }
-//---------------------------------------------------------------------------
+
 void MainWindow::m_weburl()
 {
   // Launch browser
   QDesktopServices::openUrl( QUrl(APP_URL_STR) );
 }
-//---------------------------------------------------------------------------
+
 void MainWindow::m_about()
 {
   // About box
@@ -206,7 +183,7 @@ void MainWindow::m_about()
 
   mp_aboutWindow->exec();
 }
-//---------------------------------------------------------------------------
+
 void MainWindow::m_updateMenu()
 {
   // Timer slot - update game start/stop menus when game ends.
@@ -216,9 +193,9 @@ void MainWindow::m_updateMenu()
   // Sound state
   mp_soundsAct->setChecked( mp_gameWidget->sounds() );
 }
-//---------------------------------------------------------------------------
-// CLASS MainWindow : PROTECTED MEMBERS
-//---------------------------------------------------------------------------
+
+// class MainWindow: protected members
+// ───────────────────────────────────
 void MainWindow::keyPressEvent(QKeyEvent* event)
 {
   // Key down event
@@ -227,7 +204,7 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
     QMainWindow::keyPressEvent(event);
   }
 }
-//---------------------------------------------------------------------------
+
 void MainWindow::keyReleaseEvent(QKeyEvent* event)
 {
   // Key up event
@@ -236,9 +213,9 @@ void MainWindow::keyReleaseEvent(QKeyEvent* event)
     QMainWindow::keyReleaseEvent(event);
   }
 }
-//---------------------------------------------------------------------------
-// CLASS MainWindow : PUBLIC MEMBERS
-//---------------------------------------------------------------------------
+
+// class MainWindow: public members
+// ────────────────────────────────
 MainWindow::MainWindow()
   : QMainWindow()
 {
@@ -274,7 +251,7 @@ MainWindow::MainWindow()
 
   mp_aboutWindow = 0;
 }
-//---------------------------------------------------------------------------
+
 MainWindow::~MainWindow()
 {
   // Destructor
@@ -290,4 +267,3 @@ MainWindow::~MainWindow()
   {
   }
 }
-//---------------------------------------------------------------------------

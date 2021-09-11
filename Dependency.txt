@@ -1,0 +1,45 @@
+QtGui: About.cpp Arena.cpp Widget.cpp
+QApplication: Asteroid.cpp
+QWidget: Widget.h
+QDialog: About.h
+QString: Version.h
+QColor: Widget.h
+QMainWindow: Arena.h
+Phonon: Widget.cpp
+
+{time.h,string,complex}	→	Objects.h	→	Engine.h	→	Widget.h
+{vector,math.h,stdlib.h}→	Engine.h
+math.h			→	Widget.cpp
+Engine.h		→	{Engine.cpp,Objects.cpp}
+About.h			→	{About.cpp,Arena.cpp}
+Version.h		→	{About.cpp,Arena.cpp,Widget.cpp}
+Widget.h		→	{Arena.cpp,Widget.cpp}
+Arena.h			→	{Arena.cpp,Asteroid.cpp}
+
+Compilation Status:
+About.cpp	→ About.o
+Arena.cpp	→ Arena.o
+Asteroid.cpp	→ Asteroid.o
+Engine.cpp
+Widget.cpp
+Objects.cpp	→ Objects.o
+
+Forward Declarations:
+	External:
+		QPixmap → About.h
+		QTimer, QPainter → Widget.h
+		QTimer, QMenu, QAction, QSettings → Arena.h
+	Internal:
+		Engine → Objects.h
+		MediaObject → Widget.h
+		About, Widget → Arena.h
+Inheritance Hierarchy:
+	External:
+		QDialog ⇒ About
+		QWidget ⇒ Widget
+		QMainWindow ⇒ Arena
+	Internal:
+		Thing ⇒ Rock, Ship, Alien, Lance, Debris, Thrust, Label
+		Rock ⇒ Boulder, Stone, Pebble
+		Debris ⇒ Spark
+		Engine

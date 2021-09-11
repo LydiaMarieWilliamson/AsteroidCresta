@@ -1,20 +1,5 @@
-//---------------------------------------------------------------------------
-// PROJECT     : Asteroid Style Game
-// FILE NAME   : game_objects.cpp
-// DESCRIPTION : Objects to hold state of game artifacts
-// COPYRIGHT   : Big Angry Dog (C) 2009
-// This file is part of the "Asteroid Cresta" program.
-// Asteroid Cresta is free software: you can redistribute it and/or
-// modify it under the terms of the GNU General Public License as published
-// by the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// Asteroid Cresta is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License
-// along with Asteroid Cresta.  If not, see <http://www.gnu.org/licenses/>.
-//---------------------------------------------------------------------------
+// Asteroid Style Game: The objects to hold the state of the game artifacts.
+// Copyright (c) 2009 Big Angry Dog, (c) 2016-2018 Darth Ninja, (c) 2021 Darth Spectra
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
@@ -23,17 +8,15 @@
 
 using namespace std;
 using namespace asteroid;
-//---------------------------------------------------------------------------
-// CONSTANTS
-//---------------------------------------------------------------------------
+
 #ifdef M_PI
   const double TPI = 2.0 * M_PI; // 2*PI
 #else
   const double TPI = 6.28318530717958648;
 #endif
-//---------------------------------------------------------------------------
-// CLASS Obj : PROTECTED METHODS
-//---------------------------------------------------------------------------
+
+// class Obj: protected methods
+// ────────────────────────────
 double Obj::m_calcRad() const
 {
   // Determine (mean) radius for this object
@@ -44,7 +27,7 @@ double Obj::m_calcRad() const
 
   return rslt;
 }
-//---------------------------------------------------------------------------
+
 void Obj::m_fragment(OType t, int cnt, const double& sf)
 {
   // Add cnt copies of type t to list
@@ -73,7 +56,7 @@ void Obj::m_fragment(OType t, int cnt, const double& sf)
     }
   }
 }
-//---------------------------------------------------------------------------
+
 void Obj::m_internalTick()
 {
   // Should always be called by tick() to
@@ -95,9 +78,9 @@ void Obj::m_internalTick()
     rotate(m_rotDelta);
   }
 }
-//---------------------------------------------------------------------------
-// CLASS Obj : PUBLIC METHODS
-//---------------------------------------------------------------------------
+
+// class Obj: public methods
+// ─────────────────────────
 Obj::Obj(Engine& owner)
 {
   // Base Constructor
@@ -114,7 +97,7 @@ Obj::Obj(Engine& owner)
   // Creation time
   m_tm = time(0);
 }
-//---------------------------------------------------------------------------
+
 Obj::~Obj()
 {
   // Destructor
@@ -126,31 +109,31 @@ Obj::~Obj()
   {
   }
 }
-//---------------------------------------------------------------------------
+
 void Obj::die()
 {
   // I will soon be no longer
   m_dead = true;
 }
-//---------------------------------------------------------------------------
+
 bool Obj::dead() const
 {
   // Am I lingering, waiting only to be drawn over
   return m_dead;
 }
-//---------------------------------------------------------------------------
+
 Engine* Obj::owner() const
 {
   // Return owner
   return mp_owner;
 }
-//---------------------------------------------------------------------------
+
 double Obj::radius() const
 {
   // Return radius
   return m_radius;
 }
-//---------------------------------------------------------------------------
+
 void Obj::rotate(const double& a)
 {
   // Rotate the object around pos by a radians
@@ -160,13 +143,13 @@ void Obj::rotate(const double& a)
       Obj::rotateVector(m_points[n], a);
   }
 }
-//---------------------------------------------------------------------------
+
 int Obj::pointCnt() const
 {
   // How may points in my rendering
   return m_pointCnt;
 }
-//---------------------------------------------------------------------------
+
 ObjPos Obj::points(int idx) const
 {
   // Get point idx (between 0 & pointCnt()).
@@ -176,37 +159,37 @@ ObjPos Obj::points(int idx) const
   else
     return ObjPos();
 }
-//---------------------------------------------------------------------------
+
 std::string Obj::caption() const
 {
   // Label accessor
   return m_caption;
 }
-//---------------------------------------------------------------------------
+
 void Obj::caption(const std::string& s)
 {
   // Label mutator
   m_caption = s;
 }
-//---------------------------------------------------------------------------
+
 LFSize Obj::fontSize() const
 {
   // Label accessor
   return m_fontSize;
 }
-//---------------------------------------------------------------------------
+
 void Obj::fontSize(LFSize sz)
 {
   // Label mutator
   m_fontSize = sz;
 }
-//---------------------------------------------------------------------------
+
 double Obj::randFloat()
 {
   // Return float 0.0 <= rand < 1.0
   return (double)rand() / RAND_MAX;
 }
-//---------------------------------------------------------------------------
+
 void Obj::rotateVector(ObjPos& p, double a)
 {
   // Rotate vector around origin by a radians,
@@ -218,16 +201,16 @@ void Obj::rotateVector(ObjPos& p, double a)
     p = ObjPos(h * cos(a), h * sin(a));
   }
 }
-//---------------------------------------------------------------------------
+
 void Obj::limitAbs(ObjPos& p, const double a)
 {
   // Limit absolute value
   double b = abs(p);
   if (b > a && b != 0.0) p *= a / b;
 }
-//---------------------------------------------------------------------------
-// CLASS RockBase : Protected Methods
-//---------------------------------------------------------------------------
+
+// class RockBase: Protected Methods
+// ─────────────────────────────────
 void RockBase::m_createPoints(const double& scale)
 {
   // Create rock points. This is a circle
@@ -259,27 +242,27 @@ void RockBase::m_createPoints(const double& scale)
   // Determine collision radius
   m_radius = m_calcRad();
 }
-//---------------------------------------------------------------------------
-// CLASS RockBase : Public Methods
-//---------------------------------------------------------------------------
+
+// class RockBase: public methods
+// ──────────────────────────────
 RockBase::RockBase(Engine& owner)
   : Obj(owner)
 {
   // Constructor
 }
-//---------------------------------------------------------------------------
+
 bool RockBase::rock() const
 {
   // Is a rock?
   return true;
 }
-//---------------------------------------------------------------------------
+
 bool RockBase::kuypier() const
 {
   // Can occupy Kuypier region?
   return true;
 }
-//---------------------------------------------------------------------------
+
 bool RockBase::fatal(const Obj& other) const
 {
   // Would a collision with other be fatal?
@@ -314,7 +297,7 @@ bool RockBase::fatal(const Obj& other) const
 
   return rslt;
 }
-//---------------------------------------------------------------------------
+
 void RockBase::tick()
 {
   // Update position & rotate
@@ -330,9 +313,9 @@ void RockBase::tick()
     }
   }
 }
-//---------------------------------------------------------------------------
-// CLASS BigRock : Public Methods
-//---------------------------------------------------------------------------
+
+// class BigRock: public methods
+// ─────────────────────────────
 BigRock::BigRock(Engine& owner)
   : RockBase(owner)
 {
@@ -344,25 +327,25 @@ BigRock::BigRock(Engine& owner)
   // Create points
   m_createPoints(1.0);
 }
-//---------------------------------------------------------------------------
+
 int BigRock::score() const
 {
   // What's my score
   return 100;
 }
-//---------------------------------------------------------------------------
+
 OType BigRock::type() const
 {
   // What am I
   return otBigRock;
 }
-//---------------------------------------------------------------------------
+
 double BigRock::mass() const
 {
   // How much do I weigh
   return 300;
 }
-//---------------------------------------------------------------------------
+
 void BigRock::explode()
 {
   // Explode
@@ -370,9 +353,9 @@ void BigRock::explode()
   m_fragment(otMedRock, 2);
   m_fragment(otSpark, 5, 4.0);
 }
-//---------------------------------------------------------------------------
-// CLASS MedRock : Public Methods
-//---------------------------------------------------------------------------
+
+// class MedRock: public methods
+// ─────────────────────────────
 MedRock::MedRock(Engine& owner)
   : RockBase(owner)
 {
@@ -385,25 +368,25 @@ MedRock::MedRock(Engine& owner)
   // Create points
   m_createPoints(0.71);
 }
-//---------------------------------------------------------------------------
+
 int MedRock::score() const
 {
   // What's my score
   return 50;
 }
-//---------------------------------------------------------------------------
+
 OType MedRock::type() const
 {
   // What am I
   return otMedRock;
 }
-//---------------------------------------------------------------------------
+
 double MedRock::mass() const
 {
   // How much do I weigh
   return 200;
 }
-//---------------------------------------------------------------------------
+
 void MedRock::explode()
 {
   // Explode
@@ -411,9 +394,9 @@ void MedRock::explode()
   m_fragment(otSmallRock, 2);
   m_fragment(otSpark, 3, 2.0);
 }
-//---------------------------------------------------------------------------
-// CLASS SmallRock : Public Methods
-//---------------------------------------------------------------------------
+
+// class SmallRock: public methods
+// ───────────────────────────────
 SmallRock::SmallRock(Engine& owner)
   : RockBase(owner)
 {
@@ -426,34 +409,34 @@ SmallRock::SmallRock(Engine& owner)
   // Create points
   m_createPoints(0.4);
 }
-//---------------------------------------------------------------------------
+
 int SmallRock::score() const
 {
   // What's my score
   return 25;
 }
-//---------------------------------------------------------------------------
+
 OType SmallRock::type() const
 {
   // What am I
   return otSmallRock;
 }
-//---------------------------------------------------------------------------
+
 double SmallRock::mass() const
 {
   // How much do I weigh
   return 125;
 }
-//---------------------------------------------------------------------------
+
 void SmallRock::explode()
 {
   // Explode
   m_dead = true;
   m_fragment(otDebris, 5);
 }
-//---------------------------------------------------------------------------
-// CLASS Ship : Private Methods
-//---------------------------------------------------------------------------
+
+// class Ship: private methods
+// ───────────────────────────
 void Ship::m_resetPoints()
 {
   // Reset points - used in rotation to
@@ -471,9 +454,9 @@ void Ship::m_resetPoints()
   m_thrustPos = ObjPos(3.0, 10.0); // A bottom corner
   m_thrustPlane = ObjPos(-6.0, 0.0); // The line from one bottom point to the other
 }
-//---------------------------------------------------------------------------
-// CLASS Ship : Public Methods
-//---------------------------------------------------------------------------
+
+// class Ship: public methods
+// ──────────────────────────
 Ship::Ship(Engine& owner)
   : Obj(owner)
 {
@@ -500,25 +483,25 @@ Ship::Ship(Engine& owner)
   // Determine collision radius
   m_radius = m_calcRad();
 }
-//---------------------------------------------------------------------------
+
 bool Ship::rock() const
 {
   // Is a rock?
   return false;
 }
-//---------------------------------------------------------------------------
+
 bool Ship::kuypier() const
 {
   // Can occupy Kuypier region?
   return false;
 }
-//---------------------------------------------------------------------------
+
 bool Ship::fatal(const Obj& other) const
 {
   // Would a collision with other be fatal
   return (!other.dead() && other.mass() > mass());
 }
-//---------------------------------------------------------------------------
+
 void Ship::tick()
 {
   // Update position
@@ -605,51 +588,51 @@ void Ship::tick()
     }
   }
 }
-//---------------------------------------------------------------------------
+
 int Ship::score() const
 {
   // No points for getting blown up
   return 0;
 }
-//---------------------------------------------------------------------------
+
 OType Ship::type() const
 {
   // What am I
   return otShip;
 }
-//---------------------------------------------------------------------------
+
 double Ship::mass() const
 {
   // How much do I weigh
   return 10;
 }
-//---------------------------------------------------------------------------
+
 void Ship::explode()
 {
   // Explode
   m_dead = true;
   m_fragment(otDebris, 5);
 }
-//---------------------------------------------------------------------------
+
 void Ship::rot(int r)
 {
   // Rotate on next tick
   // -1 left, 0 stop rotate, +1 right
   m_rotDir = r;
 }
-//---------------------------------------------------------------------------
+
 void Ship::thrust(bool on)
 {
   // Thrust
   m_thrust = on;
 }
-//---------------------------------------------------------------------------
+
 bool Ship::thrusting() const
 {
   // Is thrusting
   return m_thrust;
 }
-//---------------------------------------------------------------------------
+
 void Ship::fire()
 {
   // Fire on next tick. Each
@@ -660,7 +643,7 @@ void Ship::fire()
   // making the game too easy.
   m_fire |= !m_fireLock;
 }
-//---------------------------------------------------------------------------
+
 void Ship::reload(bool reset)
 {
   // Call to release fire lock. Typically
@@ -668,13 +651,13 @@ void Ship::reload(bool reset)
   m_fireLock = false;
   if (reset) m_fire = false;
 }
-//---------------------------------------------------------------------------
+
 bool Ship::justFired() const
 {
   // Did the ship fire on last tick?
   return m_justFired;
 }
-//---------------------------------------------------------------------------
+
 int Ship::fireCharge() const
 {
     // Return ship fire charge,
@@ -682,9 +665,9 @@ int Ship::fireCharge() const
     // When reaches zero, ship cannot fire
     return m_fireCharge;
 }
-//---------------------------------------------------------------------------
-// CLASS Alien : Private Methods
-//---------------------------------------------------------------------------
+
+// class Alien: private methods
+// ────────────────────────────
 Obj* Alien::m_nearObj() const
 {
   // Return nearest fatal object to alien
@@ -711,7 +694,7 @@ Obj* Alien::m_nearObj() const
 
   return rslt;
 }
-//---------------------------------------------------------------------------
+
 ObjPos Alien::thrust() const
 {
   // Determine thrust vector away from nearest object
@@ -732,9 +715,9 @@ ObjPos Alien::thrust() const
 
   return rslt;
 }
-//---------------------------------------------------------------------------
-// CLASS Alien : Public Methods
-//---------------------------------------------------------------------------
+
+// class Alien: public methods
+// ───────────────────────────
 Alien::Alien(Engine& owner)
   : Obj(owner)
 {
@@ -768,19 +751,19 @@ Alien::Alien(Engine& owner)
   // Determine collision radius
   m_radius = m_calcRad();
 }
-//---------------------------------------------------------------------------
+
 bool Alien::rock() const
 {
   // Is a rock?
   return false;
 }
-//---------------------------------------------------------------------------
+
 bool Alien::kuypier() const
 {
   // Can occupy Kuypier region?
   return true;
 }
-//---------------------------------------------------------------------------
+
 bool Alien::fatal(const Obj& other) const
 {
   // Would a collision with other be fatal
@@ -799,7 +782,7 @@ bool Alien::fatal(const Obj& other) const
 
   return rslt;
 }
-//---------------------------------------------------------------------------
+
 void Alien::tick()
 {
   // Update position
@@ -812,34 +795,34 @@ void Alien::tick()
     Obj::limitAbs(dir, MAX_ALIEN_SPEED);
   }
 }
-//---------------------------------------------------------------------------
+
 int Alien::score() const
 {
   // Big score for alien or extra life
   return 500;
 }
-//---------------------------------------------------------------------------
+
 OType Alien::type() const
 {
   // What am I
   return otAlien;
 }
-//---------------------------------------------------------------------------
+
 double Alien::mass() const
 {
   // How much do I weigh
   return 15;
 }
-//---------------------------------------------------------------------------
+
 void Alien::explode()
 {
   // Explode
   m_dead = true;
   m_fragment(otDebris, 5);
 }
-//---------------------------------------------------------------------------
-// CLASS Fire : Public Methods
-//---------------------------------------------------------------------------
+
+// class Fire: public methods
+// ──────────────────────────
 Fire::Fire(Engine& owner)
   : Obj(owner)
 {
@@ -854,25 +837,25 @@ Fire::Fire(Engine& owner)
   // Determine collision radius
   m_radius = m_calcRad();
 }
-//---------------------------------------------------------------------------
+
 bool Fire::rock() const
 {
   // Is a rock?
   return false;
 }
-//---------------------------------------------------------------------------
+
 bool Fire::kuypier() const
 {
   // Can occupy Kuypier region?
   return false;
 }
-//---------------------------------------------------------------------------
+
 bool Fire::fatal(const Obj& other) const
 {
   // Would a collision with other be fatal
   return (!other.dead() && other.mass() > 0);
 }
-//---------------------------------------------------------------------------
+
 void Fire::tick()
 {
   // Update position
@@ -886,33 +869,33 @@ void Fire::tick()
       speed * m_tickCnt > 3.0/4.0 * mp_owner->minDim());
   }
 }
-//---------------------------------------------------------------------------
+
 int Fire::score() const
 {
   // No points for shooting bullets
   return 0;
 }
-//---------------------------------------------------------------------------
+
 OType Fire::type() const
 {
   // What am I
   return otFire;
 }
-//---------------------------------------------------------------------------
+
 double Fire::mass() const
 {
   // How much do I weigh
   return 1;
 }
-//---------------------------------------------------------------------------
+
 void Fire::explode()
 {
   // Explode (no explosion - just die)
   m_dead = true;
 }
-//---------------------------------------------------------------------------
-// CLASS Debris : Public Methods
-//---------------------------------------------------------------------------
+
+// class Debris: public methods
+// ────────────────────────────
 Debris::Debris(Engine& owner)
   : Obj(owner)
 {
@@ -954,25 +937,25 @@ Debris::Debris(Engine& owner)
   // Determine collision radius
   m_radius = m_calcRad();
 }
-//---------------------------------------------------------------------------
+
 bool Debris::rock() const
 {
   // Is a rock?
   return false;
 }
-//---------------------------------------------------------------------------
+
 bool Debris::kuypier() const
 {
   // Can occupy Kuypier region?
   return true;
 }
-//---------------------------------------------------------------------------
+
 bool Debris::fatal(const Obj& other) const
 {
   // Would a collision with other be fatal
   return (!other.dead() && other.type() == otFire);
 }
-//---------------------------------------------------------------------------
+
 void Debris::tick()
 {
   // Update position
@@ -985,39 +968,39 @@ void Debris::tick()
       explode();
   }
 }
-//---------------------------------------------------------------------------
+
 int Debris::score() const
 {
   // Nothing for shooting debris
   return 0;
 }
-//---------------------------------------------------------------------------
+
 OType Debris::type() const
 {
   // What am I
   return otDebris;
 }
-//---------------------------------------------------------------------------
+
 double Debris::mass() const
 {
   // How much do I weigh (just enought to bounce a ship)
   return 2;
 }
-//---------------------------------------------------------------------------
+
 void Debris::explode()
 {
   // Explode (no explosion - just die)
   m_dead = true;
 }
-//---------------------------------------------------------------------------
-// CLASS Spark : Public Methods
-//---------------------------------------------------------------------------
+
+// class Spark: public methods
+// ───────────────────────────
 Spark::Spark(Engine& owner)
   : Debris(owner)
 {
   // Same as debris, but much short life
 }
-//---------------------------------------------------------------------------
+
 void Spark::tick()
 {
   // Update position
@@ -1031,15 +1014,15 @@ void Spark::tick()
       explode();
   }
 }
-//---------------------------------------------------------------------------
+
 OType Spark::type() const
 {
   // What am I
   return otSpark;
 }
-//---------------------------------------------------------------------------
-// CLASS Thrust : Public Methods
-//---------------------------------------------------------------------------
+
+// class Thrust: public methods
+// ────────────────────────────
 Thrust::Thrust(Engine& owner)
   : Obj(owner)
 {
@@ -1055,25 +1038,25 @@ Thrust::Thrust(Engine& owner)
   // Determine collision radius
   m_radius = m_calcRad();
 }
-//---------------------------------------------------------------------------
+
 bool Thrust::rock() const
 {
   // Is a rock?
   return false;
 }
-//---------------------------------------------------------------------------
+
 bool Thrust::kuypier() const
 {
   // Can occupy Kuypier region?
   return true;
 }
-//---------------------------------------------------------------------------
+
 bool Thrust::fatal(const Obj& other) const
 {
   // Would a collision with other be fatal
   return false;
 }
-//---------------------------------------------------------------------------
+
 void Thrust::tick()
 {
   // Update position
@@ -1087,70 +1070,70 @@ void Thrust::tick()
     m_dead = (m_tickCnt > 1);
   }
 }
-//---------------------------------------------------------------------------
+
 int Thrust::score() const
 {
   // Nothing for shooting thust particles
   return 0;
 }
-//---------------------------------------------------------------------------
+
 OType Thrust::type() const
 {
   // What am I
   return otThrust;
 }
-//---------------------------------------------------------------------------
+
 double Thrust::mass() const
 {
   // How much do I weigh
   return 0;
 }
-//---------------------------------------------------------------------------
+
 void Thrust::explode()
 {
   // Explode (no explosion - just die)
   m_dead = true;
 }
-//---------------------------------------------------------------------------
-// CLASS Label : Public Methods
-//---------------------------------------------------------------------------
+
+// class Label: public methods
+// ───────────────────────────
 Label::Label(Engine& owner, int life)
   : Obj(owner)
 {
   // Constructor
   m_life = life;
 }
-//---------------------------------------------------------------------------
+
 void Label::life(int sec)
 {
   // Life mutator
   m_life = sec;
 }
-//---------------------------------------------------------------------------
+
 bool Label::kuypier() const
 {
   // Can occupy Kuypier region?
   return false;
 }
-//---------------------------------------------------------------------------
+
 int Label::life() const
 {
   // Limited life in seconds
   return m_life;
 }
-//---------------------------------------------------------------------------
+
 bool Label::rock() const
 {
   // Is a rock?
   return false;
 }
-//---------------------------------------------------------------------------
+
 bool Label::fatal(const Obj& other) const
 {
   // Would a collision with other be fatal
   return false;
 }
-//---------------------------------------------------------------------------
+
 void Label::tick()
 {
   // Update position
@@ -1162,30 +1145,28 @@ void Label::tick()
     m_dead = (time(0) - m_tm > m_life);
   }
 }
-//---------------------------------------------------------------------------
+
 int Label::score() const
 {
   // Nothing for shooting labels
   return 0;
 }
-//---------------------------------------------------------------------------
+
 OType Label::type() const
 {
   // What am I
   return otLabel;
 }
-//---------------------------------------------------------------------------
+
 double Label::mass() const
 {
   // How much do I weigh
   // Zero is transparent
   return 0;
 }
-//---------------------------------------------------------------------------
+
 void Label::explode()
 {
   // Explode (no explosion - just die)
   m_dead = true;
 }
-//---------------------------------------------------------------------------
-

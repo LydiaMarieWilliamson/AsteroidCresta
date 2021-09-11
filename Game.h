@@ -1,48 +1,20 @@
-//---------------------------------------------------------------------------
-// PROJECT     : Asteroid Style Game
-// FILE NAME   : game_widget.h
-// DESCRIPTION : Gaming visible area
-// COPYRIGHT   : Big Angry Dog (C) 2009
-// This file is part of the "Asteroid Cresta" program.
-// Asteroid Cresta is free software: you can redistribute it and/or
-// modify it under the terms of the GNU General Public License as published
-// by the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// Asteroid Cresta is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License
-// along with Asteroid Cresta.  If not, see <http://www.gnu.org/licenses/>.
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-// HEADER GUARD
-//---------------------------------------------------------------------------
-#ifndef GAME_WIDGET_H
-#define GAME_WIDGET_H
+#ifndef OnceOnlyGame_h
+#define OnceOnlyGame_h
 
-//---------------------------------------------------------------------------
-// INCLUDES
-//---------------------------------------------------------------------------
+// Asteroid Style Game: The gaming visible area.
+// Copyright (c) 2009 Big Angry Dog, (c) 2016-2018 Darth Ninja, (c) 2021 Darth Spectra
 #include <time.h>
 #include <QWidget>
 #include <QColor>
 #include "Engine.h"
-//---------------------------------------------------------------------------
-// NON-CLASS MEMBERS
-//---------------------------------------------------------------------------
 
-// Forward declarations
 class QTimer;
 class QPainter;
 
 namespace Phonon {
 class MediaObject;
-};
+} // end of namespace Phonon
 
-//---------------------------------------------------------------------------
-// CLASS MainWindow
-//---------------------------------------------------------------------------
 class GameWidget : public QWidget
 {
   Q_OBJECT
@@ -130,6 +102,5 @@ public:
   bool keyDown(int k);
   bool keyUp(int k);
 };
-//---------------------------------------------------------------------------
-#endif // HEADER GUARD
-//---------------------------------------------------------------------------
+
+#endif // OnceOnly

@@ -1,39 +1,13 @@
-//---------------------------------------------------------------------------
-// PROJECT     : Asteroid Style Game
-// FILE NAME   : game_objects.h
-// DESCRIPTION : Objects to hold state of game artifacts
-// COPYRIGHT   : Big Angry Dog (C) 2009
-// This file is part of the "Asteroid Cresta" program.
-// Asteroid Cresta is free software: you can redistribute it and/or
-// modify it under the terms of the GNU General Public License as published
-// by the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// Asteroid Cresta is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License
-// along with Asteroid Cresta.  If not, see <http://www.gnu.org/licenses/>.
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-// HEADER GUARD
-//---------------------------------------------------------------------------
-#ifndef GAME_OBJECTS_H
-#define GAME_OBJECTS_H
+#ifndef OnceOnlyObjects_h
+#define OnceOnlyObjects_h
 
-//---------------------------------------------------------------------------
-// INCLUDES
-//---------------------------------------------------------------------------
+// Asteroid Style Game: The objects to hold the state of the game artifacts.
+// Copyright (c) 2009 Big Angry Dog, (c) 2016-2018 Darth Ninja, (c) 2021 Darth Spectra
 #include <string>
 #include <complex>
 #include <time.h>
+
 namespace asteroid {
-
-//---------------------------------------------------------------------------
-// NON-CLASS MEMBERS
-//---------------------------------------------------------------------------
-
- // Forward declaration
 class Engine;
 
 // Object position type, borrow complex
@@ -44,11 +18,11 @@ typedef std::complex<double> ObjPos;
 enum OType {otNone = 0, otBigRock, otMedRock, otSmallRock, otShip,
   otAlien, otFire, otDebris, otSpark, otThrust, otLabel};
 
-// Label font size
+// Label font size.
 enum LFSize { lfSmall = 0, lfMedium, lfLarge, lfHugeBold };
-//---------------------------------------------------------------------------
-// CLASS Obj (abstract base class for game objects)
-//---------------------------------------------------------------------------
+
+// The game object abstract base class
+// ───────────────────────────────────
 class Obj
 {
 protected:
@@ -97,9 +71,9 @@ public:
   static void rotateVector(ObjPos& p, double a);
   static void limitAbs(ObjPos& p, const double a);
 };
-//---------------------------------------------------------------------------
-// CLASS RockBase (abstract base rock class)
-//---------------------------------------------------------------------------
+
+// The rock object abstract base class
+// ───────────────────────────────────
 class RockBase : public Obj
 {
 protected:
@@ -111,9 +85,7 @@ public:
   virtual bool fatal(const Obj& other) const;
   virtual void tick();
 };
-//---------------------------------------------------------------------------
-// CLASS BigRock
-//---------------------------------------------------------------------------
+
 class BigRock : public RockBase
 {
 public:
@@ -123,9 +95,7 @@ public:
   virtual double mass() const;
   virtual void explode();
 };
-//---------------------------------------------------------------------------
-// CLASS MedRock
-//---------------------------------------------------------------------------
+
 class MedRock : public RockBase
 {
 public:
@@ -135,9 +105,7 @@ public:
   virtual double mass() const;
   virtual void explode();
 };
-//---------------------------------------------------------------------------
-// CLASS SmallRock
-//---------------------------------------------------------------------------
+
 class SmallRock : public RockBase
 {
 public:
@@ -147,9 +115,7 @@ public:
   virtual double mass() const;
   virtual void explode();
 };
-//---------------------------------------------------------------------------
-// CLASS Ship
-//---------------------------------------------------------------------------
+
 class Ship : public Obj
 {
 private:
@@ -178,9 +144,7 @@ public:
   bool justFired() const;
   int fireCharge() const;
 };
-//---------------------------------------------------------------------------
-// CLASS Alien
-//---------------------------------------------------------------------------
+
 class Alien : public Obj
 {
 private:
@@ -197,9 +161,7 @@ public:
   virtual double mass() const;
   virtual void explode();
 };
-//---------------------------------------------------------------------------
-// CLASS Fire
-//---------------------------------------------------------------------------
+
 class Fire : public Obj
 {
 public:
@@ -213,9 +175,7 @@ public:
   virtual double mass() const;
   virtual void explode();
 };
-//---------------------------------------------------------------------------
-// CLASS Debris
-//---------------------------------------------------------------------------
+
 class Debris : public Obj
 {
 public:
@@ -229,9 +189,7 @@ public:
   virtual double mass() const;
   virtual void explode();
 };
-//---------------------------------------------------------------------------
-// CLASS Spark
-//---------------------------------------------------------------------------
+
 class Spark : public Debris
 {
 public:
@@ -239,9 +197,7 @@ public:
   virtual void tick();
   virtual OType type() const;
 };
-//---------------------------------------------------------------------------
-// CLASS Thrust
-//---------------------------------------------------------------------------
+
 class Thrust : public Obj
 {
 public:
@@ -255,9 +211,7 @@ public:
   virtual double mass() const;
   virtual void explode();
 };
-//---------------------------------------------------------------------------
-// CLASS Label
-//---------------------------------------------------------------------------
+
 class Label : public Obj
 {
 private:
@@ -278,6 +232,6 @@ public:
   virtual double mass() const;
   virtual void explode();
 };
-//---------------------------------------------------------------------------
-}
-#endif
+} // end of namespace Asteroid
+
+#endif // OnceOnly

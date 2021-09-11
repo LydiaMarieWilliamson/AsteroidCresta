@@ -1,35 +1,10 @@
-//---------------------------------------------------------------------------
-// PROJECT     : Asteroid Style Game
-// FILE NAME   : main_window.h
-// DESCRIPTION : Application main window
-// COPYRIGHT   : Big Angry Dog (C) 2009
-// This file is part of the "Asteroid Cresta" program.
-// Asteroid Cresta is free software: you can redistribute it and/or
-// modify it under the terms of the GNU General Public License as published
-// by the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// Asteroid Cresta is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License
-// along with Asteroid Cresta.  If not, see <http://www.gnu.org/licenses/>.
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-// HEADER GUARD
-//---------------------------------------------------------------------------
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
+#ifndef OnceOnlyArena_h
+#define OnceOnlyArena_h
 
-//---------------------------------------------------------------------------
-// INCLUDES
-//---------------------------------------------------------------------------
+// Asteroid Style Game: The game arena.
+// Copyright (c) 2009 Big Angry Dog, (c) 2016-2018 Darth Ninja, (c) 2021 Darth Spectra
 #include <QMainWindow>
-//---------------------------------------------------------------------------
-// NON-CLASS MEMBERS
-//---------------------------------------------------------------------------
 
-// Forward declaration
 class QMenu;
 class QAction;
 class QSettings;
@@ -37,9 +12,6 @@ class QTimer;
 class GameWidget;
 class AboutWindow;
 
-//---------------------------------------------------------------------------
-// CLASS MainWindow
-//---------------------------------------------------------------------------
 class MainWindow : public QMainWindow
 {
   Q_OBJECT
@@ -80,6 +52,5 @@ public:
 
   // Public members
 };
-//---------------------------------------------------------------------------
-#endif // HEADER GUARD
-//---------------------------------------------------------------------------
+
+#endif // OnceOnly

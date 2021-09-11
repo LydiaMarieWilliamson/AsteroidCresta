@@ -1,38 +1,11 @@
-//---------------------------------------------------------------------------
-// PROJECT     : Asteroid Style Game
-// FILE NAME   : about window.cpp
-// DESCRIPTION : About window
-// COPYRIGHT   : Big Angry Dog (C) 2009
-// This file is part of the "Asteroid Cresta" program.
-// Asteroid Cresta is free software: you can redistribute it and/or
-// modify it under the terms of the GNU General Public License as published
-// by the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// Asteroid Cresta is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License
-// along with Asteroid Cresta.  If not, see <http://www.gnu.org/licenses/>.
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-// INCLUDES
-//---------------------------------------------------------------------------
+// Asteroid Style Game: The about window.
+// Copyright (c) 2009 Big Angry Dog, (c) 2016-2018 Darth Ninja, (c) 2021 Darth Spectra
 #include <QtGui>
 #include "About.h"
 #include "Version.h"
-//---------------------------------------------------------------------------
-// NON-CLASS MEMBERS
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-// CLASS GameWidget : PRIVATE MEMBERS
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-// CLASS GameWidget : PRIVATE SLOTS
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-// CLASS GameWidget : PROTECTED MEMBERS
-//---------------------------------------------------------------------------
+
+// class GameWidget: protected members
+// ───────────────────────────────────
 void AboutWindow::paintEvent(QPaintEvent* event)
 {
   // Re-paint on displayWidget
@@ -80,9 +53,9 @@ void AboutWindow::paintEvent(QPaintEvent* event)
   painter.drawText(x, y, sw, r.height(), Qt::AlignLeft | Qt::AlignTop,
     APP_DOMAIN_STR);
 }
-//---------------------------------------------------------------------------
-// CLASS GameWidget : PUBLIC MEMBERS
-//---------------------------------------------------------------------------
+
+// class GameWidget: public members
+// ────────────────────────────────
 AboutWindow::AboutWindow(QWidget* parent)
   : QDialog(parent, Qt::Dialog | Qt::WindowCloseButtonHint)
 {
@@ -120,7 +93,7 @@ AboutWindow::AboutWindow(QWidget* parent)
   // Hold contents spacing
   m_spacer = cl;
 }
-//---------------------------------------------------------------------------
+
 AboutWindow::~AboutWindow()
 {
   // Destructor
@@ -132,4 +105,3 @@ AboutWindow::~AboutWindow()
   {
   }
 }
-//---------------------------------------------------------------------------

@@ -1,44 +1,24 @@
-//---------------------------------------------------------------------------
-// PROJECT     : Asteroid Style Game
-// FILE NAME   : main_window.cpp
-// DESCRIPTION : Application main window
-// COPYRIGHT   : Big Angry Dog (C) 2009
-// This file is part of the "Asteroid Cresta" program.
-// Asteroid Cresta is free software: you can redistribute it and/or
-// modify it under the terms of the GNU General Public License as published
-// by the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// Asteroid Cresta is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License
-// along with Asteroid Cresta.  If not, see <http://www.gnu.org/licenses/>.
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-// INCLUDES
-//---------------------------------------------------------------------------
+// Asteroid Style Game: The gaming visible area.
+// Copyright (c) 2009 Big Angry Dog, (c) 2016-2018 Darth Ninja, (c) 2021 Darth Spectra
 #include <QtGui>
 #include <phonon>
 #include <math.h>
 #include "Game.h"
 #include "Engine.h"
 #include "Version.h"
-//---------------------------------------------------------------------------
-// NON-CLASS MEMBERS
-//---------------------------------------------------------------------------
+
 const int DEF_POLL_RATE = 45;
 const int INTRO_SCREEN_SEC = 8;
 const QString SCREEN_FONT_NAME = "serif";
-//---------------------------------------------------------------------------
-// CLASS GameWidget : PRIVATE MEMBERS
-//---------------------------------------------------------------------------
+
+// class GameWidget: private members
+// ─────────────────────────────────
 int GameWidget::m_txs() const
 {
   // Return scaled text spacer
   return (int)(5.0 * m_scale());
 }
-//---------------------------------------------------------------------------
+
 double GameWidget::m_scale() const
 {
   // Return scaling value based on width.
@@ -48,7 +28,7 @@ double GameWidget::m_scale() const
   if (gw > 0) return (double)width() / gw;
   else return 1.0;
 }
-//---------------------------------------------------------------------------
+
 void GameWidget::m_recalcGameArea()
 {
   // Recalculate internal gaming area. To be called when parent's size is
@@ -65,7 +45,7 @@ void GameWidget::m_recalcGameArea()
     mp_engine->setPlayDims(w, h);
   }
 }
-//---------------------------------------------------------------------------
+
 void GameWidget::m_setFont(QPainter& p, asteroid::LFSize sz, bool bold)
 {
   // Set painter font according to size sz
@@ -98,7 +78,7 @@ void GameWidget::m_setFont(QPainter& p, asteroid::LFSize sz, bool bold)
   f.setPointSizeF(ps);
   p.setFont(f);
 }
-//---------------------------------------------------------------------------
+
 int GameWidget::m_textOut(QPainter& p, const QString& s, int x, int y,
   Qt::Alignment layout)
 {
@@ -135,7 +115,7 @@ int GameWidget::m_textOut(QPainter& p, const QString& s, int x, int y,
   p.drawText(QRect(x, y, tr.width(), tr.height()), Qt::AlignLeft | Qt::AlignTop, s );
   return tr.height();
 }
-//---------------------------------------------------------------------------
+
 void GameWidget::m_resetScreen(QPainter& p)
 {
   // Render blank painter and setup colors
@@ -143,7 +123,7 @@ void GameWidget::m_resetScreen(QPainter& p)
   p.setPen( QPen(m_foreCol) );
   p.fillRect( rect(), m_backCol );
 }
-//---------------------------------------------------------------------------
+
 void GameWidget::m_drawPlay()
 {
   // Draw play action, including demo phase.
@@ -218,7 +198,7 @@ void GameWidget::m_drawPlay()
   m_textOut(p, QString(mp_engine->charge(), '|'), m_txs(),
     height() - m_txs(), Qt::AlignBottom);
 }
-//---------------------------------------------------------------------------
+
 void GameWidget::m_drawIntroScreen0()
 {
   // Draw intro screen 0
@@ -264,7 +244,7 @@ void GameWidget::m_drawIntroScreen0()
   }
 
 }
-//---------------------------------------------------------------------------
+
 void GameWidget::m_drawIntroScreen1()
 {
   // Draw intro screen 1
@@ -319,7 +299,7 @@ void GameWidget::m_drawIntroScreen1()
     m_textOut(p, tr("Press SPACE to Play"), w/2, y, Qt::AlignHCenter);
   }
 }
-//---------------------------------------------------------------------------
+
 void GameWidget::m_drawIntroScreen2()
 {
   // Draw intro screen 2
@@ -360,7 +340,7 @@ void GameWidget::m_drawIntroScreen2()
     m_textOut(p, tr("Press SPACE to Play"), w/2, y, Qt::AlignHCenter);
   }
 }
-//---------------------------------------------------------------------------
+
 GameWidget::GameKey GameWidget::sm_qkToGk(int qtk)
 {
   // Map QT key presss to game control key value
@@ -377,9 +357,9 @@ GameWidget::GameKey GameWidget::sm_qkToGk(int qtk)
     default: return GK_NONE;
   }
 }
-//---------------------------------------------------------------------------
-// CLASS GameWidget : PRIVATE SLOTS
-//---------------------------------------------------------------------------
+
+// class GameWidget: private slots
+// ───────────────────────────────
 void GameWidget::m_poll()
 {
   // Internal poller. Called repeatedly to update game state. Also
@@ -507,9 +487,9 @@ void GameWidget::m_poll()
   // Hold last state to detect change
   m_playing = mp_engine->playing();
 }
-//---------------------------------------------------------------------------
-// CLASS GameWidget : PROTECTED MEMBERS
-//---------------------------------------------------------------------------
+
+// class GameWidget: protected members
+// ───────────────────────────────────
 void GameWidget::paintEvent(QPaintEvent* event)
 {
   // Paint event - call appropriate rendering method
@@ -523,9 +503,9 @@ void GameWidget::paintEvent(QPaintEvent* event)
     default: m_drawPlay(); break;
   }
 }
-//---------------------------------------------------------------------------
-// CLASS GameWidget : PUBLIC MEMBERS
-//---------------------------------------------------------------------------
+
+// class GameWidget: public members
+// ────────────────────────────────
 GameWidget::GameWidget(QWidget* parent)
   : QWidget(parent, Qt::Widget)
 {
@@ -566,7 +546,7 @@ GameWidget::GameWidget(QWidget* parent)
   connect(mp_timer, SIGNAL(timeout()), this, SLOT(m_poll()));
   mp_timer->start(DEF_POLL_RATE);
 }
-//---------------------------------------------------------------------------
+
 GameWidget::~GameWidget()
 {
   // Destructor
@@ -583,19 +563,19 @@ GameWidget::~GameWidget()
   {
   }
 }
-//---------------------------------------------------------------------------
+
 void GameWidget::pause(bool p)
 {
   // Pause game
   m_paused = (p && isPlaying());
 }
-//---------------------------------------------------------------------------
+
 bool GameWidget::isPaused() const
 {
   // Accessor - is paused?
   return m_paused;
 }
-//---------------------------------------------------------------------------
+
 void GameWidget::play(bool p)
 {
   // Play game
@@ -611,19 +591,19 @@ void GameWidget::play(bool p)
     }
   }
 }
-//---------------------------------------------------------------------------
+
 bool GameWidget::isPlaying() const
 {
   // Acessor - is playing?
   return (gameState() == GS_PLAY);
 }
-//---------------------------------------------------------------------------
+
 GameWidget::GameStateType GameWidget::gameState() const
 {
   // Accessor - game state
   return m_gameState;
 }
-//---------------------------------------------------------------------------
+
 void GameWidget::setGameState(GameWidget::GameStateType gs)
 {
   // Set game state - can be used to start game, a demo or change intro screen.
@@ -655,25 +635,25 @@ void GameWidget::setGameState(GameWidget::GameStateType gs)
     update();
   }
 }
-//---------------------------------------------------------------------------
+
 int GameWidget::hiscore() const
 {
   // Accessor - hiscore
   return mp_engine->hiscore();
 }
-//---------------------------------------------------------------------------
+
 void GameWidget::setHiscore(int hs)
 {
   // Set hiscore
   mp_engine->hiscore(hs);
 }
-//---------------------------------------------------------------------------
+
 bool GameWidget::sounds() const
 {
   // Accessor - sounds
   return m_sounds;
 }
-//---------------------------------------------------------------------------
+
 void GameWidget::setSounds(bool s)
 {
   // Set sounds
@@ -685,13 +665,13 @@ void GameWidget::setSounds(bool s)
     update();
   }
 }
-//---------------------------------------------------------------------------
+
 bool GameWidget::music() const
 {
   // Accessor - music
   return m_music;
 }
-//---------------------------------------------------------------------------
+
 void GameWidget::setMusic(bool m)
 {
   // Set sounds
@@ -703,13 +683,13 @@ void GameWidget::setMusic(bool m)
     update();
   }
 }
-//---------------------------------------------------------------------------
+
 QColor GameWidget::background() const
 {
   // Accessor - background color
   return m_backCol;
 }
-//---------------------------------------------------------------------------
+
 void GameWidget::setBackground(const QColor& c)
 {
   // Set background color
@@ -719,13 +699,13 @@ void GameWidget::setBackground(const QColor& c)
     update();
   }
 }
-//---------------------------------------------------------------------------
+
 QColor GameWidget::foreground() const
 {
   // Accessor - foreground color
   return m_foreCol;
 }
-//---------------------------------------------------------------------------
+
 void GameWidget::setForeground(const QColor& c)
 {
   // Set foreground color
@@ -735,7 +715,7 @@ void GameWidget::setForeground(const QColor& c)
     update();
   }
 }
-//---------------------------------------------------------------------------
+
 double GameWidget::difficulty() const
 {
   // Accessor - difficulty
@@ -743,7 +723,7 @@ double GameWidget::difficulty() const
   // higher values result in harder games.
   return mp_engine->difficulty();
 }
-//---------------------------------------------------------------------------
+
 void GameWidget::setDifficulty(const double& dif)
 {
   // Set difficulty
@@ -751,19 +731,19 @@ void GameWidget::setDifficulty(const double& dif)
   // higher values result in harder games.
   mp_engine->difficulty(dif);
 }
-//---------------------------------------------------------------------------
+
 int GameWidget::pollRate() const
 {
   // Accessor - poll rate in ms
   return mp_timer->interval();
 }
-//---------------------------------------------------------------------------
+
 void GameWidget::setPollRate(int ms)
 {
   // Set poll rate in ms
   mp_timer->setInterval(ms);
 }
-//---------------------------------------------------------------------------
+
 bool GameWidget::keyDown(int k)
 {
   // Input a key down event. This method should be called from outside
@@ -836,7 +816,7 @@ bool GameWidget::keyDown(int k)
 
   return false;
 }
-//---------------------------------------------------------------------------
+
 bool GameWidget::keyUp(int k)
 {
   // Input a key up event. This method should be called from outside
@@ -879,4 +859,3 @@ bool GameWidget::keyUp(int k)
 
   return false;
 }
-//---------------------------------------------------------------------------

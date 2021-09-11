@@ -1,29 +1,14 @@
-//---------------------------------------------------------------------------
-// PROJECT     : Asteroid Style Game
-// FILE NAME   : game_engine.cpp
-// DESCRIPTION : Engine holds & updates game artifacts
-// COPYRIGHT   : Big Angry Dog (C) 2009
-// This file is part of the "Asteroid Cresta" program.
-// Asteroid Cresta is free software: you can redistribute it and/or
-// modify it under the terms of the GNU General Public License as published
-// by the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// Asteroid Cresta is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License
-// along with Asteroid Cresta.  If not, see <http://www.gnu.org/licenses/>.
-//---------------------------------------------------------------------------
+// Asteroid Style Game: The engine for holding and updating the game artifacts.
+// Copyright (c) 2009 Big Angry Dog, (c) 2016-2018 Darth Ninja, (c) 2021 Darth Spectra
 #include <math.h>
 #include <stdlib.h>
 #include "Engine.h"
 
 using namespace std;
 using namespace asteroid;
-//---------------------------------------------------------------------------
-// CLASS Engine : PRIVATE METHODS
-//---------------------------------------------------------------------------
+
+// class Engine: private methods
+// ─────────────────────────────
 void Engine::m_empty(bool killNow)
 {
   // Empty the game of objects
@@ -49,7 +34,7 @@ void Engine::m_empty(bool killNow)
     }
   }
 }
-//---------------------------------------------------------------------------
+
 bool Engine::m_collision(const Obj& o1, const Obj& o2) const
 {
   // Are these objects in collision?
@@ -66,7 +51,7 @@ bool Engine::m_collision(const Obj& o1, const Obj& o2) const
 
   return rslt;
 }
-//---------------------------------------------------------------------------
+
 void Engine::m_rebound(const Obj& o1, const Obj& o2,
   ObjPos& nd1, ObjPos& nd2) const
 {
@@ -115,7 +100,6 @@ char *ItoA(int N, char *Buf, int Base) {
 #   define ItoA(N, Buf, Base) itoa((N), (Buf), (Base))
 #endif
 
-//---------------------------------------------------------------------------
 void Engine::m_stateTick()
 {
   // UPDATE INTERNAL
@@ -311,7 +295,7 @@ void Engine::m_stateTick()
     m_objects[n]->pos = p;
   }
 }
-//---------------------------------------------------------------------------
+
 int Engine::m_typeCnt(OType t) const
 {
   // Return count of particular object type
@@ -328,7 +312,7 @@ int Engine::m_typeCnt(OType t) const
 
   return rslt;
 }
-//---------------------------------------------------------------------------
+
 Ship* Engine::m_getShip() const
 {
   // Find the ship & return pointer to it.
@@ -363,9 +347,9 @@ Ship* Engine::m_getShip() const
   
   return 0;
 }
-//---------------------------------------------------------------------------
-// CLASS Engine : PUBLIC METHODS
-//---------------------------------------------------------------------------
+
+// class Engine: public methods
+// ────────────────────────────
 Engine::Engine()
 {
   // Constructor
@@ -385,7 +369,7 @@ Engine::Engine()
   m_tickCnt = 0;
   m_newLifeWait = 0;
 }
-//---------------------------------------------------------------------------
+
 Engine::~Engine()
 {
   // Destructor
@@ -401,7 +385,7 @@ Engine::~Engine()
   {
   }
 }
-//---------------------------------------------------------------------------
+
 Obj* Engine::add(OType ot)
 {
   // Add object
@@ -451,7 +435,7 @@ Obj* Engine::add(OType ot)
   
   return newObj;
 }
-//---------------------------------------------------------------------------
+
 Obj* Engine::add(OType ot, const ObjPos& pos,
   const ObjPos& dir)
 {
@@ -461,7 +445,7 @@ Obj* Engine::add(OType ot, const ObjPos& pos,
   ob->dir = dir;
   return ob;
 }
-//---------------------------------------------------------------------------
+
 Obj* Engine::addKuypier(OType ot, int tick)
 {
   // Add object in to kuypier region & initialise with
@@ -505,44 +489,44 @@ Obj* Engine::addKuypier(OType ot, int tick)
 
   return ob;
 }
-//---------------------------------------------------------------------------
+
 size_t Engine::objCnt() const
 {
   // Return object count
   return m_objects.size();
 }
-//---------------------------------------------------------------------------
+
 Obj* Engine::objAtIdx(size_t n) const
 {
   // Get object at index n
   return m_objects[n];
 }
-//---------------------------------------------------------------------------
+
 bool Engine::active() const
 {
   // Is game active or in demo mode
   return m_active;
 }
-//---------------------------------------------------------------------------
+
 bool Engine::demo() const
 {
   // Accessor
   return (m_active && m_demoEndMark > 0);
 }
-//---------------------------------------------------------------------------
+
 bool Engine::playing() const
 {
   // Is game in play?
   return (active() && !demo());
 }
-//---------------------------------------------------------------------------
+
 bool Engine::gameOver() const
 {
   // Accessor - game over after short pause of being set
   // Allows time for "GAME OVER" label to be seen
   return (!m_active || (m_gameOverMark > 0 && time(0) > m_gameOverMark));
 }
-//---------------------------------------------------------------------------
+
 void Engine::startGame(int rocks)
 {
   // Start new game
@@ -566,7 +550,7 @@ void Engine::startGame(int rocks)
   // new rocks & ship in short interval
   m_newLifeWait = time(0) + NEW_LIFE_PAUSE;
 }
-//---------------------------------------------------------------------------
+
 void Engine::startDemo(time_t secs, int rocks)
 {
   // Start demo game
@@ -591,7 +575,7 @@ void Engine::startDemo(time_t secs, int rocks)
   // new rocks & ship in short interval
   m_newLifeWait = time(0) + NEW_LIFE_PAUSE;
 }
-//---------------------------------------------------------------------------
+
 void Engine::stop()
 {
   // Clear - stop the game
@@ -599,7 +583,7 @@ void Engine::stop()
   m_lives = 0;
   m_empty(true);
 }
-//---------------------------------------------------------------------------
+
 void Engine::tick()
 {
   // GAME LOGIC IMPLEMENTATION. This method should be called
@@ -696,86 +680,86 @@ void Engine::tick()
     }
   }
 }
-//---------------------------------------------------------------------------
+
 int Engine::lives() const
 {
   // Lives accessor
   return m_lives;
 }
-//---------------------------------------------------------------------------
+
 int Engine::score() const
 {
   // Score accessor
   return m_score;
 }
-//---------------------------------------------------------------------------
+
 int Engine::lastScore() const
 {
   // Last game score accessor
   return m_lastScore;
 }
-//---------------------------------------------------------------------------
+
 int Engine::hiscore() const
 {
   // High score accessor
   return m_highScore;
 }
-//---------------------------------------------------------------------------
+
 void Engine::hiscore(int hs)
 {
   // High score mutator, this can be
   // set if high score is stored between application launches
   m_highScore = hs;
 }
-//---------------------------------------------------------------------------
+
 double Engine::difficulty() const
 {
   // Higher values result in more difficult games
   return m_diff;
 }
-//---------------------------------------------------------------------------
+
 void Engine::difficulty(const double& dif)
 {
   // Higher values result in more difficult games
   if (dif > 0.0 && dif <= 1.0)
     m_diff = dif;
 }
-//---------------------------------------------------------------------------
+
 void Engine::addAlienCheat()
 {
   // Cheat - add alien to game
   if (m_active && m_typeCnt(otAlien) < 15)
     addKuypier(otAlien, 0);
 }
-//---------------------------------------------------------------------------
+
 void Engine::rotate(int r)
 {
   // Rotate ship (-1 left, 0 stop, +1 right)
   Ship* s = m_getShip();
   if (s != 0 && !demo()) s->rot(r);
 }
-//---------------------------------------------------------------------------
+
 void Engine::thrust(bool on)
 {
   // Thrust on or off
   Ship* s = m_getShip();
   if (s != 0 && !demo()) s->thrust(on);
 }
-//---------------------------------------------------------------------------
+
 void Engine::fire()
 {
   // Fire
   Ship* s = m_getShip();
   if (s != 0 && !demo()) s->fire();
 }
-//---------------------------------------------------------------------------
+
 void Engine::reload()
 {
   // Release fire
   Ship* s = m_getShip();
   if (s != 0 && !demo()) s->reload(false);
 }
-//---------------------------------------------------------------------------
+
 int Engine::charge() const
 {
   // Ship fire charge
@@ -785,14 +769,14 @@ int Engine::charge() const
   else
     return 0;
 }
-//---------------------------------------------------------------------------
+
 OType Engine::rockExplodeSnd() const
 {
   // Access latest rock explosion sound
   // Return otNone for silent
   return m_explosionSnd;
 }
-//---------------------------------------------------------------------------
+
 bool Engine::fireSnd() const
 {
   // Access latest sound
@@ -803,7 +787,7 @@ bool Engine::fireSnd() const
   else
     return false;
 }
-//---------------------------------------------------------------------------
+
 bool Engine::thrustSnd() const
 {
   // Access latest sound
@@ -814,19 +798,19 @@ bool Engine::thrustSnd() const
   else
     return false;
 }
-//---------------------------------------------------------------------------
+
 bool Engine::alienSnd() const
 {
   // Access latest sound
   return m_alienSnd;
 }
-//---------------------------------------------------------------------------
+
 bool Engine::diedSnd() const
 {
   // Access latest sound
   return m_diedSnd;
 }
-//---------------------------------------------------------------------------
+
 void Engine::getPlayDims(int* w, int* h) const
 {
   // Get playing width & height.
@@ -840,14 +824,14 @@ void Engine::getPlayDims(int* w, int* h) const
   if (w != 0) *w = m_width;
   if (h != 0) *h = m_height;
 }
-//---------------------------------------------------------------------------
+
 void Engine::setPlayDims(int w, int h)
 {
   // Set playing width & height.
   m_width = w;
   m_height = h;
 }
-//---------------------------------------------------------------------------
+
 int Engine::minDim() const
 {
   // Return minum dimension
@@ -856,4 +840,3 @@ int Engine::minDim() const
   else
     return m_width;
 }
-//---------------------------------------------------------------------------

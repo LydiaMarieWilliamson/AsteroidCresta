@@ -1,40 +1,14 @@
-//---------------------------------------------------------------------------
-// PROJECT     : Asteroid Style Game
-// FILE NAME   : game_engine.h
-// DESCRIPTION : Engine holds & updates game artifacts
-// COPYRIGHT   : Big Angry Dog (C) 2009
-// This file is part of the "Asteroid Cresta" program.
-// Asteroid Cresta is free software: you can redistribute it and/or
-// modify it under the terms of the GNU General Public License as published
-// by the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// Asteroid Cresta is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License
-// along with Asteroid Cresta.  If not, see <http://www.gnu.org/licenses/>.
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-// HEADER GUARD
-//---------------------------------------------------------------------------
-#ifndef GAME_ENGINE_H
-#define GAME_ENGINE_H
+#ifndef OnceOnlyEngine_h
+#define OnceOnlyEngine_h
 
-//---------------------------------------------------------------------------
-// INCLUDES
-//---------------------------------------------------------------------------
+// Asteroid Style Game: The engine for holding and updating the game artifacts.
+// Copyright (c) 2009 Big Angry Dog, (c) 2016-2018 Darth Ninja, (c) 2021 Darth Spectra
 #include <time.h>
 #include <vector>
 #include "Objects.h"
 
 namespace asteroid {
-
-//---------------------------------------------------------------------------
-// NON-CLASS MEMBERS
-//---------------------------------------------------------------------------
-
-// GAME CONSTANTS
+// Game Presets
 const int KUYP_DIV = 6;  // Used to calculate size of Kuypier region
 const int NEW_LIFE_PAUSE = 2; // Pause (secs) before new life
 const int DEF_TEXT_SECS = 2; // Default text label life (secs)
@@ -54,9 +28,7 @@ const double FIRE_RECOIL_MULT = 0.01; // Ship file recoil (controls game speed)
 const double ALIEN_THRUST_MULT = 1.0; // Alien thrust factor (controls game speed)
 const double ROCK_SPEED_MULT = 0.735; // Initial rock speed factor (controls game speed)
 
-//---------------------------------------------------------------------------
-// CLASS Engine (holds a list of game objects & implements logic)
-//---------------------------------------------------------------------------
+// The game logic engine and game object roster
 class Engine
 {
 private:
@@ -131,6 +103,6 @@ public:
   void setPlayDims(int w, int h);
   int minDim() const;
 };
-//---------------------------------------------------------------------------
-}
-#endif
+} // end of namespace Asteroid
+
+#endif // OnceOnly
