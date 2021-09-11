@@ -18,7 +18,7 @@ they are outside the scope of the GNU General Public License.
 Compiling the Software
 ──────────────────────
 It is possible to compile the software yourself.
-You will need to install the QT development SDK, and build the software from the command line using the asteroid.pro file.
+You will need to install the QT development SDK, and build the software from the command line using the Asteroid.pro file.
 
 On successful compilation, the application binary will be written to the ‟source/bin” directory.
 In order to run it from there,
