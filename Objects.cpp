@@ -225,7 +225,7 @@ bool RockBase::fatal(const Obj &other) const {
    mp_owner->getPlayDims(&w, &h);
    return
       other.type() == otFire && m_tickCnt > 2? true:
-      pos.real() < 0 || pos.real() > w || pos.real() < 0 || pos.imag() > h? false:
+      pos.real() < 0 || pos.real() > w || pos.imag() < 0 || pos.imag() > h? false:
       abs(dir - other.dir) > MAX_SPEED/5.0 && (other.mass() > mass() || (other.mass() == mass() && Obj::randFloat() < 0.5));
 }
 
