@@ -39,44 +39,44 @@ private:
 #if 0
    void _Bury(); //(@) Not used anywhere.
 #endif
-   void _Empty(bool killNow);
-   bool _Crash(const Thing &o1, const Thing &o2) const;
-   void _Boing(const Thing &o1, const Thing &o2, ObjPos &nd1, ObjPos &nd2) const;
+   void _Empty(bool Now);
+   bool _Crash(const Thing &A, const Thing &B) const;
+   void _Boing(const Thing &A, const Thing &B, ObjPos &PosA, ObjPos &PosB) const;
    void _StateTick();
-   int _Types(TypeT t) const;
+   int _Types(TypeT T) const;
    Ship *_GetShip() const;
 public:
    Engine();
    virtual ~Engine();
-// Add type-ot objects to the game.
+// Add type-T objects to the game.
 // For internal use only.
-   Thing *AddThing(TypeT ot);
-   Thing *AddThing(TypeT ot, const ObjPos &pos, const ObjPos &dir = ObjPos());
-   Thing *AddKuypier(TypeT ot, int tick);
+   Thing *AddThing(TypeT T);
+   Thing *AddThing(TypeT T, const ObjPos &Pos, const ObjPos &Dir = ObjPos());
+   Thing *AddKuypier(TypeT T, int Tick);
 // Access internal objects.
 // These are needed in order to render objects onto the screen device.
    size_t ObjN() const;
-   Thing *ObjAtN(size_t n) const;
+   Thing *ObjAtN(size_t N) const;
 // State control.
    bool GetActive() const;
    bool InDemo() const;
    bool InGame() const;
    bool EndGame() const;
-   void BegGame(int rocks = 10);
-   void BegDemo(time_t secs = 20, int rocks = 10);
+   void BegGame(int Rocks = 10);
+   void BegDemo(time_t T = 20, int Rocks = 10);
    void Stop();
    void Tick();
    int GetLives() const;
    int GetScore() const;
    int GetExScore() const;
    int GetHiScore() const;
-   void SetHiScore(int hs);
+   void SetHiScore(int Score);
    double GetLevel() const;
-   void SetLevel(const double &dif);
+   void SetLevel(const double &Level);
 // The game and ship control input.
    void AddAlienCheat();
-   void SetSpin(int r);
-   void SetPushing(bool on);
+   void SetSpin(int Spin);
+   void SetPushing(bool Pushing);
    void Fire();
    void ReLoad();
    int Charge() const;
@@ -87,8 +87,8 @@ public:
    bool GetAlienSnd() const;
    bool GetDiedSnd() const;
 // The game playing area methods.
-   void GetPlayDims(int *w, int *h) const;
-   void SetPlayDims(int w, int h);
+   void GetPlayDims(int *XsP, int *YsP) const;
+   void SetPlayDims(int Xs, int Ys);
    int MinDim() const;
 };
 } // end of namespace Asteroid
