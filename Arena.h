@@ -32,8 +32,8 @@ private slots:
    void _ShowAbout();
    void _UpdateMenu();
 protected:
-   virtual void keyPressEvent(QKeyEvent *event);
-   virtual void keyReleaseEvent(QKeyEvent *event);
+   virtual void keyPressEvent(QKeyEvent *Ev);
+   virtual void keyReleaseEvent(QKeyEvent *Ev);
 public:
    Arena();
    ~Arena();

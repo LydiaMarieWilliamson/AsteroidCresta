@@ -13,9 +13,9 @@ private:
    QPixmap *_ArtWork;
    int _Spacer;
 protected:
-   virtual void paintEvent(QPaintEvent *event);
+   virtual void paintEvent(QPaintEvent *Ev);
 public:
-   About(QWidget *parent);
+   About(QWidget *Sup);
    ~About();
 };
 

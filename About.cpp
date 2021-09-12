@@ -7,81 +7,47 @@
 // class About: protected members
 // ──────────────────────────────
 // Re-paint on displayWidget.
-void About::paintEvent(QPaintEvent *) {
-   QPainter painter(this);
-   painter.drawPixmap(0, 0, *_ArtWork);
-
-   painter.setPen(QPen(Qt::white));
-
-   QFont f("serif");
-   f.setPointSizeF(16);
-   f.setBold(true);
-   painter.setFont(f);
-
-   int x = _Spacer;
-   int y = _Spacer;
-
-   QRect sr = rect();
-   int sw = _ArtWork->width() - 2*_Spacer;
-
+void About::paintEvent(QPaintEvent * /*Ev*/) {
+   QPainter Pnt(this); Pnt.drawPixmap(0, 0, *_ArtWork), Pnt.setPen(QPen(Qt::white));
+   QFont CurF("serif"); CurF.setPointSizeF(16), CurF.setBold(true), Pnt.setFont(CurF);
+   int X = _Spacer, Y = _Spacer;
+   QRect Rs = rect(); int Xs = _ArtWork->width() - 2*_Spacer;
 // Write the text.
-   QString s = AppName;
-   QRect r = painter.boundingRect(sr, 0, s);
-   painter.drawText(x, y, sw, r.height(), Qt::AlignLeft | Qt::AlignTop, s);
-   y += r.height();
-
-   f.setPointSizeF(10);
-   f.setBold(false);
-   painter.setFont(f);
-
-   s = AppCopyRight;
-   r = painter.boundingRect(sr, 0, s);
-   painter.drawText(x, y, sw, r.height(), Qt::AlignLeft | Qt::AlignTop, s);
-   y += r.height();
-
-   painter.drawText(x, y, sw, r.height(), Qt::AlignLeft | Qt::AlignTop, tr("Version: ") + AppVersion);
-   y += r.height();
-
+   QString Msg = AppName;
+   QRect R = Pnt.boundingRect(Rs, 0, Msg);
+   Pnt.drawText(X, Y, Xs, R.height(), Qt::AlignLeft | Qt::AlignTop, Msg), Y += R.height();
+   CurF.setPointSizeF(10), CurF.setBold(false), Pnt.setFont(CurF);
+   Msg = AppCopyRight, R = Pnt.boundingRect(Rs, 0, Msg);
+   Pnt.drawText(X, Y, Xs, R.height(), Qt::AlignLeft | Qt::AlignTop, Msg), Y += R.height();
+   Pnt.drawText(X, Y, Xs, R.height(), Qt::AlignLeft | Qt::AlignTop, tr("Version: ") + AppVersion), Y += R.height();
 // Up from the bottom of the image.
-   y = _ArtWork->height() - r.height();
-   painter.drawText(x, y, sw, r.height(), Qt::AlignLeft | Qt::AlignTop, tr("No Warranty. GNU General Public License."));
-   y -= r.height();
-
-   painter.drawText(x, y, sw, r.height(), Qt::AlignLeft | Qt::AlignTop, AppDomain);
+   Y = _ArtWork->height() - R.height();
+   Pnt.drawText(X, Y, Xs, R.height(), Qt::AlignLeft | Qt::AlignTop, tr("No Warranty. GNU General Public License.")), Y -= R.height();
+   Pnt.drawText(X, Y, Xs, R.height(), Qt::AlignLeft | Qt::AlignTop, AppDomain);
 }
 
 // class About: public members
 // ───────────────────────────
 // Make a new About object.
-About::About(QWidget *parent): QDialog(parent, Qt::Dialog | Qt::WindowCloseButtonHint) {
+About::About(QWidget *Sup): QDialog(Sup, Qt::Dialog | Qt::WindowCloseButtonHint) {
    setWindowTitle(tr("About..."));
-
 // Create the display area.
    _ArtWork = new QPixmap(":/Artwork.png", 0);
-
 // Create a button box.
-   QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok, Qt::Horizontal, this);
-   connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-
+   QDialogButtonBox *ButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok, Qt::Horizontal, this);
+   connect(ButtonBox, SIGNAL(accepted()), this, SLOT(accept()));
 // Set up the layout grid.
 // Note: we add a spacer at to create an area in which to draw the image and zero the spacing between items.
 // However, there is still a contentsMargin spacing around the grid itself.
 // In order to leave a margin around the button bar, we size the draw area so as to include the margin.
 // Because we will draw the image at the top left of client window, no margin will be shown around the image
 // and the top spacer area will be used to create a spacer between the image and button bar instead.
-   QGridLayout *layout = new QGridLayout(this);
-   layout->setHorizontalSpacing(0);
-   layout->setVerticalSpacing(0);
-
-   int cl, ct, cr, cb;
-   layout->getContentsMargins(&cl, &ct, &cr, &cb);
-   QSpacerItem *displayArea = new QSpacerItem(_ArtWork->width() - cl - cr, _ArtWork->height());
-
-   layout->addItem(displayArea, 0, 0);
-   layout->addWidget(buttonBox, 1, 0);
-
+   QGridLayout *Grid = new QGridLayout(this); Grid->setHorizontalSpacing(0), Grid->setVerticalSpacing(0);
+   int X0, Y0, X1, Y1; Grid->getContentsMargins(&X0, &Y0, &X1, &Y1);
+   QSpacerItem *DisplayArea = new QSpacerItem(_ArtWork->width() - X0 - X1, _ArtWork->height());
+   Grid->addItem(DisplayArea, 0, 0), Grid->addWidget(ButtonBox, 1, 0);
 // Hold the contents spacing.
-   _Spacer = cl;
+   _Spacer = X0;
 }
 
 // Free the About object.

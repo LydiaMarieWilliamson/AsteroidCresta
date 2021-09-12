@@ -8,16 +8,19 @@
 const QString AppName = "Asteroid Cresta";
 const QString AppInternalName = "Asteroid Style Game";
 #if 1
-const QString AppVersion = "1.9.0";
-const QString AppCopyRight = "Copyright \xA9 2011 Big Angry Dog, \xA9 2016 Darth Ninja, \xA9 2021 Darth Spectra";
-const QString AppAuthor = "Andy Thomas (original)";
+const QString AppVersion = "1.9.2";
+const QString AppCopyRight = "Copyright \xA9 2021 Darth Spectra et al.";
+const QString AppAuthor = "Andy Thomas, Darth Ninja, Darth Spectra";
+const QString AppCompany = "Asteroid Cresta II";
+const QString AppDomain = "github.com (Provisional)";
+const QString AppUrl = "http://github.com/LydiaMarieWilliamson/AsteroidCresta";
 #else
 const QString AppVersion = "1.8.0";
 const QString AppCopyRight = "Copyright \xA9 2011 Big Angry Dog";
 const QString AppAuthor = "Andy Thomas";
-#endif
 const QString AppCompany = "Big Angry Dog";
 const QString AppDomain = "BigAngryDog.com";
 const QString AppUrl = "http://www.BigAngryDog.com";
+#endif
 
 #endif // OnceOnly
