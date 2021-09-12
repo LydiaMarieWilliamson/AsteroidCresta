@@ -9,34 +9,34 @@ class QMenu;
 class QAction;
 class QSettings;
 class QTimer;
-class GameWidget;
+class Game;
 class About;
 
-class MainWindow: public QMainWindow {
+class Arena: public QMainWindow {
 Q_OBJECT
 private:
-   QAction *mp_newGameAct, *mp_endGameAct, *mp_diffEasyAct, *mp_diffNormAct, *mp_diffHardAct, *mp_soundsAct, *mp_musicAct;
-   QSettings *mp_settings;
-   QTimer *mp_timer;
-   GameWidget *mp_gameWidget;
-   About *mp_aboutWindow;
-   void m_createMainMenu();
-   void m_readSettings();
-   void m_writeSettings();
+   QAction *_NewGameAct, *_EndGameAct, *_EasyAct, *_NormAct, *_HardAct, *_SoundAct, *_MusicAct;
+   QSettings *_Settings;
+   QTimer *_Timer;
+   Game *_Game;
+   About *_About;
+   void _MainMenu();
+   void _GetSettings();
+   void _PutSettings();
 private slots:
-   void m_newGame();
-   void m_endGame();
-   void m_exit();
-   void m_setOptions();
-   void m_weburl();
-   void m_about();
-   void m_updateMenu();
+   void _NewGame();
+   void _EndGame();
+   void _ExitGame();
+   void _SetOptions();
+   void _ShowWebUrl();
+   void _ShowAbout();
+   void _UpdateMenu();
 protected:
    virtual void keyPressEvent(QKeyEvent *event);
    virtual void keyReleaseEvent(QKeyEvent *event);
 public:
-   MainWindow();
-   ~MainWindow();
+   Arena();
+   ~Arena();
 };
 
 #endif // OnceOnly

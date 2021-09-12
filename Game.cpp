@@ -18,15 +18,15 @@ const int DEF_POLL_RATE = 45;
 const int INTRO_SCREEN_SEC = 8;
 const QString SCREEN_FONT_NAME = "serif";
 
-// class GameWidget: private members
-// ─────────────────────────────────
+// class Game: private members
+// ───────────────────────────
 // The scaled text spacer.
-int GameWidget::m_txs() const {
+int Game::m_txs() const {
    return (int)(5.0*m_scale());
 }
 
 // The scaling value based on the width.
-double GameWidget::m_scale() const {
+double Game::m_scale() const {
    int gw;
    mp_engine->getPlayDims(&gw, 0);
    return gw > 0? (double)width()/gw: 1.0;
@@ -34,7 +34,7 @@ double GameWidget::m_scale() const {
 
 // Resize the internal gaming area by adjusting its aspect ratio in such a way as to keep the area approximately constant.
 // This is to be called when the parent's size is changed.
-void GameWidget::m_recalcGameArea() {
+void Game::m_recalcGameArea() {
    int w = width();
    int h = height();
 
@@ -47,7 +47,7 @@ void GameWidget::m_recalcGameArea() {
 }
 
 // Set the painter font according to size sz and boldness bold.
-void GameWidget::m_setFont(QPainter &p, asteroid::LFSize sz, bool bold) {
+void Game::m_setFont(QPainter &p, asteroid::LFSize sz, bool bold) {
    double ps;
    QFont f = p.font();
 
@@ -72,7 +72,7 @@ void GameWidget::m_setFont(QPainter &p, asteroid::LFSize sz, bool bold) {
 // Layout options: AlignLeft, AlignRight, AlignHCenter, AlignTop, AlignBottom, AlignVCenter and AlignCenter; others are ignored.
 // These define how the text is to be aligned to x and y, rather than with respect to any rectangle.
 // For example, if layout&AlignRight, the right hand edge of the text will be aligned to x.
-int GameWidget::m_textOut(QPainter &p, const QString &s, int x, int y, Qt::Alignment layout) {
+int Game::m_textOut(QPainter &p, const QString &s, int x, int y, Qt::Alignment layout) {
    QRect tr = p.boundingRect(rect(), 0, s);
 
 // Horizontal.
@@ -93,14 +93,14 @@ int GameWidget::m_textOut(QPainter &p, const QString &s, int x, int y, Qt::Align
 }
 
 // Render a blank painter and set up the colors.
-void GameWidget::m_resetScreen(QPainter &p) {
+void Game::m_resetScreen(QPainter &p) {
    p.setFont(QFont(SCREEN_FONT_NAME));
    p.setPen(QPen(m_foreCol));
    p.fillRect(rect(), m_backCol);
 }
 
 // Draw the play action, including the demo phase, during active game play or demo mode to render the game engine objects.
-void GameWidget::m_drawPlay() {
+void Game::m_drawPlay() {
    QPainter p(this);
    m_resetScreen(p);
 
@@ -160,7 +160,7 @@ void GameWidget::m_drawPlay() {
 }
 
 // Draw intro screen #0.
-void GameWidget::m_drawIntroScreen0() {
+void Game::m_drawIntroScreen0() {
    QPainter p(this);
    m_resetScreen(p);
 
@@ -201,7 +201,7 @@ void GameWidget::m_drawIntroScreen0() {
 }
 
 // Draw intro screen #1.
-void GameWidget::m_drawIntroScreen1() {
+void Game::m_drawIntroScreen1() {
    QPainter p(this);
    m_resetScreen(p);
 
@@ -251,7 +251,7 @@ void GameWidget::m_drawIntroScreen1() {
 }
 
 // Draw intro screen #2.
-void GameWidget::m_drawIntroScreen2() {
+void Game::m_drawIntroScreen2() {
    QPainter p(this);
    m_resetScreen(p);
 
@@ -290,11 +290,11 @@ void GameWidget::m_drawIntroScreen2() {
    }
 }
 
-// class GameWidget: private slots
-// ───────────────────────────────
+// class Game: private slots
+// ─────────────────────────
 // Internal poller.
 // Called repeatedly to update the game state; also responsible for paging through the intro screens.
-void GameWidget::m_poll() {
+void Game::m_poll() {
 // The media file's pathname.
    const QString path = QCoreApplication::applicationDirPath() + "/media/";
 
@@ -366,10 +366,10 @@ void GameWidget::m_poll() {
    m_playing = mp_engine->playing();
 }
 
-// class GameWidget: protected members
-// ───────────────────────────────────
+// class Game: protected members
+// ─────────────────────────────
 // The paint event handler: call the appropriate rendering method.
-void GameWidget::paintEvent(QPaintEvent *) {
+void Game::paintEvent(QPaintEvent *) {
    m_recalcGameArea();
 
    switch (m_gameState) {
@@ -380,10 +380,10 @@ void GameWidget::paintEvent(QPaintEvent *) {
    }
 }
 
-// class GameWidget: public members
-// ────────────────────────────────
-// Make a new GameWidget object.
-GameWidget::GameWidget(QWidget *parent): QWidget(parent, Qt::Widget) {
+// class Game: public members
+// ──────────────────────────
+// Make a new Game object.
+Game::Game(QWidget *parent): QWidget(parent, Qt::Widget) {
    m_paused = false, m_sounds = true, m_music = true, m_playing = false;
    m_soundKeydown = false, m_musicKeydown = false, m_pauseKeydown = false;
    m_backCol = Qt::black, m_foreCol = Qt::white;
@@ -404,13 +404,13 @@ GameWidget::GameWidget(QWidget *parent): QWidget(parent, Qt::Widget) {
    m_recalcGameArea();
 
 // Set up the poll timer.
-   mp_timer = new QTimer(this);
-   connect(mp_timer, SIGNAL(timeout()), this, SLOT(m_poll()));
-   mp_timer->start(DEF_POLL_RATE);
+   _Timer = new QTimer(this);
+   connect(_Timer, SIGNAL(timeout()), this, SLOT(m_poll()));
+   _Timer->start(DEF_POLL_RATE);
 }
 
-// Free the GameWidget object.
-GameWidget::~GameWidget() {
+// Free the Game object.
+Game::~Game() {
    try {
       delete mp_engine;
       delete mp_musicAudio;
@@ -422,31 +422,31 @@ GameWidget::~GameWidget() {
 }
 
 // Get/set the game-pause state.
-bool GameWidget::isPaused() const {
+bool Game::isPaused() const {
    return m_paused;
 }
 
-void GameWidget::pause(bool p) {
+void Game::pause(bool p) {
    m_paused = p && isPlaying();
 }
 
 // Get/set the game-playing state.
-void GameWidget::play(bool p) {
+void Game::play(bool p) {
    if (p != isPlaying()) setGameState(p? GS_PLAY: GS_INTRO_0);
 }
 
-bool GameWidget::isPlaying() const {
+bool Game::isPlaying() const {
    return gameState() == GS_PLAY;
 }
 
 // Get/set the game state.
 // Setting can be used to start a game, a demo or to change the intro screen.
 // All changes to the game state should go through these procedures.
-GameWidget::GameStateType GameWidget::gameState() const {
+Game::GameStateType Game::gameState() const {
    return m_gameState;
 }
 
-void GameWidget::setGameState(GameWidget::GameStateType gs) {
+void Game::setGameState(Game::GameStateType gs) {
    if (gs != m_gameState) {
    // Start engine playing, engine demo or kill play/demo.
       if (gs == GS_PLAY) {
@@ -467,21 +467,21 @@ void GameWidget::setGameState(GameWidget::GameStateType gs) {
 }
 
 // Get/set the high score.
-int GameWidget::hiscore() const {
+int Game::hiscore() const {
    return mp_engine->hiscore();
 }
 
-void GameWidget::setHiscore(int hs) {
+void Game::setHiscore(int hs) {
    mp_engine->hiscore(hs);
 }
 
 // Get/set the sounding/singing states; foreground/background colors.
 // Update the intro pages after any change is made.
-bool GameWidget::sounds() const {
+bool Game::sounds() const {
    return m_sounds;
 }
 
-void GameWidget::setSounds(bool s) {
+void Game::setSounds(bool s) {
    if (m_sounds != s) {
       m_sounds = s;
 
@@ -489,11 +489,11 @@ void GameWidget::setSounds(bool s) {
    }
 }
 
-bool GameWidget::music() const {
+bool Game::music() const {
    return m_music;
 }
 
-void GameWidget::setMusic(bool m) {
+void Game::setMusic(bool m) {
    if (m_music != m) {
       m_music = m;
 
@@ -501,22 +501,22 @@ void GameWidget::setMusic(bool m) {
    }
 }
 
-QColor GameWidget::foreground() const {
+QColor Game::foreground() const {
    return m_foreCol;
 }
 
-void GameWidget::setForeground(const QColor &c) {
+void Game::setForeground(const QColor &c) {
    if (m_foreCol != c) {
       m_foreCol = c;
       update();
    }
 }
 
-QColor GameWidget::background() const {
+QColor Game::background() const {
    return m_backCol;
 }
 
-void GameWidget::setBackground(const QColor &c) {
+void Game::setBackground(const QColor &c) {
    if (m_backCol != c) {
       m_backCol = c;
       update();
@@ -525,26 +525,26 @@ void GameWidget::setBackground(const QColor &c) {
 
 // Get/set the game level.
 // The level ∈ [0,1] determines how fast rocks are created; 0 = easiest, 1 = hardest.
-double GameWidget::difficulty() const {
+double Game::difficulty() const {
    return mp_engine->difficulty();
 }
 
-void GameWidget::setDifficulty(const double &dif) {
+void Game::setDifficulty(const double &dif) {
    mp_engine->difficulty(dif);
 }
 
 // Get/set the game speed; i.e. the polling rate, which is in milliseconds.
-int GameWidget::pollRate() const {
-   return mp_timer->interval();
+int Game::pollRate() const {
+   return _Timer->interval();
 }
 
-void GameWidget::setPollRate(int ms) {
-   mp_timer->setInterval(ms);
+void Game::setPollRate(int ms) {
+   _Timer->setInterval(ms);
 }
 
 // Handle a key down event; meant to be called from outside this class in response to key events.
 // Return true if handled.
-bool GameWidget::keyDown(int k) {
+bool Game::keyDown(int k) {
    switch (k) {
    // Game control keys down.
       case Qt::Key_K: case Qt::Key_Left: mp_engine->rotate(-1); return true;
@@ -584,7 +584,7 @@ bool GameWidget::keyDown(int k) {
 
 // Handle a key up event; meant to be called from outside this class in response to key events.
 // Return true if handled.
-bool GameWidget::keyUp(int k) {
+bool Game::keyUp(int k) {
    switch (k) {
    // Game control keys up.
       case Qt::Key_K: case Qt::Key_Left: mp_engine->rotate(0); return true;

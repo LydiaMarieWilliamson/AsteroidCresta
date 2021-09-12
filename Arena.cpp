@@ -7,30 +7,30 @@
 #include "Game.h"
 
 // Window constants.
-const int DEF_WIDTH = 580, DEF_POS_X = 200;
-const int DEF_HEIGHT = 435, DEF_POS_Y = 200;
+static const int DEF_WIDTH = 580, DEF_POS_X = 200;
+static const int DEF_HEIGHT = 435, DEF_POS_Y = 200;
 
 // Settings value names.
-const QString SET_WIN_SIZE = "win_size", SET_WIN_POS = "win_pos", SET_WIN_MAX = "win_max";
-const QString SET_DIFF_EASY = "diff_easy", SET_DIFF_NORM = "diff_norm", SET_DIFF_HARD = "diff_hard";
-const QString SET_SOUNDS = "sounds", SET_MUSIC = "music", SET_HISCORE = "hiscore";
+static const QString SET_WIN_SIZE = "win_size", SET_WIN_POS = "win_pos", SET_WIN_MAX = "win_max";
+static const QString SET_DIFF_EASY = "diff_easy", SET_DIFF_NORM = "diff_norm", SET_DIFF_HARD = "diff_hard";
+static const QString SET_SOUNDS = "sounds", SET_MUSIC = "music", SET_HISCORE = "hiscore";
 
 // Game constants.
-const double DIFF_EASY = 0.25, DIFF_NORM = 0.5, DIFF_HARD = 0.75;
+static const double DIFF_EASY = 0.25, DIFF_NORM = 0.5, DIFF_HARD = 0.75;
 
-// class MainWindow: private members
-// ─────────────────────────────────
+// class Arena: private members
+// ────────────────────────────
 // Create and set up the main menu.
-void MainWindow::m_createMainMenu() {
+void Arena::_MainMenu() {
 // File.
    QMenu *m_ptr = menuBar()->addMenu(tr("&File"));
-   mp_newGameAct = m_ptr->addAction(tr("&New Game"), this, SLOT(m_newGame()), Qt::Key_Space);
+   _NewGameAct = m_ptr->addAction(tr("&New Game"), this, SLOT(_NewGame()), Qt::Key_Space);
 
-   mp_endGameAct = m_ptr->addAction(tr("&End Game"), this, SLOT(m_endGame()), Qt::Key_Escape);
-   mp_endGameAct->setEnabled(false);
+   _EndGameAct = m_ptr->addAction(tr("&End Game"), this, SLOT(_EndGame()), Qt::Key_Escape);
+   _EndGameAct->setEnabled(false);
 
    m_ptr->addSeparator();
-   m_ptr->addAction(tr("&Exit"), this, SLOT(m_exit()), Qt::CTRL + Qt::Key_Q);
+   m_ptr->addAction(tr("&Exit"), this, SLOT(_ExitGame()), Qt::CTRL + Qt::Key_Q);
 
 // Options.
    m_ptr = menuBar()->addMenu(tr("&Options"));
@@ -38,146 +38,146 @@ void MainWindow::m_createMainMenu() {
 // Options->Difficulty.
    QActionGroup *diffGroup = new QActionGroup(this);
 
-   mp_diffEasyAct = m_ptr->addAction(tr("&Easy"), this, SLOT(m_setOptions()));
-   mp_diffEasyAct->setCheckable(true);
-   diffGroup->addAction(mp_diffEasyAct);
+   _EasyAct = m_ptr->addAction(tr("&Easy"), this, SLOT(_SetOptions()));
+   _EasyAct->setCheckable(true);
+   diffGroup->addAction(_EasyAct);
 
-   mp_diffNormAct = m_ptr->addAction(tr("&Normal"), this, SLOT(m_setOptions()));
-   mp_diffNormAct->setCheckable(true);
-   diffGroup->addAction(mp_diffNormAct);
+   _NormAct = m_ptr->addAction(tr("&Normal"), this, SLOT(_SetOptions()));
+   _NormAct->setCheckable(true);
+   diffGroup->addAction(_NormAct);
 
-   mp_diffHardAct = m_ptr->addAction(tr("&Hard"), this, SLOT(m_setOptions()));
-   mp_diffHardAct->setCheckable(true);
-   diffGroup->addAction(mp_diffHardAct);
+   _HardAct = m_ptr->addAction(tr("&Hard"), this, SLOT(_SetOptions()));
+   _HardAct->setCheckable(true);
+   diffGroup->addAction(_HardAct);
 
    m_ptr->addSeparator();
 
 // Options->Sounds.
-   mp_soundsAct = m_ptr->addAction(tr("&Sounds"), this, SLOT(m_setOptions()), Qt::Key_S);
-   mp_soundsAct->setAutoRepeat(false);
-   mp_soundsAct->setCheckable(true);
+   _SoundAct = m_ptr->addAction(tr("&Sounds"), this, SLOT(_SetOptions()), Qt::Key_S);
+   _SoundAct->setAutoRepeat(false);
+   _SoundAct->setCheckable(true);
 
-   mp_musicAct = m_ptr->addAction(tr("&Music"), this, SLOT(m_setOptions()), Qt::Key_M);
-   mp_musicAct->setAutoRepeat(false);
-   mp_musicAct->setCheckable(true);
+   _MusicAct = m_ptr->addAction(tr("&Music"), this, SLOT(_SetOptions()), Qt::Key_M);
+   _MusicAct->setAutoRepeat(false);
+   _MusicAct->setCheckable(true);
 
 // Help.
    m_ptr = menuBar()->addMenu(tr("&Help"));
-   m_ptr->addAction(tr("&On the Web"), this, SLOT(m_weburl()));
-   m_ptr->addAction(tr("&About..."), this, SLOT(m_about()));
+   m_ptr->addAction(tr("&On the Web"), this, SLOT(_ShowWebUrl()));
+   m_ptr->addAction(tr("&About..."), this, SLOT(_ShowAbout()));
 }
 
 // Read the settings.
-void MainWindow::m_readSettings() {
+void Arena::_GetSettings() {
 // Maximized or Default.
-   if (mp_settings->value(SET_WIN_MAX, false).toBool()) {
+   if (_Settings->value(SET_WIN_MAX, false).toBool()) {
       move(QPoint(DEF_POS_X, DEF_POS_Y));
       resize(QSize(DEF_WIDTH, DEF_HEIGHT));
       setWindowState(Qt::WindowMaximized);
    } else {
-      move(mp_settings->value(SET_WIN_POS, QPoint(DEF_POS_X, DEF_POS_Y)).toPoint());
-      resize(mp_settings->value(SET_WIN_SIZE, QSize(DEF_WIDTH, DEF_HEIGHT)).toSize());
+      move(_Settings->value(SET_WIN_POS, QPoint(DEF_POS_X, DEF_POS_Y)).toPoint());
+      resize(_Settings->value(SET_WIN_SIZE, QSize(DEF_WIDTH, DEF_HEIGHT)).toSize());
    }
 
 // Set the menus.
-   mp_diffEasyAct->setChecked(mp_settings->value(SET_DIFF_EASY, false).toBool());
-   mp_diffNormAct->setChecked(mp_settings->value(SET_DIFF_NORM, true).toBool());
-   mp_diffHardAct->setChecked(mp_settings->value(SET_DIFF_HARD, false).toBool());
-   mp_soundsAct->setChecked(mp_settings->value(SET_SOUNDS, true).toBool());
-   mp_musicAct->setChecked(mp_settings->value(SET_MUSIC, true).toBool());
+   _EasyAct->setChecked(_Settings->value(SET_DIFF_EASY, false).toBool());
+   _NormAct->setChecked(_Settings->value(SET_DIFF_NORM, true).toBool());
+   _HardAct->setChecked(_Settings->value(SET_DIFF_HARD, false).toBool());
+   _SoundAct->setChecked(_Settings->value(SET_SOUNDS, true).toBool());
+   _MusicAct->setChecked(_Settings->value(SET_MUSIC, true).toBool());
 
-   mp_gameWidget->setHiscore(mp_settings->value(SET_HISCORE, 0).toInt());
+   _Game->setHiscore(_Settings->value(SET_HISCORE, 0).toInt());
 
 // Apply the menu settings.
-   m_setOptions();
+   _SetOptions();
 }
 
 // Write all the presets.
-void MainWindow::m_writeSettings() {
+void Arena::_PutSettings() {
 // Write the window presets.
-   mp_settings->setValue(SET_WIN_SIZE, size());
-   mp_settings->setValue(SET_WIN_POS, pos());
-   mp_settings->setValue(SET_WIN_MAX, isMaximized());
+   _Settings->setValue(SET_WIN_SIZE, size());
+   _Settings->setValue(SET_WIN_POS, pos());
+   _Settings->setValue(SET_WIN_MAX, isMaximized());
 
 // Write the game level presets.
-   mp_settings->setValue(SET_DIFF_EASY, mp_diffEasyAct->isChecked());
-   mp_settings->setValue(SET_DIFF_NORM, mp_diffNormAct->isChecked());
-   mp_settings->setValue(SET_DIFF_HARD, mp_diffHardAct->isChecked());
+   _Settings->setValue(SET_DIFF_EASY, _EasyAct->isChecked());
+   _Settings->setValue(SET_DIFF_NORM, _NormAct->isChecked());
+   _Settings->setValue(SET_DIFF_HARD, _HardAct->isChecked());
 
 // Write the sound/music action presets.
-   mp_settings->setValue(SET_SOUNDS, mp_soundsAct->isChecked());
-   mp_settings->setValue(SET_MUSIC, mp_musicAct->isChecked());
+   _Settings->setValue(SET_SOUNDS, _SoundAct->isChecked());
+   _Settings->setValue(SET_MUSIC, _MusicAct->isChecked());
 
 // Write the game widget presets.
-   mp_settings->setValue(SET_HISCORE, mp_gameWidget->hiscore());
+   _Settings->setValue(SET_HISCORE, _Game->hiscore());
 }
 
-// class MainWindow: private slots
-// ───────────────────────────────
+// class Arena: private slots
+// ──────────────────────────
 // Handle the new game, end game and exit events.
-void MainWindow::m_newGame() {
-   mp_gameWidget->play(true);
+void Arena::_NewGame() {
+   _Game->play(true);
 }
 
-void MainWindow::m_endGame() {
-   mp_gameWidget->play(false);
+void Arena::_EndGame() {
+   _Game->play(false);
 }
 
-void MainWindow::m_exit() {
+void Arena::_ExitGame() {
    close();
 }
 
 // Handle changes to the options state.
-void MainWindow::m_setOptions() {
-   mp_gameWidget->setDifficulty(mp_diffEasyAct->isChecked()? DIFF_EASY: mp_diffEasyAct->isChecked()? DIFF_HARD: DIFF_NORM);
-   mp_gameWidget->setSounds(mp_soundsAct->isChecked());
-   mp_gameWidget->setMusic(mp_musicAct->isChecked());
+void Arena::_SetOptions() {
+   _Game->setDifficulty(_EasyAct->isChecked()? DIFF_EASY: _EasyAct->isChecked()? DIFF_HARD: DIFF_NORM);
+   _Game->setSounds(_SoundAct->isChecked());
+   _Game->setMusic(_MusicAct->isChecked());
 }
 
 // Launch a browser.
-void MainWindow::m_weburl() {
+void Arena::_ShowWebUrl() {
    QDesktopServices::openUrl(QUrl(AppUrl));
 }
 
 // The about box.
-void MainWindow::m_about() {
+void Arena::_ShowAbout() {
 // Create on the first show.
-   if (mp_aboutWindow == nullptr) {
-      mp_aboutWindow = new About(this);
+   if (_About == nullptr) {
+      _About = new About(this);
    }
 
-   mp_aboutWindow->exec();
+   _About->exec();
 }
 
 // Timer slot - update the game start/stop menus when the game ends.
-void MainWindow::m_updateMenu() {
-   mp_newGameAct->setEnabled(!mp_gameWidget->isPlaying());
-   mp_endGameAct->setEnabled(mp_gameWidget->isPlaying());
+void Arena::_UpdateMenu() {
+   _NewGameAct->setEnabled(!_Game->isPlaying());
+   _EndGameAct->setEnabled(_Game->isPlaying());
 
 // The sound state.
-   mp_soundsAct->setChecked(mp_gameWidget->sounds());
+   _SoundAct->setChecked(_Game->sounds());
 }
 
-// class MainWindow: protected members
-// ───────────────────────────────────
+// class Arena: protected members
+// ──────────────────────────────
 // Handle a key down event.
-void MainWindow::keyPressEvent(QKeyEvent *event) {
-   if (!mp_gameWidget->keyDown(event->key())) {
+void Arena::keyPressEvent(QKeyEvent *event) {
+   if (!_Game->keyDown(event->key())) {
       QMainWindow::keyPressEvent(event);
    }
 }
 
 // Handle a key up event.
-void MainWindow::keyReleaseEvent(QKeyEvent *event) {
-   if (!mp_gameWidget->keyUp(event->key())) {
+void Arena::keyReleaseEvent(QKeyEvent *event) {
+   if (!_Game->keyUp(event->key())) {
       QMainWindow::keyReleaseEvent(event);
    }
 }
 
-// class MainWindow: public members
-// ────────────────────────────────
-// Make a new MainWindow object.
-MainWindow::MainWindow(): QMainWindow() {
+// class Arena: public members
+// ───────────────────────────
+// Make a new Arena object.
+Arena::Arena(): QMainWindow() {
 // Set the window type.
    setWindowFlags(Qt::Window);
    setWindowTitle(AppName);
@@ -187,36 +187,36 @@ MainWindow::MainWindow(): QMainWindow() {
    setWindowIcon(QIcon(":/Icon32.png"));
 
 // Set up the menus.
-   m_createMainMenu();
+   _MainMenu();
 
 // Create the game area.
-   mp_gameWidget = new GameWidget(this);
-   setCentralWidget(mp_gameWidget);
+   _Game = new Game(this);
+   setCentralWidget(_Game);
 
 // Create the settings file.
-   mp_settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, AppCompany, AppName, this);
+   _Settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, AppCompany, AppName, this);
 
 // Set the settings file.
-   m_readSettings();
+   _GetSettings();
 
 // Apply the options.
-   m_setOptions();
+   _SetOptions();
 
 // Create a poller to check for game start/end every 1/4 second.
-   mp_timer = new QTimer(this);
-   connect(mp_timer, SIGNAL(timeout()), this, SLOT(m_updateMenu()));
-   mp_timer->start(250);
+   _Timer = new QTimer(this);
+   connect(_Timer, SIGNAL(timeout()), this, SLOT(_UpdateMenu()));
+   _Timer->start(250);
 
-   mp_aboutWindow = nullptr;
+   _About = nullptr;
 }
 
-// Free the MainWindow object.
-MainWindow::~MainWindow() {
+// Free the Arena object.
+Arena::~Arena() {
    try {
    // Update settings to a file.
-      m_writeSettings();
+      _PutSettings();
 
    // Delete any objects which do not have this as a parent.
-      delete mp_aboutWindow;
+      delete _About;
    } catch(...) { }
 }

@@ -15,7 +15,7 @@ namespace Phonon {
 class MediaObject;
 } // end of namespace Phonon
 
-class GameWidget: public QWidget {
+class Game: public QWidget {
 Q_OBJECT
 public:
 // The game state.
@@ -28,7 +28,7 @@ private:
    double m_defaultGameArea;
    GameStateType m_gameState;
    QColor m_backCol, m_foreCol;
-   QTimer *mp_timer;
+   QTimer *_Timer;
    asteroid::Engine *mp_engine;
 // Sound players
    Phonon::MediaObject *mp_musicAudio, *mp_explodeAudio, *mp_thrustAudio, *mp_fireAudio, *mp_eventAudio;
@@ -47,14 +47,14 @@ private slots:
 protected:
    virtual void paintEvent(QPaintEvent *event);
 public:
-   GameWidget(QWidget *parent = nullptr);
-   ~GameWidget();
+   Game(QWidget *parent = nullptr);
+   ~Game();
    void pause(bool p);
    bool isPaused() const;
    void play(bool p);
    bool isPlaying() const;
-   GameWidget::GameStateType gameState() const;
-   void setGameState(GameWidget::GameStateType gs);
+   Game::GameStateType gameState() const;
+   void setGameState(Game::GameStateType gs);
    int hiscore() const;
    void setHiscore(int hs);
    bool sounds() const;

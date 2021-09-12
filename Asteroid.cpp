@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
       QApplication app(argc, argv);
       QPixmap pixmap(":/Artwork.bmp");
 
-      MainWindow main_win;
+      Arena main_win;
       main_win.show();
 
       return app.exec();

@@ -5,7 +5,7 @@
 #include "Version.h"
 
 // class About: protected members
-// ────────────────────────────────────
+// ──────────────────────────────
 // Re-paint on displayWidget.
 void About::paintEvent(QPaintEvent *) {
    QPainter painter(this);
@@ -50,8 +50,8 @@ void About::paintEvent(QPaintEvent *) {
    painter.drawText(x, y, sw, r.height(), Qt::AlignLeft | Qt::AlignTop, AppDomain);
 }
 
-// class GameWidget: public members
-// ────────────────────────────────
+// class About: public members
+// ───────────────────────────
 // Make a new About object.
 About::About(QWidget *parent): QDialog(parent, Qt::Dialog | Qt::WindowCloseButtonHint) {
    setWindowTitle(tr("About..."));
