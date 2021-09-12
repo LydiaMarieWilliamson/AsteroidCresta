@@ -46,14 +46,14 @@ void Game::_ResizeArena() {
 }
 
 // Set the painter font according to size sz and boldness bold.
-void Game::_SetFont(QPainter &p, Asteroid::LFSize sz, bool bold) {
+void Game::_SetFont(QPainter &p, Asteroid::FontT sz, bool bold) {
    double ps;
    QFont f = p.font();
 
    switch (sz) {
-      case Asteroid::lfSmall: ps = 10; break;
-      case Asteroid::lfLarge: ps = 14; break;
-      case Asteroid::lfHugeBold: ps = 16, bold = true; break;
+      case Asteroid::SmallLF: ps = 10; break;
+      case Asteroid::LargeLF: ps = 14; break;
+      case Asteroid::HugeBoldLF: ps = 16, bold = true; break;
       default: ps = 12; break;
    }
 
@@ -109,18 +109,18 @@ void Game::_ShowPlay() {
    for (size_t oidx = 0; oidx < _Machine->ObjN(); ++oidx) {
    // For each live game object.
    // Get a reference to the game object.
-      Asteroid::Obj *obj = _Machine->ObjAtN(oidx);
-      if (obj->dead()) continue;
+      Asteroid::Thing *obj = _Machine->ObjAtN(oidx);
+      if (obj->GetDead()) continue;
    // Draw the shape, if there is one.
-      int pc = obj->pointCnt();
+      int pc = obj->GetPoints();
 
       if (pc > 0) {
-         xo = (int)(sc*obj->points(0).real());
-         yo = (int)(sc*obj->points(0).imag());
+         xo = (int)(sc*obj->PosPoints(0).real());
+         yo = (int)(sc*obj->PosPoints(0).imag());
 
          for (int n = 1; n < pc; ++n) {
-            x = (int)(sc*obj->points(n).real());
-            y = (int)(sc*obj->points(n).imag());
+            x = (int)(sc*obj->PosPoints(n).real());
+            y = (int)(sc*obj->PosPoints(n).imag());
 
             p.drawLine(xo, yo, x, y);
 
@@ -129,25 +129,25 @@ void Game::_ShowPlay() {
          }
       }
    // Add the labels.
-      QString s = tr(obj->caption().c_str());
+      QString s = tr(obj->GetCaption().c_str());
 
    // Draw the new position, if there is one.
       if (!s.isEmpty()) {
-         x = (int)(sc*obj->pos.real());
-         y = (int)(sc*obj->pos.imag());
+         x = (int)(sc*obj->_Pos.real());
+         y = (int)(sc*obj->_Pos.imag());
 
-         _SetFont(p, obj->fontSize());
+         _SetFont(p, obj->GetPts());
          _PutStr(p, s, x, y, Qt::AlignCenter);
       }
    }
 
 // Indicate paused, if applicable.
    if (_Pausing) {
-      _SetFont(p, Asteroid::lfSmall);
+      _SetFont(p, Asteroid::SmallLF);
       _PutStr(p, tr("PAUSED"), width()/2, height()/2, Qt::AlignCenter);
    }
 // Mark the scores and lives.
-   _SetFont(p, Asteroid::lfSmall);
+   _SetFont(p, Asteroid::SmallLF);
    int sh = _PutStr(p, tr("SCORE ") + QString::number(_Machine->GetScore()),
       _Filler(), _Filler());
 
@@ -169,20 +169,20 @@ void Game::_ShowIntro0() {
    int y = h/8;
 
 // Titles.
-   _SetFont(p, Asteroid::lfHugeBold);
+   _SetFont(p, Asteroid::HugeBoldLF);
    y += _PutStr(p, AppName.toUpper(), w/2, y, Qt::AlignHCenter);
 
-   _SetFont(p, Asteroid::lfSmall);
+   _SetFont(p, Asteroid::SmallLF);
    int th = _PutStr(p, AppCopyRight, w/2, y, Qt::AlignHCenter);
 
    y += 2*th;
-   _SetFont(p, Asteroid::lfMedium);
+   _SetFont(p, Asteroid::MediumLF);
    y += _PutStr(p, tr("INSERT COIN"), w/2, y, Qt::AlignHCenter);
 
 // The website string from the bottom of the page.
    int hy = y;
    y = 7*h/8;
-   _SetFont(p, Asteroid::lfMedium);
+   _SetFont(p, Asteroid::MediumLF);
    y -= _PutStr(p, AppDomain, w/2, y, Qt::AlignHCenter | Qt::AlignBottom);
 
 // Additional text (not shown if no room).
@@ -191,7 +191,7 @@ void Game::_ShowIntro0() {
    if (tlh < y - hy) {
       y = hy + (y - hy - tlh)/2;
 
-      _SetFont(p, Asteroid::lfSmall);
+      _SetFont(p, Asteroid::SmallLF);
       y += _PutStr(p, tr("This game was inspired by Atari Asteroids--a classic from 1979."), w/2, y, Qt::AlignHCenter);
       y += _PutStr(p, tr("It is written in C++ with a QT front-end. No warranty."), w/2, y, Qt::AlignHCenter);
       y += _PutStr(p, tr("Released under GNU General Public License."), w/2, y, Qt::AlignHCenter);
@@ -210,15 +210,15 @@ void Game::_ShowIntro1() {
    int y = h/8;
 
 // Titles.
-   _SetFont(p, Asteroid::lfHugeBold);
+   _SetFont(p, Asteroid::HugeBoldLF);
    int th = _PutStr(p, AppName.toUpper(), w/2, y, Qt::AlignHCenter);
 
    y += 2*th;
-   _SetFont(p, Asteroid::lfMedium);
+   _SetFont(p, Asteroid::MediumLF);
    y += _PutStr(p, tr("CONTROLS"), w/2, y, Qt::AlignHCenter);
 
 // Keys.
-   _SetFont(p, Asteroid::lfSmall);
+   _SetFont(p, Asteroid::SmallLF);
    y += _PutStr(p, tr("L ARROW (or K) - Rotate Left"), w/2, y, Qt::AlignHCenter);
    y += _PutStr(p, tr("R ARROW (or L) - Rotate Right"), w/2, y, Qt::AlignHCenter);
    y += _PutStr(p, tr("UP ARROW (or A) - Thrust"), w/2, y, Qt::AlignHCenter);
@@ -234,13 +234,13 @@ void Game::_ShowIntro1() {
    y = h - _Filler();
 #if 0
 //(@) Redundant, over-booked in size, and therefore removed.
-   _SetFont(p, Asteroid::lfSmall);
+   _SetFont(p, Asteroid::SmallLF);
    _PutStr(p, AppCopyRight, _Filler(), y, Qt::AlignBottom);
    y -= _PutStr(p, AppDomain, w - _Filler(), y, Qt::AlignRight | Qt::AlignBottom);
 #endif
 
 // Additional text (not shown if there is no room).
-   _SetFont(p, Asteroid::lfMedium);
+   _SetFont(p, Asteroid::MediumLF);
    th = _PutStr(p, tr(" "), w/2, y, Qt::AlignHCenter | Qt::AlignBottom);
 
    if (th < y - hy) {
@@ -260,11 +260,11 @@ void Game::_ShowIntro2() {
    int y = h/8;
 
 // Hi Score.
-   _SetFont(p, Asteroid::lfHugeBold);
+   _SetFont(p, Asteroid::HugeBoldLF);
    int th = _PutStr(p, AppName.toUpper(), w/2, y, Qt::AlignHCenter);
 
    y += 3*th;
-   _SetFont(p, Asteroid::lfMedium);
+   _SetFont(p, Asteroid::MediumLF);
    y += _PutStr(p, tr("HIGHEST SCORE : ") + QString::number(_Machine->GetHiScore()), w/2, y, Qt::AlignHCenter);
 
    y += _PutStr(p, tr("LAST SCORE : ") + QString::number(_Machine->GetExScore()), w/2, y, Qt::AlignHCenter);
@@ -274,13 +274,13 @@ void Game::_ShowIntro2() {
    y = h - _Filler();
 #if 0
 //(@) Redundant, over-booked in size, and therefore removed.
-   _SetFont(p, Asteroid::lfSmall);
+   _SetFont(p, Asteroid::SmallLF);
    _PutStr(p, AppCopyRight, _Filler(), y, Qt::AlignBottom);
    y -= _PutStr(p, AppDomain, w - _Filler(), y, Qt::AlignRight | Qt::AlignBottom);
 #endif
 
 // Additional text (not shown if there's no room).
-   _SetFont(p, Asteroid::lfMedium);
+   _SetFont(p, Asteroid::MediumLF);
    th = _PutStr(p, tr(" "), w/2, y, Qt::AlignHCenter | Qt::AlignBottom);
 
    if (th < y - hy) {
@@ -314,13 +314,13 @@ void Game::_Poll() {
 
       if (_Sounding && _Machine->InGame()) {
          switch (_Machine->GetBoomSnd()) {
-            case Asteroid::otBigRock:
+            case Asteroid::BoulderOT:
                _BoomWav->setCurrentSource(PhononFile(path, "explode_large.wav")), _BoomWav->play();
             break;
-            case Asteroid::otMedRock:
+            case Asteroid::StoneOT:
                _BoomWav->setCurrentSource(PhononFile(path, "explode_medium.wav")), _BoomWav->play();
             break;
-            case Asteroid::otSmallRock:
+            case Asteroid::PebbleOT:
                _BoomWav->setCurrentSource(PhononFile(path, "explode_small.wav")), _BoomWav->play();
             break;
             default: break;

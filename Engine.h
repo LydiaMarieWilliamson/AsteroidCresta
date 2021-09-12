@@ -13,9 +13,9 @@ namespace Asteroid {
 const int KuyperSize = 6;
 // Timings in seconds: pause before new life, default text label life, pause before EndGame().
 const int RevivePause = 2, DefLabelTime = 2, EndGamePause = 3;
-// Maxima: fireCharge(), object speed (controls the game speed), alien speed.
+// Maxima: FireCharge(), object speed (controls the game speed), alien speed.
 const int MaxCharge = 6, MaxShipSpeed = 14, MaxAlienSpeed = 8;
-// Timings in ticks: to half max rock speed, before rocks can explode, before fire charge increases.
+// Timings in ticks: to half max rock speed, before rocks can blow up, before fire charge increases.
 const int HalfMaxTicks = 1500, RockLifeTicks = 25, ReChargeTicks = 12;
 // Ship rotate delta per tick.
 const double ShipRotateRate = 9.0;
@@ -28,35 +28,35 @@ const double ShipPushMult = 0.25, FireRecoilMult = 0.01, AlienPushMult = 1.0, Ro
 // ────────────────────────────────────────────
 class Engine {
 private:
-   std::vector<Asteroid::Obj *> _Objects;
+   std::vector<Asteroid::Thing *> _Objects;
    int _Ticks, _ShipIx, _Lives, _InitRocks;
    int _Score, _ExScore, _HiScore;
    int _Xs, _Ys;
-   time_t NewLifeWait, _EndDemoMark, _EndGameMark;
+   time_t _NewLifeWait, _EndDemoMark, _EndGameMark;
    bool _Active, _DiedSnd, _AlienSnd;
-   OType _BoomSnd;
+   TypeT _BoomSnd;
    double _Level;
 #if 0
    void _Bury(); //(@) Not used anywhere.
 #endif
    void _Empty(bool killNow);
-   bool _Crash(const Obj &o1, const Obj &o2) const;
-   void _Boing(const Obj &o1, const Obj &o2, ObjPos &nd1, ObjPos &nd2) const;
+   bool _Crash(const Thing &o1, const Thing &o2) const;
+   void _Boing(const Thing &o1, const Thing &o2, ObjPos &nd1, ObjPos &nd2) const;
    void _StateTick();
-   int _Types(OType t) const;
+   int _Types(TypeT t) const;
    Ship *_GetShip() const;
 public:
    Engine();
    virtual ~Engine();
 // Add type-ot objects to the game.
 // For internal use only.
-   Obj *AddThing(OType ot);
-   Obj *AddThing(OType ot, const ObjPos &pos, const ObjPos &dir = ObjPos());
-   Obj *AddKuypier(OType ot, int tick);
+   Thing *AddThing(TypeT ot);
+   Thing *AddThing(TypeT ot, const ObjPos &pos, const ObjPos &dir = ObjPos());
+   Thing *AddKuypier(TypeT ot, int tick);
 // Access internal objects.
 // These are needed in order to render objects onto the screen device.
    size_t ObjN() const;
-   Obj *ObjAtN(size_t n) const;
+   Thing *ObjAtN(size_t n) const;
 // State control.
    bool GetActive() const;
    bool InDemo() const;
@@ -81,7 +81,7 @@ public:
    void ReLoad();
    int Charge() const;
 // The sound flags (poll after calling Tick()).
-   OType GetBoomSnd() const;
+   TypeT GetBoomSnd() const;
    bool GetLanceSnd() const;
    bool GetThrustSnd() const;
    bool GetAlienSnd() const;

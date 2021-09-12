@@ -34,7 +34,7 @@ private:
    int _Filler() const;
    double _Scaling() const;
    void _ResizeArena();
-   void _SetFont(QPainter &p, Asteroid::LFSize sz, bool bold = false);
+   void _SetFont(QPainter &p, Asteroid::FontT sz, bool bold = false);
    int _PutStr(QPainter &p, const QString &s, int x, int y, Qt::Alignment layout = Qt::AlignLeft | Qt::AlignTop);
    void _ResetScreen(QPainter &p);
    void _ShowPlay();

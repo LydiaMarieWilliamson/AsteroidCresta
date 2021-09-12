@@ -21,30 +21,30 @@ void Engine::_Empty(bool killNow) {
       _Objects.clear();
    } else { // Condemn them for deletion on the next tick.
       for (size_t n = 0; n < sz; ++n) {
-         _Objects[n]->die();
+         _Objects[n]->SetDead();
       }
    }
 }
 
 // Collision-test for o1 and o2: are both alive, with positive mass and closer to each other than their respective sizes?
-bool Engine::_Crash(const Obj &o1, const Obj &o2) const {
-   return !o1.dead() && !o2.dead() && o1.mass() > 0 && o2.mass() > 0 && abs(o1.pos - o2.pos) <= o1.radius() + o2.radius();
+bool Engine::_Crash(const Thing &o1, const Thing &o2) const {
+   return !o1.GetDead() && !o2.GetDead() && o1.Mass() > 0 && o2.Mass() > 0 && abs(o1._Pos - o2._Pos) <= o1.GetRadius() + o2.GetRadius();
 }
 
 // Rebound these objects.
-void Engine::_Boing(const Obj &o1, const Obj &o2, ObjPos &nd1, ObjPos &nd2) const {
+void Engine::_Boing(const Thing &o1, const Thing &o2, ObjPos &nd1, ObjPos &nd2) const {
 // Intentionally copy the directions, as the result reference may be object directions.
-   ObjPos d1(o1.dir);
-   double m1(o1.mass());
-   ObjPos d2(o2.dir);
-   double m2(o2.mass());
+   ObjPos d1(o1._Dir);
+   double m1(o1.Mass());
+   ObjPos d2(o2._Dir);
+   double m2(o2.Mass());
    double m12(m1 + m2);
 
-   if (m12 > 0.0 && abs(o1.pos - o2.pos) > abs(o1.pos - o2.pos + (d1 - d2)*0.1)) {
+   if (m12 > 0.0 && abs(o1._Pos - o2._Pos) > abs(o1._Pos - o2._Pos + (d1 - d2)*0.1)) {
       nd1 = (d1*(m1 - m2)/m12) + (d2*2.0*m2/m12);
-      Obj::limitAbs(nd1, MaxShipSpeed);
+      Thing::LimitAbs(nd1, MaxShipSpeed);
       nd2 = (d2*(m2 - m1)/m12) + (d1*2.0*m1/m12);
-      Obj::limitAbs(nd2, MaxShipSpeed);
+      Thing::LimitAbs(nd2, MaxShipSpeed);
    }
 }
 
@@ -87,13 +87,13 @@ void Engine::_StateTick() {
       _Ticks = 1000;
 
 // Set the sound flags to zero; they will be set back to true below, if required.
-   _BoomSnd = otNone;
+   _BoomSnd = NoOT;
    _DiedSnd = false;
    _AlienSnd = false;
 
 // Free and remove objects which are now dead from the previous tick.
    for (size_t rn = 0; rn < _Objects.size(); )
-      if (_Objects[rn]->dead()) {
+      if (_Objects[rn]->GetDead()) {
          delete _Objects[rn];
          _Objects.erase(_Objects.begin() + rn);
       } else {
@@ -110,55 +110,55 @@ void Engine::_StateTick() {
 
 // Collisions: see who collided and sound out their explosions.
 // Note that the Tick() calls above may have added objects after the size sz count, but this is OK.
-   for (size_t n = 0; n < sz; ++n) for (size_t e = n + 1; e < sz && !_Objects[n]->dead(); ++e)
+   for (size_t n = 0; n < sz; ++n) for (size_t e = n + 1; e < sz && !_Objects[n]->GetDead(); ++e)
    if (_Crash(*_Objects[n], *_Objects[e])) {
    // When worlds collide!
    // Set rebound in motion.
-      _Boing(*_Objects[n], *_Objects[e], _Objects[n]->dir, _Objects[e]->dir);
+      _Boing(*_Objects[n], *_Objects[e], _Objects[n]->_Dir, _Objects[e]->_Dir);
 
    // Was this fatal?
-      bool fn = _Objects[n]->fatal(*_Objects[e]);
-      bool fe = _Objects[e]->fatal(*_Objects[n]);
+      bool fn = _Objects[n]->Lethal(*_Objects[e]);
+      bool fe = _Objects[e]->Lethal(*_Objects[n]);
 
    // Blow them up.
-      if (fn) _Objects[n]->explode();
-      if (fe) _Objects[e]->explode();
+      if (fn) _Objects[n]->Boom();
+      if (fe) _Objects[e]->Boom();
 
       if (fn || fe) {
       // Something exploded, was it a rock?
       // Set the largest explosion sound, if true.
-         if (fn && _Objects[n]->rock())
-            _BoomSnd = _Objects[n]->type();
-         if (fe && _Objects[e]->rock() && (_BoomSnd == otNone || _Objects[e]->mass() > _Objects[n]->mass()))
-            _BoomSnd = _Objects[e]->type();
+         if (fn && _Objects[n]->Rocky())
+            _BoomSnd = _Objects[n]->Type();
+         if (fe && _Objects[e]->Rocky() && (_BoomSnd == NoOT || _Objects[e]->Mass() > _Objects[n]->Mass()))
+            _BoomSnd = _Objects[e]->Type();
 
       // Did our ship explode yet?
-         if ((fn && _Objects[n]->type() == otShip) || (fe && _Objects[e]->type() == otShip)) {
+         if ((fn && _Objects[n]->Type() == ShipOT) || (fe && _Objects[e]->Type() == ShipOT)) {
          // Oh dear, lost a ship.
             --_Lives;
             _DiedSnd = true;
 
          // Wait for another ship to arrive or time out at the end of the game.
-            NewLifeWait = time(0) + RevivePause;
+            _NewLifeWait = time(0) + RevivePause;
          }
       // Set the score and pointer to whatever object may have been shot.
          int as = 0;
-         Obj *ak = nullptr;
+         Thing *ak = nullptr;
 
-         if (fe && _Objects[n]->type() == otFire) {
+         if (fe && _Objects[n]->Type() == LanceOT) {
             as = _Objects[e]->Score();
-            if (_Objects[e]->type() == otAlien)
+            if (_Objects[e]->Type() == AlienOT)
                ak = _Objects[e];
-         } else if (fn && _Objects[e]->type() == otFire) {
+         } else if (fn && _Objects[e]->Type() == LanceOT) {
             as = _Objects[n]->Score();
-            if (_Objects[n]->type() == otAlien)
+            if (_Objects[n]->Type() == AlienOT)
                ak = _Objects[n];
          }
       // Have we shot an alien?
          if (ak != nullptr) {
          // Alien kill: label it.
-            Obj *l = AddThing(otLabel, ak->pos, ak->dir);
-            l->fontSize(lfSmall);
+            Thing *l = AddThing(LabelOT, ak->_Pos, ak->_Dir);
+            l->SetPts(SmallLF);
 
          // Alien sound.
             _AlienSnd = true;
@@ -167,13 +167,13 @@ void Engine::_StateTick() {
          // A score label generates a warning, when compiled under VC2005.
          // This is OK.
          //(@) Side note: itoa(), which was in the original, is not part of C++, and so has been replaced.
-            if (Obj::randFloat() < 0.5) {
+            if (Thing::RandB()) {
                ++_Lives;
-               l->caption("EXTRA LIFE");
+               l->SetCaption("EXTRA LIFE");
             } else {
                char s[100];
                ItoA(as, s, 10);
-               l->caption(s);
+               l->SetCaption(s);
             }
          }
       // Score the kill.
@@ -183,15 +183,15 @@ void Engine::_StateTick() {
 // Add a rock to the game, with probability prob.
    double prob = 2.0*_Level*RockMakeProb*(1.0 - 1.0/(1.0 + (double)_Ticks/HalfMaxTicks));
 
-   if (Obj::randFloat() < prob)
-      AddKuypier(otBigRock, _Ticks);
+   if (Thing::RandB(prob))
+      AddKuypier(BoulderOT, _Ticks);
 
 // Add an alien to the game, with conditional probability prob.
 // (Only one alien at a time may be present.)
    prob = AlienProb*(1.0 - 1.0/(1.0 + (double)_Ticks/HalfMaxTicks));
 
-   if (Obj::randFloat() < prob && _Types(otAlien) == 0)
-      AddKuypier(otAlien, 0);
+   if (Thing::RandB(prob) && _Types(AlienOT) == 0)
+      AddKuypier(AlienOT, 0);
 
 // Wrap the game space: update the size, as it may have changed.
    sz = _Objects.size();
@@ -203,29 +203,29 @@ void Engine::_StateTick() {
       int kv = _Ys/KuyperSize;
 
    // Players are stuck on the screen.
-      if (!_Objects[n]->kuypier()) {
+      if (!_Objects[n]->Kuypier()) {
          kh = 0;
          kv = 0;
       }
    // Reset the new position on the other side of the play area.
-      ObjPos p(_Objects[n]->pos);
+      ObjPos p(_Objects[n]->_Pos);
 
       if (p.real() < -kh) p = ObjPos(_Xs + kh, p.imag());
       if (p.imag() < -kv) p = ObjPos(p.real(), _Ys + kv);
       if (p.real() > _Xs + kh) p = ObjPos(-kh, p.imag());
       if (p.imag() > _Ys + kv) p = ObjPos(p.real(), -kv);
 
-      _Objects[n]->pos = p;
+      _Objects[n]->_Pos = p;
    }
 }
 
 // The number of type t objects.
-int Engine::_Types(OType t) const {
+int Engine::_Types(TypeT t) const {
    int rslt = 0;
    size_t sz = _Objects.size();
 
    for (size_t n = 0; n < sz; ++n) {
-      if (_Objects[n]->type() == t) {
+      if (_Objects[n]->Type() == t) {
          ++rslt;
       }
    }
@@ -239,10 +239,10 @@ Ship *Engine::_GetShip() const {
 // We check that our saved indexed indeed holds the ship index, and if not, we search for it.
    size_t sz = _Objects.size();
 
-   if (_ShipIx >= 0 && static_cast<size_t>(_ShipIx) < sz && _Objects[_ShipIx]->type() == otShip) {
+   if (_ShipIx >= 0 && static_cast<size_t>(_ShipIx) < sz && _Objects[_ShipIx]->Type() == ShipOT) {
    // Here we hold an index to it.
       return static_cast<Ship *>(_Objects[_ShipIx]);
-   } else for (size_t n = 0; n < sz; ++n) if (_Objects[n]->type() == otShip) {
+   } else for (size_t n = 0; n < sz; ++n) if (_Objects[n]->Type() == ShipOT) {
    // Allow const method to set the property.
    // This is for optimization only, and I don't regard it as modifying the state of the object (much).
       *const_cast<int *>(&_ShipIx) = n;
@@ -269,7 +269,7 @@ Engine::Engine() {
    _Lives = 0;
    _Active = false;
    _Ticks = 0;
-   NewLifeWait = 0;
+   _NewLifeWait = 0;
 }
 
 // Free an Engine object.
@@ -283,20 +283,20 @@ Engine::~Engine() {
 }
 
 // Add a type-ot object.
-Obj *Engine::AddThing(OType ot) {
-   Obj *newObj = nullptr;
+Thing *Engine::AddThing(TypeT ot) {
+   Thing *newObj = nullptr;
 
    switch (ot) {
-      case otBigRock: newObj = new BigRock(*this); break;
-      case otMedRock: newObj = new MedRock(*this); break;
-      case otSmallRock: newObj = new SmallRock(*this); break;
-      case otShip: newObj = new Ship(*this); break;
-      case otAlien: newObj = new Alien(*this); break;
-      case otFire: newObj = new Lance(*this); break;
-      case otDebris: newObj = new Debris(*this); break;
-      case otSpark: newObj = new Spark(*this); break;
-      case otThrust: newObj = new Thrust(*this); break;
-      case otLabel: newObj = new Label(*this, DefLabelTime); break;
+      case BoulderOT: newObj = new Boulder(*this); break;
+      case StoneOT: newObj = new Stone(*this); break;
+      case PebbleOT: newObj = new Pebble(*this); break;
+      case ShipOT: newObj = new Ship(*this); break;
+      case AlienOT: newObj = new Alien(*this); break;
+      case LanceOT: newObj = new Lance(*this); break;
+      case DebrisOT: newObj = new Debris(*this); break;
+      case SparkOT: newObj = new Spark(*this); break;
+      case ThrustOT: newObj = new Thrust(*this); break;
+      case LabelOT: newObj = new Label(*this, DefLabelTime); break;
       default:
 #if 0
          assert(false); // Error.
@@ -312,38 +312,38 @@ Obj *Engine::AddThing(OType ot) {
 }
 
 // Add a type-ot object at pos with orientation dir.
-Obj *Engine::AddThing(OType ot, const ObjPos &pos, const ObjPos &dir) {
-   Obj *ob = AddThing(ot);
-   ob->pos = pos;
-   ob->dir = dir;
+Thing *Engine::AddThing(TypeT ot, const ObjPos &pos, const ObjPos &dir) {
+   Thing *ob = AddThing(ot);
+   ob->_Pos = pos;
+   ob->_Dir = dir;
    return ob;
 }
 
 // Add a randomly-located object into the Kuypier region.
 // The velocity may increase statistically according to the difficulty level and value of tick as the game goes on.
-Obj *Engine::AddKuypier(OType ot, int tick) {
-   Obj *ob = AddThing(ot);
+Thing *Engine::AddKuypier(TypeT ot, int tick) {
+   Thing *ob = AddThing(ot);
 
 // The orientation.
    double sc = 0.5 + MaxShipSpeed*_Level*(1.0 - 1.0/(1.0 + (double)tick/HalfMaxTicks));
    sc *= RockSpeedMult;
 
-   double x = sc*(-1.0 + 2.0*Obj::randFloat());
-   double y = sc*(-1.0 + 2.0*Obj::randFloat());
-   ob->dir = ObjPos(x, y);
+   double x = sc*(-1.0 + 2.0*Thing::RandR());
+   double y = sc*(-1.0 + 2.0*Thing::RandR());
+   ob->_Dir = ObjPos(x, y);
 
 // The position.
-   if (Obj::randFloat() < 0.5) {
+   if (Thing::RandB()) {
    // Place it either left or right.
-      y = Obj::randFloat()*(_Ys + 2*_Ys/KuyperSize) - _Ys/KuyperSize;
-      x = Obj::randFloat() < 0.5? -_Xs/KuyperSize/2: _Xs + _Xs/KuyperSize/2;
+      x = Thing::RandB()? -_Xs/KuyperSize/2: _Xs + _Xs/KuyperSize/2;
+      y = Thing::RandR()*(_Ys + 2*_Ys/KuyperSize) - _Ys/KuyperSize;
    } else {
    // Place it either top or bottom.
-      x = Obj::randFloat()*(_Xs + 2*_Xs/KuyperSize) - _Xs/KuyperSize;
-      y = Obj::randFloat() < 0.5? -_Ys/KuyperSize/2: _Ys + _Ys/KuyperSize/2;
+      x = Thing::RandR()*(_Xs + 2*_Xs/KuyperSize) - _Xs/KuyperSize;
+      y = Thing::RandB()? -_Ys/KuyperSize/2: _Ys + _Ys/KuyperSize/2;
    }
 
-   ob->pos = ObjPos(x, y);
+   ob->_Pos = ObjPos(x, y);
 
    return ob;
 }
@@ -354,7 +354,7 @@ size_t Engine::ObjN() const {
 }
 
 // The object at index n.
-Obj *Engine::ObjAtN(size_t n) const {
+Thing *Engine::ObjAtN(size_t n) const {
    return _Objects[n];
 }
 
@@ -390,14 +390,14 @@ void Engine::BegGame(int rocks) {
    _InitRocks = rocks;
 
 // Add the start-up label.
-   Obj *l = AddThing(otLabel, ObjPos(_Xs/2, _Ys/2));
-   l->fontSize(lfMedium);
+   Thing *l = AddThing(LabelOT, ObjPos(_Xs/2, _Ys/2));
+   l->SetPts(MediumLF);
 
-   l->caption("NEW GAME");
+   l->SetCaption("NEW GAME");
    _Lives = 3;
 
 // Setting this to non-zero will create new rocks and a ship after a short interval.
-   NewLifeWait = time(0) + RevivePause;
+   _NewLifeWait = time(0) + RevivePause;
 }
 
 // Start a demo game for secs seconds.
@@ -414,12 +414,12 @@ void Engine::BegDemo(time_t secs, int rocks) {
    _Lives = 1;
 
 // Add the start-up label.
-   Obj *l = AddThing(otLabel, ObjPos(_Xs/2, _Ys/2));
-   l->fontSize(lfMedium);
-   l->caption("DEMO");
+   Thing *l = AddThing(LabelOT, ObjPos(_Xs/2, _Ys/2));
+   l->SetPts(MediumLF);
+   l->SetCaption("DEMO");
 
 // Setting this to non-zero will create new rocks and a ship after a short interval.
-   NewLifeWait = time(0) + RevivePause;
+   _NewLifeWait = time(0) + RevivePause;
 }
 
 // Clear: stop the game.
@@ -443,22 +443,22 @@ void Engine::Tick() {
          s->ReLoad(true);
 
       // One in 3 chance of firing.
-         if (Obj::randFloat() < 0.3) s->Fire();
+         if (Thing::RandB(0.3)) s->Fire();
 
-         if (Obj::randFloat() < 0.1) {
+         if (Thing::RandB(0.1)) {
          // One in 10 chance of changing what ship was doing on last tick.
-            s->rot(0);
+            s->SetSpin(0);
             s->SetPushing(false);
 
          // New random action: 1/5 thrust, 3/10 rotate left, 3/10 rotate right, 1/5 do nothing.
-            double ra = Obj::randFloat();
+            double ra = Thing::RandR();
 
             if (ra < 0.2)
                s->SetPushing(true);
             else if (ra < 0.5)
-               s->rot(-1);
+               s->SetSpin(-1);
             else if (ra < 0.8)
-               s->rot(1);
+               s->SetSpin(1);
          }
       }
    }
@@ -477,18 +477,18 @@ void Engine::Tick() {
    bool geflag = false;
 
 // Do we need a new ship or to create initial rocks, etc.
-   if (NewLifeWait > 0 && time(0) > NewLifeWait) {
+   if (_NewLifeWait > 0 && time(0) > _NewLifeWait) {
    // Avoid repetitions.
-      NewLifeWait = 0;
+      _NewLifeWait = 0;
 
    // Add a new ship and re-create the initial rocks or end the game if there are no lives left.
       if (_Lives > 0) {
          _Empty(false);
 
          for (int n = 0; n < _InitRocks; ++n)
-            AddKuypier(otBigRock, 0);
+            AddKuypier(BoulderOT, 0);
 
-         AddThing(otShip, ObjPos(_Xs/2, _Ys/2));
+         AddThing(ShipOT, ObjPos(_Xs/2, _Ys/2));
       } else {
          geflag = true;
       }
@@ -500,9 +500,9 @@ void Engine::Tick() {
    // Add the End-Of-Game label.
       _EndGameMark = time(0) + EndGamePause;
 
-      Obj *l = AddThing(otLabel, ObjPos(_Xs/2, _Ys/2));
-      l->fontSize(lfLarge);
-      l->caption("GAME OVER");
+      Thing *l = AddThing(LabelOT, ObjPos(_Xs/2, _Ys/2));
+      l->SetPts(LargeLF);
+      l->SetCaption("GAME OVER");
    }
 }
 
@@ -543,14 +543,14 @@ void Engine::SetLevel(const double &dif) {
 
 // Cheat: add an alien to the game.
 void Engine::AddAlienCheat() {
-   if (_Active && _Types(otAlien) < 15)
-      AddKuypier(otAlien, 0);
+   if (_Active && _Types(AlienOT) < 15)
+      AddKuypier(AlienOT, 0);
 }
 
 // Rotate the ship (-1: left, 0: stop, +1: right).
 void Engine::SetSpin(int r) {
    Ship *s = _GetShip();
-   if (s != nullptr && !InDemo()) s->rot(r);
+   if (s != nullptr && !InDemo()) s->SetSpin(r);
 }
 
 // Thrust-switcher.
@@ -572,22 +572,22 @@ void Engine::ReLoad() {
 
 int Engine::Charge() const {
    Ship *s = _GetShip();
-   return s != nullptr? s->fireCharge(): 0;
+   return s != nullptr? s->FireCharge(): 0;
 }
 
-// Get the latest rock explosion (otNone = silent), fire, thrust, alien and death sounds.
-OType Engine::GetBoomSnd() const {
+// Get the latest rock explosion (NoOT = silent), lance, thrust, alien and death sounds.
+TypeT Engine::GetBoomSnd() const {
    return _BoomSnd;
 }
 
 bool Engine::GetLanceSnd() const {
    Ship *ship = _GetShip();
-   return ship != nullptr && ship->justFired();
+   return ship != nullptr && ship->JustFired();
 }
 
 bool Engine::GetThrustSnd() const {
    Ship *ship = _GetShip();
-   return ship != nullptr && ship->thrusting();
+   return ship != nullptr && ship->GetPushing();
 }
 
 bool Engine::GetAlienSnd() const {
