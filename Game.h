@@ -28,13 +28,13 @@ private:
    StateT _State;
    QColor _ColorFg, _ColorBg;
    QTimer *_Timer;
-   asteroid::Engine *_Machine;
+   Asteroid::Engine *_Machine;
 // Sound players
    Phonon::MediaObject *_MusicWav, *_BoomWav, *_ThrustWav, *_FireWav, *_EventWav;
    int _Filler() const;
    double _Scaling() const;
    void _ResizeArena();
-   void _SetFont(QPainter &p, asteroid::LFSize sz, bool bold = false);
+   void _SetFont(QPainter &p, Asteroid::LFSize sz, bool bold = false);
    int _PutStr(QPainter &p, const QString &s, int x, int y, Qt::Alignment layout = Qt::AlignLeft | Qt::AlignTop);
    void _ResetScreen(QPainter &p);
    void _ShowPlay();

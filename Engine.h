@@ -7,89 +7,89 @@
 #include <vector>
 #include "Objects.h"
 
-namespace asteroid {
+namespace Asteroid {
 // Game Presets
 // Used to calculate size of Kuypier region.
-const int KUYP_DIV = 6;
-// Timings in seconds: pause before new life, default text label life, pause before gameOver().
-const int NEW_LIFE_PAUSE = 2, DEF_TEXT_SECS = 2, END_GAME_PAUSE = 3;
+const int KuyperSize = 6;
+// Timings in seconds: pause before new life, default text label life, pause before EndGame().
+const int RevivePause = 2, DefLabelTime = 2, EndGamePause = 3;
 // Maxima: fireCharge(), object speed (controls the game speed), alien speed.
-const int CHARGE_MAX = 6, MAX_SPEED = 14, MAX_ALIEN_SPEED = 8;
+const int MaxCharge = 6, MaxShipSpeed = 14, MaxAlienSpeed = 8;
 // Timings in ticks: to half max rock speed, before rocks can explode, before fire charge increases.
-const int HALF_MAX_TICK = 1500, ROCK_LIFE_LIMIT = 25, CHARGE_MOD = 12;
+const int HalfMaxTicks = 1500, RockLifeTicks = 25, ReChargeTicks = 12;
 // Ship rotate delta per tick.
-const double SHIP_ROTATE_DELTA = 9.0;
-// Probabiities: rock and alien creation at 0.5 HALF_MAX_TICK; spontaneous rock explosion.
-const double ROCK_PROB = 0.02, ALIEN_PROB = 0.005, ROCK_EXPLODE_PROB = 0.001;
-// Game speed controls: ship thrust factor, ship file recoil, alien thrust factor and initial rock speed factor.
-const double SHIP_THRUST_MULT = 0.25, FIRE_RECOIL_MULT = 0.01, ALIEN_THRUST_MULT = 1.0, ROCK_SPEED_MULT = 0.735;
+const double ShipRotateRate = 9.0;
+// Probabilities: rock and alien creation at 0.5 HalfMaxTicks; spontaneous rock explosion.
+const double RockMakeProb = 0.02, AlienProb = 0.005, RockBreakProb = 0.001;
+// Game speed controls: ship thrust factor, ship fire recoil, alien thrust factor and initial rock speed factor.
+const double ShipPushMult = 0.25, FireRecoilMult = 0.01, AlienPushMult = 1.0, RockSpeedMult = 0.735;
 
 // The game logic engine and game object roster
 // ────────────────────────────────────────────
 class Engine {
 private:
-   std::vector<asteroid::Obj *> m_objects;
-   int m_tickCnt, m_shipIdx, m_lives, m_initRocks;
-   int m_score, m_lastScore, m_highScore;
-   int m_width, m_height;
-   time_t m_newLifeWait, m_demoEndMark, m_gameOverMark;
-   bool m_active, m_diedSnd, m_alienSnd;
-   OType m_explosionSnd;
-   double m_diff;
+   std::vector<Asteroid::Obj *> _Objects;
+   int _Ticks, _ShipIx, _Lives, _InitRocks;
+   int _Score, _ExScore, _HiScore;
+   int _Xs, _Ys;
+   time_t NewLifeWait, _EndDemoMark, _EndGameMark;
+   bool _Active, _DiedSnd, _AlienSnd;
+   OType _BoomSnd;
+   double _Level;
 #if 0
-   void m_removeDead(); //(@) Not used anywhere.
+   void _Bury(); //(@) Not used anywhere.
 #endif
-   void m_empty(bool killNow);
-   bool m_collision(const Obj &o1, const Obj &o2) const;
-   void m_rebound(const Obj &o1, const Obj &o2, ObjPos &nd1, ObjPos &nd2) const;
-   void m_stateTick();
-   int m_typeCnt(OType t) const;
-   Ship *m_getShip() const;
+   void _Empty(bool killNow);
+   bool _Crash(const Obj &o1, const Obj &o2) const;
+   void _Boing(const Obj &o1, const Obj &o2, ObjPos &nd1, ObjPos &nd2) const;
+   void _StateTick();
+   int _Types(OType t) const;
+   Ship *_GetShip() const;
 public:
    Engine();
    virtual ~Engine();
 // Add type-ot objects to the game.
 // For internal use only.
-   Obj *add(OType ot);
-   Obj *add(OType ot, const ObjPos &pos, const ObjPos &dir = ObjPos());
-   Obj *addKuypier(OType ot, int tick);
+   Obj *AddThing(OType ot);
+   Obj *AddThing(OType ot, const ObjPos &pos, const ObjPos &dir = ObjPos());
+   Obj *AddKuypier(OType ot, int tick);
 // Access internal objects.
 // These are needed in order to render objects onto the screen device.
-   size_t objCnt() const;
-   Obj *objAtIdx(size_t n) const;
+   size_t ObjN() const;
+   Obj *ObjAtN(size_t n) const;
 // State control.
-   bool active() const;
-   bool demo() const;
-   bool playing() const;
-   bool gameOver() const;
-   void startGame(int rocks = 10);
-   void startDemo(time_t secs = 20, int rocks = 10);
-   void stop();
-   void tick();
-   int lives() const;
-   int score() const;
-   int lastScore() const;
+   bool GetActive() const;
+   bool InDemo() const;
+   bool InGame() const;
+   bool EndGame() const;
+   void BegGame(int rocks = 10);
+   void BegDemo(time_t secs = 20, int rocks = 10);
+   void Stop();
+   void Tick();
+   int GetLives() const;
+   int GetScore() const;
+   int GetExScore() const;
    int GetHiScore() const;
    void SetHiScore(int hs);
    double GetLevel() const;
    void SetLevel(const double &dif);
 // The game and ship control input.
-   void addAlienCheat();
-   void rotate(int r);
-   void thrust(bool on);
-   void fire();
-   void reload();
-   int charge() const;
-// The sound flags (poll after calling tick()).
-   OType rockExplodeSnd() const;
-   bool fireSnd() const;
-   bool thrustSnd() const;
-   bool alienSnd() const;
-   bool diedSnd() const;
+   void AddAlienCheat();
+   void SetSpin(int r);
+   void SetPushing(bool on);
+   void Fire();
+   void ReLoad();
+   int Charge() const;
+// The sound flags (poll after calling Tick()).
+   OType GetBoomSnd() const;
+   bool GetLanceSnd() const;
+   bool GetThrustSnd() const;
+   bool GetAlienSnd() const;
+   bool GetDiedSnd() const;
 // The game playing area methods.
-   void getPlayDims(int *w, int *h) const;
-   void setPlayDims(int w, int h);
-   int minDim() const;
+   void GetPlayDims(int *w, int *h) const;
+   void SetPlayDims(int w, int h);
+   int MinDim() const;
 };
 } // end of namespace Asteroid
 

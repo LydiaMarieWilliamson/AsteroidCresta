@@ -7,7 +7,7 @@
 #include <complex>
 #include <time.h>
 
-namespace asteroid {
+namespace Asteroid {
 class Engine;
 
 // Object position type, borrow complex type and user real as x, and imag as y.
@@ -26,7 +26,7 @@ protected:
    bool m_dead;
    double m_radius, m_rotDelta;
    Engine *mp_owner;
-   int m_pointCnt, m_tickCnt;
+   int m_pointCnt, _Ticks;
    time_t m_tm;
    ObjPos *m_points;
    std::string m_caption;
@@ -42,7 +42,7 @@ public:
    void die();
    Engine *owner() const;
    double radius() const;
-   void rotate(const double &a);
+   void SetSpin(const double &a);
    int pointCnt() const;
    ObjPos points(int idx) const;
    std::string caption() const;
@@ -53,8 +53,8 @@ public:
    virtual bool rock() const = 0;
    virtual bool kuypier() const = 0;
    virtual bool fatal(const Obj &other) const = 0;
-   virtual void tick() = 0;
-   virtual int score() const = 0;
+   virtual void Tick() = 0;
+   virtual int Score() const = 0;
    virtual OType type() const = 0;
    virtual double mass() const = 0;
    virtual void explode() = 0;
@@ -73,13 +73,13 @@ public:
    virtual bool rock() const;
    virtual bool kuypier() const;
    virtual bool fatal(const Obj &other) const;
-   virtual void tick();
+   virtual void Tick();
 };
 
 class BigRock: public RockBase {
 public:
    BigRock(Engine &owner);
-   virtual int score() const;
+   virtual int Score() const;
    virtual OType type() const;
    virtual double mass() const;
    virtual void explode();
@@ -88,7 +88,7 @@ public:
 class MedRock: public RockBase {
 public:
    MedRock(Engine &owner);
-   virtual int score() const;
+   virtual int Score() const;
    virtual OType type() const;
    virtual double mass() const;
    virtual void explode();
@@ -97,7 +97,7 @@ public:
 class SmallRock: public RockBase {
 public:
    SmallRock(Engine &owner);
-   virtual int score() const;
+   virtual int Score() const;
    virtual OType type() const;
    virtual double mass() const;
    virtual void explode();
@@ -115,16 +115,16 @@ public:
    virtual bool rock() const;
    virtual bool kuypier() const;
    virtual bool fatal(const Obj &other) const;
-   virtual void tick();
-   virtual int score() const;
+   virtual void Tick();
+   virtual int Score() const;
    virtual OType type() const;
    virtual double mass() const;
    virtual void explode();
    void rot(int r);
-   void thrust(bool on);
+   void SetPushing(bool on);
    bool thrusting() const;
-   void fire();
-   void reload(bool reset);
+   void Fire();
+   void ReLoad(bool reset);
    bool justFired() const;
    int fireCharge() const;
 };
@@ -132,27 +132,27 @@ public:
 class Alien: public Obj {
 private:
    Obj *m_nearObj() const;
-   ObjPos thrust() const;
+   ObjPos Push() const;
 public:
    Alien(Engine &owner);
    virtual bool rock() const;
    virtual bool kuypier() const;
    virtual bool fatal(const Obj &other) const;
-   virtual void tick();
-   virtual int score() const;
+   virtual void Tick();
+   virtual int Score() const;
    virtual OType type() const;
    virtual double mass() const;
    virtual void explode();
 };
 
-class Fire: public Obj {
+class Lance: public Obj {
 public:
-   Fire(Engine &owner);
+   Lance(Engine &owner);
    virtual bool rock() const;
    virtual bool kuypier() const;
    virtual bool fatal(const Obj &other) const;
-   virtual void tick();
-   virtual int score() const;
+   virtual void Tick();
+   virtual int Score() const;
    virtual OType type() const;
    virtual double mass() const;
    virtual void explode();
@@ -164,8 +164,8 @@ public:
    virtual bool rock() const;
    virtual bool kuypier() const;
    virtual bool fatal(const Obj &other) const;
-   virtual void tick();
-   virtual int score() const;
+   virtual void Tick();
+   virtual int Score() const;
    virtual OType type() const;
    virtual double mass() const;
    virtual void explode();
@@ -174,7 +174,7 @@ public:
 class Spark: public Debris {
 public:
    Spark(Engine &owner);
-   virtual void tick();
+   virtual void Tick();
    virtual OType type() const;
 };
 
@@ -184,8 +184,8 @@ public:
    virtual bool rock() const;
    virtual bool kuypier() const;
    virtual bool fatal(const Obj &other) const;
-   virtual void tick();
-   virtual int score() const;
+   virtual void Tick();
+   virtual int Score() const;
    virtual OType type() const;
    virtual double mass() const;
    virtual void explode();
@@ -201,8 +201,8 @@ public:
    virtual bool rock() const;
    virtual bool kuypier() const;
    virtual bool fatal(const Obj &other) const;
-   virtual void tick();
-   virtual int score() const;
+   virtual void Tick();
+   virtual int Score() const;
    virtual OType type() const;
    virtual double mass() const;
    virtual void explode();

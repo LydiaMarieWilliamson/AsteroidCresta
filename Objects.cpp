@@ -7,7 +7,7 @@
 #include "Engine.h"
 
 using namespace std;
-using namespace asteroid;
+using namespace Asteroid;
 
 #ifdef M_PI
 const double TwoPi = 2.0*M_PI; // 2π
@@ -43,27 +43,27 @@ void Obj::m_fragment(OType t, int cnt, const double &sf) {
 
       double dr = TwoPi/cnt;
       for (int n = 0; n < cnt; ++n) {
-         mp_owner->add(t, pos + npos, bdir + ndir);
+         mp_owner->AddThing(t, pos + npos, bdir + ndir);
          Obj::rotateVector(ndir, dr);
          Obj::rotateVector(npos, dr);
       }
    }
 }
 
-// The tick()-handler, for default motion and updates.
+// The Tick()-handler, for default motion and updates.
 void Obj::m_internalTick() {
    if (!m_dead) {
    // Increment the internal tick counter.
-      ++m_tickCnt;
+      ++_Ticks;
 
    // Check the range just in case the game was left running for several years.
-      if (m_tickCnt == 0x7FFFFFFF)
-         m_tickCnt = 1000;
+      if (_Ticks == 0x7FFFFFFF)
+         _Ticks = 1000;
 
    // Move and rotate the object.
       pos += dir;
 
-      rotate(m_rotDelta);
+      SetSpin(m_rotDelta);
    }
 }
 
@@ -76,7 +76,7 @@ Obj::Obj(Engine &owner) {
    m_dead = false;
    m_radius = 0.0;
    m_rotDelta = 0.0;
-   m_tickCnt = 0;
+   _Ticks = 0;
    mp_owner = &owner;
    m_fontSize = lfSmall;
 
@@ -111,7 +111,7 @@ double Obj::radius() const {
 }
 
 // Rotate the object by a radians.
-void Obj::rotate(const double &a) {
+void Obj::SetSpin(const double &a) {
    if (a != 0.0) {
       for (int n = 0; n < m_pointCnt; ++n)
          Obj::rotateVector(m_points[n], a);
@@ -222,20 +222,20 @@ bool RockBase::kuypier() const {
 bool RockBase::fatal(const Obj &other) const {
    if (other.dead()) return false;
    int w, h;
-   mp_owner->getPlayDims(&w, &h);
+   mp_owner->GetPlayDims(&w, &h);
    return
-      other.type() == otFire && m_tickCnt > 2? true:
+      other.type() == otFire && _Ticks > 2? true:
       pos.real() < 0 || pos.real() > w || pos.imag() < 0 || pos.imag() > h? false:
-      abs(dir - other.dir) > MAX_SPEED/5.0 && (other.mass() > mass() || (other.mass() == mass() && Obj::randFloat() < 0.5));
+      abs(dir - other.dir) > MaxShipSpeed/5.0 && (other.mass() > mass() || (other.mass() == mass() && Obj::randFloat() < 0.5));
 }
 
 // Move and rotate, with a random end of life after a preset time period.
-void RockBase::tick() {
+void RockBase::Tick() {
    if (!m_dead) {
       m_internalTick();
 
    // Random end of life after a preset time period.
-      if (type() != otSmallRock && time(0) - m_tm > ROCK_LIFE_LIMIT && Obj::randFloat() < ROCK_EXPLODE_PROB) {
+      if (type() != otSmallRock && time(0) - m_tm > RockLifeTicks && Obj::randFloat() < RockBreakProb) {
          explode();
       }
    }
@@ -253,7 +253,7 @@ BigRock::BigRock(Engine &owner): RockBase(owner) {
 }
 
 // The object's score, type, mass and termination routine.
-int BigRock::score() const {
+int BigRock::Score() const {
    return 100;
 }
 
@@ -283,7 +283,7 @@ MedRock::MedRock(Engine &owner): RockBase(owner) {
 }
 
 // The object's score, type, mass and termination routine.
-int MedRock::score() const {
+int MedRock::Score() const {
    return 50;
 }
 
@@ -313,7 +313,7 @@ SmallRock::SmallRock(Engine &owner): RockBase(owner) {
 }
 
 // The object's score, type, mass and termination routine.
-int SmallRock::score() const {
+int SmallRock::Score() const {
    return 25;
 }
 
@@ -355,7 +355,7 @@ Ship::Ship(Engine &owner): Obj(owner) {
    m_fire = false;
    m_fireLock = false;
    m_justFired = false;
-   m_fireCharge = CHARGE_MAX;
+   m_fireCharge = MaxCharge;
    m_rotDir = 0;
    m_thrust = false;
    m_alpha = TwoPi/8.0;
@@ -366,7 +366,7 @@ Ship::Ship(Engine &owner): Obj(owner) {
 
 // The points are set here.
    m_resetPoints();
-   rotate(m_alpha);
+   SetSpin(m_alpha);
    Obj::rotateVector(m_nosePos, m_alpha);
    Obj::rotateVector(m_thrustPos, m_alpha);
    Obj::rotateVector(m_thrustPlane, m_alpha);
@@ -391,24 +391,24 @@ bool Ship::fatal(const Obj &other) const {
 }
 
 // Move the object, recharge, rotate, thrust and fire.
-void Ship::tick() {
+void Ship::Tick() {
    if (!m_dead) {
       m_internalTick();
 
    // Increment the fire charge.
-      if (m_fireCharge < CHARGE_MAX && m_tickCnt%CHARGE_MOD == 0) {
+      if (m_fireCharge < MaxCharge && _Ticks%ReChargeTicks == 0) {
          ++m_fireCharge;
       }
    // Spin.
       if (m_rotDir != 0) {
          if (m_rotDir == -1)
-            m_alpha -= SHIP_ROTATE_DELTA*TwoPi/360.0;
+            m_alpha -= ShipRotateRate*TwoPi/360.0;
          else
-            m_alpha += SHIP_ROTATE_DELTA*TwoPi/360.0;
+            m_alpha += ShipRotateRate*TwoPi/360.0;
 
       // Rotate the superstructure, then the nose and thrust plane assemblies.
          m_resetPoints();
-         rotate(m_alpha);
+         SetSpin(m_alpha);
 
          Obj::rotateVector(m_nosePos, m_alpha);
          Obj::rotateVector(m_thrustPos, m_alpha);
@@ -418,10 +418,10 @@ void Ship::tick() {
       if (m_thrust) {
       // Thrust vector.
          ObjPos tvect(sin(m_alpha), -cos(m_alpha));
-         tvect *= SHIP_THRUST_MULT;
+         tvect *= ShipPushMult;
 
       // Exhaust vector.
-         ObjPos exv(tvect*(-MAX_SPEED/2.0) + dir);
+         ObjPos exv(tvect*(-MaxShipSpeed/2.0) + dir);
 
       // Add thrust particles.
          for (int n = 0; n < 2; ++n) {
@@ -429,27 +429,27 @@ void Ship::tick() {
             ObjPos tpos(m_thrustPlane*Obj::randFloat());
             tpos += m_thrustPos + pos;
 
-            Obj *f = mp_owner->add(otThrust, tpos, exv);
-            f->rotate(m_alpha);
+            Obj *f = mp_owner->AddThing(otThrust, tpos, exv);
+            f->SetSpin(m_alpha);
          }
 
       // Add thrust to the direction, and limit to the maximum speed, so as to avoid catching up with friendly fire.
          dir += tvect;
-         Obj::limitAbs(dir, MAX_SPEED);
+         Obj::limitAbs(dir, MaxShipSpeed);
       }
    // Fire (suppress, if not charged).
       if (m_fire && !m_fireLock && m_fireCharge > 0) {
       // Create a fire object (initially heading toward the ship).
          ObjPos fvect(sin(m_alpha), -cos(m_alpha));
-         fvect *= MAX_SPEED;
+         fvect *= MaxShipSpeed;
          fvect += dir;
 
       // Recoil.
-         dir -= fvect*FIRE_RECOIL_MULT;
+         dir -= fvect*FireRecoilMult;
 
       // Bombs away!
-         Obj *f = mp_owner->add(otFire, m_nosePos + pos, fvect);
-         f->rotate(m_alpha);
+         Obj *f = mp_owner->AddThing(otFire, m_nosePos + pos, fvect);
+         f->SetSpin(m_alpha);
 
       // Suppress repeated firing.
          m_fireLock = true;
@@ -463,7 +463,7 @@ void Ship::tick() {
 }
 
 // The object's score, type, mass and termination routine.
-int Ship::score() const {
+int Ship::Score() const {
    return 0;
 }
 
@@ -486,7 +486,7 @@ void Ship::rot(int r) {
 }
 
 // Set/get the thrust state.
-void Ship::thrust(bool on) {
+void Ship::SetPushing(bool on) {
    m_thrust = on;
 }
 
@@ -495,15 +495,15 @@ bool Ship::thrusting() const {
 }
 
 // Fire on the next tick.
-// Each call to fire() must be followed by a call to reload() in order to release the fire lock.
+// Each call to fire() must be followed by a call to ReLoad() in order to release the fire lock.
 // This is done to prevent rapid ‟machine gun” firing action, which would make the game too easy.
-void Ship::fire() {
+void Ship::Fire() {
    m_fire |= !m_fireLock;
 }
 
 // Call to release the fire lock.
 // Typically this should be called on a key up action.
-void Ship::reload(bool reset) {
+void Ship::ReLoad(bool reset) {
    m_fireLock = false;
    if (reset) m_fire = false;
 }
@@ -527,8 +527,8 @@ Obj *Alien::m_nearObj() const {
    double oabs, nabs = -1.0;
 
 // Find the nearest heavier object or ship (avoid the ship).
-   for (size_t n = 0; n < mp_owner->objCnt(); ++n) {
-      Obj *objn = mp_owner->objAtIdx(n);
+   for (size_t n = 0; n < mp_owner->ObjN(); ++n) {
+      Obj *objn = mp_owner->ObjAtN(n);
       OType ot = objn->type();
       oabs = abs(pos - objn->pos);
 
@@ -542,7 +542,7 @@ Obj *Alien::m_nearObj() const {
 }
 
 // Aim the thrust away from the nearest object.
-ObjPos Alien::thrust() const {
+ObjPos Alien::Push() const {
    ObjPos rslt;
    Obj *obj = m_nearObj();
    if (obj != nullptr) rslt = pos - obj->pos;
@@ -554,7 +554,7 @@ ObjPos Alien::thrust() const {
       rslt *= 20.0*m_radius/(nabs*nabs);
    }
 
-   rslt *= ALIEN_THRUST_MULT;
+   rslt *= AlienPushMult;
 
    return rslt;
 }
@@ -607,26 +607,26 @@ bool Alien::kuypier() const {
 bool Alien::fatal(const Obj &other) const {
    if (other.dead()) return false;
    int w, h;
-   mp_owner->getPlayDims(&w, &h);
+   mp_owner->GetPlayDims(&w, &h);
    return
       pos.real() >= 0 && pos.real() <= w && pos.imag() >= 0 && pos.imag() <= h &&
       (other.type() == otFire || other.mass() > mass());
 }
 
 // Move the object.
-void Alien::tick() {
+void Alien::Tick() {
    if (!m_dead) {
       m_internalTick();
 
    // Adjust the thrust.
-      dir += thrust();
-      Obj::limitAbs(dir, MAX_ALIEN_SPEED);
+      dir += Push();
+      Obj::limitAbs(dir, MaxAlienSpeed);
    }
 }
 
 // The object's score, type, mass and termination routine.
 // A big score or an extra life, for the alien.
-int Alien::score() const {
+int Alien::Score() const {
    return 500;
 }
 
@@ -643,10 +643,10 @@ void Alien::explode() {
    m_fragment(otDebris, 5);
 }
 
-// class Fire: public methods
-// ──────────────────────────
-// Make a new Fire object.
-Fire::Fire(Engine &owner): Obj(owner) {
+// class Lance: public methods
+// ───────────────────────────
+// Make a new Lance object.
+Lance::Lance(Engine &owner): Obj(owner) {
 // Create the points.
    m_pointCnt = 2;
    m_points = new ObjPos[m_pointCnt];
@@ -659,46 +659,46 @@ Fire::Fire(Engine &owner): Obj(owner) {
 }
 
 // Is it a rock?
-bool Fire::rock() const {
+bool Lance::rock() const {
    return false;
 }
 
 // Can it occupy the Kuypier region?
-bool Fire::kuypier() const {
+bool Lance::kuypier() const {
    return false;
 }
 
 // Would a collision with other be fatal?
-bool Fire::fatal(const Obj &other) const {
-   return (!other.dead() && other.mass() > 0);
+bool Lance::fatal(const Obj &other) const {
+   return !other.dead() && other.mass() > 0;
 }
 
 // Move the object.
-void Fire::tick() {
+void Lance::Tick() {
    if (!m_dead) {
       m_internalTick();
 
    // Allow for it to get as much as 3/4 of the way across the screen.
       double speed = abs(dir);
-      m_dead = speed == 0.0 || speed*m_tickCnt > 3.0/4.0*mp_owner->minDim();
+      m_dead = speed == 0.0 || speed*_Ticks > 3.0/4.0*mp_owner->MinDim();
    }
 }
 
 // The object's score, type, mass and termination routine.
 // (No explosion on termination: just die.)
-int Fire::score() const {
+int Lance::Score() const {
    return 0;
 }
 
-OType Fire::type() const {
+OType Lance::type() const {
    return otFire;
 }
 
-double Fire::mass() const {
+double Lance::mass() const {
    return 1;
 }
 
-void Fire::explode() {
+void Lance::explode() {
    m_dead = true;
 }
 
@@ -729,7 +729,7 @@ Debris::Debris(Engine &owner): Obj(owner) {
 // Connect the final point and randomly orient it.
    m_points[m_pointCnt - 1] = m_points[0];
 
-   rotate(TwoPi*Obj::randFloat());
+   SetSpin(TwoPi*Obj::randFloat());
 
 // Endow it with a rotation speed of approximately 8 degrees per tick.
    m_rotDelta = TwoPi*8.0/360.0;
@@ -755,7 +755,7 @@ bool Debris::fatal(const Obj &other) const {
 }
 
 // Move the object for a short randomly-determined lifetime.
-void Debris::tick() {
+void Debris::Tick() {
    if (!m_dead) {
       m_internalTick();
 
@@ -767,7 +767,7 @@ void Debris::tick() {
 // The object's score, type, mass and termination routine.
 // Mass 2 is just enough to bounce a ship.
 // (No explosion on termination: just die.)
-int Debris::score() const {
+int Debris::Score() const {
    return 0;
 }
 
@@ -790,7 +790,7 @@ Spark::Spark(Engine &owner): Debris(owner) {
 }
 
 // Move the object for a very short randomly-determined lifetime.
-void Spark::tick() {
+void Spark::Tick() {
    if (!m_dead) {
       m_internalTick();
 
@@ -836,18 +836,18 @@ bool Thrust::fatal(const Obj &/*other*/) const {
 }
 
 // Move the object for a very limited time, so as to avoid long thrust trails across the screen.
-void Thrust::tick() {
+void Thrust::Tick() {
    if (!m_dead) {
       m_internalTick();
 
-      m_dead = (m_tickCnt > 1);
+      m_dead = (_Ticks > 1);
    }
 }
 
 // The object's score, type, mass and termination routine.
 // Zero mass means transparent.
 // (No explosion on termination: just die.)
-int Thrust::score() const {
+int Thrust::Score() const {
    return 0;
 }
 
@@ -895,7 +895,7 @@ bool Label::fatal(const Obj &/*other*/) const {
 }
 
 // Move the object for a limited time.
-void Label::tick() {
+void Label::Tick() {
    if (!m_dead) {
       m_internalTick();
 
@@ -906,7 +906,7 @@ void Label::tick() {
 // The object's score, type, mass and termination routine.
 // Zero mass means transparent.
 // (No explosion on termination: just die.)
-int Label::score() const {
+int Label::Score() const {
    return 0;
 }
 
