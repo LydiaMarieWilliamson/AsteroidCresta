@@ -3,20 +3,14 @@
 #include <QApplication>
 #include "Arena.h"
 
-int main(int argc, char **argv)
-{
-  try
-  {
-    QApplication app(argc, argv);
-    QPixmap pixmap(":/artwork.bmp");
+int main(int argc, char **argv) {
+   try {
+      QApplication app(argc, argv);
+      QPixmap pixmap(":/Artwork.bmp");
 
-    MainWindow main_win;
-    main_win.show();
+      MainWindow main_win;
+      main_win.show();
 
-    return app.exec();
-  }
-  catch(...)
-  {
-    return -1;
-  }
+      return app.exec();
+   } catch(...) { return -1; }
 }
