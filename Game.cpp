@@ -7,6 +7,13 @@
 #include "Engine.h"
 #include "Version.h"
 
+// QT and phonon changed.
+#if 1
+#   define PhononFile(Path, File)	(Phonon::MediaSource(QUrl::fromLocalFile((Path) + (File))))
+#else
+#   define PhononFile(Path, File)	(Phonon::MediaSource((Path) + (File)))
+#endif
+
 const int DEF_POLL_RATE = 45;
 const int INTRO_SCREEN_SEC = 8;
 const QString SCREEN_FONT_NAME = "serif";
@@ -309,30 +316,30 @@ void GameWidget::m_poll() {
       if (m_sounds && mp_engine->playing()) {
          switch (mp_engine->rockExplodeSnd()) {
             case asteroid::otBigRock:
-               mp_explodeAudio->setCurrentSource(Phonon::MediaSource(path + "explode_large.wav")), mp_explodeAudio->play();
+               mp_explodeAudio->setCurrentSource(PhononFile(path, "explode_large.wav")), mp_explodeAudio->play();
             break;
             case asteroid::otMedRock:
-               mp_explodeAudio->setCurrentSource(Phonon::MediaSource(path + "explode_medium.wav")), mp_explodeAudio->play();
+               mp_explodeAudio->setCurrentSource(PhononFile(path, "explode_medium.wav")), mp_explodeAudio->play();
             break;
             case asteroid::otSmallRock:
-               mp_explodeAudio->setCurrentSource(Phonon::MediaSource(path + "explode_small.wav")), mp_explodeAudio->play();
+               mp_explodeAudio->setCurrentSource(PhononFile(path, "explode_small.wav")), mp_explodeAudio->play();
             break;
             default: break;
          }
 
          if (mp_engine->fireSnd())
-            mp_fireAudio->setCurrentSource(Phonon::MediaSource(path + "fire.wav")), mp_fireAudio->play();
+            mp_fireAudio->setCurrentSource(PhononFile(path, "fire.wav")), mp_fireAudio->play();
 
          if (!mp_engine->thrustSnd())
             mp_thrustAudio->stop();
          else if (mp_thrustAudio->state() != Phonon::PlayingState && mp_thrustAudio->state() != Phonon::BufferingState)
-            mp_thrustAudio->setCurrentSource(Phonon::MediaSource(path + "thrust.wav")), mp_thrustAudio->play();
+            mp_thrustAudio->setCurrentSource(PhononFile(path, "thrust.wav")), mp_thrustAudio->play();
 
          if (mp_engine->alienSnd())
-            mp_eventAudio->setCurrentSource(Phonon::MediaSource(path + "alien.wav")), mp_eventAudio->play();
+            mp_eventAudio->setCurrentSource(PhononFile(path, "alien.wav")), mp_eventAudio->play();
 
          if (mp_engine->diedSnd())
-            mp_eventAudio->setCurrentSource(Phonon::MediaSource(path + "die.wav")), mp_eventAudio->play();
+            mp_eventAudio->setCurrentSource(PhononFile(path, "die.wav")), mp_eventAudio->play();
       }
    } else if (time(0) >= m_timeMark + INTRO_SCREEN_SEC) {
    // Rotate the intro screens, including any change from the intro to the demo state.
@@ -346,12 +353,7 @@ void GameWidget::m_poll() {
 
 // Start the music, change the track or stop the music.
    if (m_music && (m_playing != mp_engine->playing() || (mp_musicAudio->state() != Phonon::BufferingState && mp_musicAudio->state() != Phonon::PlayingState))) {
-      if (mp_engine->playing()) {
-         mp_musicAudio->setCurrentSource(Phonon::MediaSource(path + "play.mp3"));
-      } else {
-         mp_musicAudio->setCurrentSource(Phonon::MediaSource(path + "intro.mp3"));
-      }
-
+      mp_musicAudio->setCurrentSource(PhononFile(path, mp_engine->playing()? "play.mp3": "intro.mp3"));
       mp_musicAudio->play();
    } else if (!m_music && mp_musicAudio->state() == Phonon::PlayingState) {
       mp_musicAudio->stop();

@@ -8,3 +8,4 @@ Version 1.9.1: (c) 2021 Darth Spectra (Lydia Marie Williams)
 ∙	Further clean-up and simplification.
 ∙	2021/06/23 Established baseline for the Linux port.
 ∙	2021/06/24 Upgraded the Phonon routines (to revise calls to "deprecated" functions).
+∙	2021/09/11 Minor bug fixes.
