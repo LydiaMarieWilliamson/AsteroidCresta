@@ -136,7 +136,7 @@ void MainWindow::m_setOptions() {
 
 // Launch a browser.
 void MainWindow::m_weburl() {
-   QDesktopServices::openUrl(QUrl(APP_URL_STR));
+   QDesktopServices::openUrl(QUrl(AppUrl));
 }
 
 // The about box.
@@ -180,7 +180,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event) {
 MainWindow::MainWindow(): QMainWindow() {
 // Set the window type.
    setWindowFlags(Qt::Window);
-   setWindowTitle(APP_NAME_STR);
+   setWindowTitle(AppName);
    setMinimumSize(300, 225);
 
 // Load the resources.
@@ -194,7 +194,7 @@ MainWindow::MainWindow(): QMainWindow() {
    setCentralWidget(mp_gameWidget);
 
 // Create the settings file.
-   mp_settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, APP_COMPANY_STR, APP_NAME_STR, this);
+   mp_settings = new QSettings(QSettings::IniFormat, QSettings::SystemScope, AppCompany, AppName, this);
 
 // Set the settings file.
    m_readSettings();

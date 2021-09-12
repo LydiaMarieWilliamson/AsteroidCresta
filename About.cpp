@@ -25,7 +25,7 @@ void AboutWindow::paintEvent(QPaintEvent *) {
    int sw = mp_artwork->width() - 2*m_spacer;
 
 // Write the text.
-   QString s = APP_NAME_STR;
+   QString s = AppName;
    QRect r = painter.boundingRect(sr, 0, s);
    painter.drawText(x, y, sw, r.height(), Qt::AlignLeft | Qt::AlignTop, s);
    y += r.height();
@@ -34,12 +34,12 @@ void AboutWindow::paintEvent(QPaintEvent *) {
    f.setBold(false);
    painter.setFont(f);
 
-   s = APP_COPYRIGHT_STR;
+   s = AppCopyRight;
    r = painter.boundingRect(sr, 0, s);
    painter.drawText(x, y, sw, r.height(), Qt::AlignLeft | Qt::AlignTop, s);
    y += r.height();
 
-   painter.drawText(x, y, sw, r.height(), Qt::AlignLeft | Qt::AlignTop, tr("Version: ") + APP_VERSION_STR);
+   painter.drawText(x, y, sw, r.height(), Qt::AlignLeft | Qt::AlignTop, tr("Version: ") + AppVersion);
    y += r.height();
 
 // Up from the bottom of the image.
@@ -47,7 +47,7 @@ void AboutWindow::paintEvent(QPaintEvent *) {
    painter.drawText(x, y, sw, r.height(), Qt::AlignLeft | Qt::AlignTop, tr("No Warranty. GNU General Public License."));
    y -= r.height();
 
-   painter.drawText(x, y, sw, r.height(), Qt::AlignLeft | Qt::AlignTop, APP_DOMAIN_STR);
+   painter.drawText(x, y, sw, r.height(), Qt::AlignLeft | Qt::AlignTop, AppDomain);
 }
 
 // class GameWidget: public members

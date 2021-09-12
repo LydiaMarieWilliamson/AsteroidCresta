@@ -171,10 +171,10 @@ void GameWidget::m_drawIntroScreen0() {
 
 // Titles.
    m_setFont(p, asteroid::lfHugeBold);
-   y += m_textOut(p, APP_NAME_STR.toUpper(), w/2, y, Qt::AlignHCenter);
+   y += m_textOut(p, AppName.toUpper(), w/2, y, Qt::AlignHCenter);
 
    m_setFont(p, asteroid::lfSmall);
-   int th = m_textOut(p, APP_COPYRIGHT_STR, w/2, y, Qt::AlignHCenter);
+   int th = m_textOut(p, AppCopyRight, w/2, y, Qt::AlignHCenter);
 
    y += 2*th;
    m_setFont(p, asteroid::lfMedium);
@@ -184,7 +184,7 @@ void GameWidget::m_drawIntroScreen0() {
    int hy = y;
    y = 7*h/8;
    m_setFont(p, asteroid::lfMedium);
-   y -= m_textOut(p, APP_DOMAIN_STR, w/2, y, Qt::AlignHCenter | Qt::AlignBottom);
+   y -= m_textOut(p, AppDomain, w/2, y, Qt::AlignHCenter | Qt::AlignBottom);
 
 // Additional text (not shown if no room).
    int tlh = 4*th;
@@ -212,7 +212,7 @@ void GameWidget::m_drawIntroScreen1() {
 
 // Titles.
    m_setFont(p, asteroid::lfHugeBold);
-   int th = m_textOut(p, APP_NAME_STR.toUpper(), w/2, y, Qt::AlignHCenter);
+   int th = m_textOut(p, AppName.toUpper(), w/2, y, Qt::AlignHCenter);
 
    y += 2*th;
    m_setFont(p, asteroid::lfMedium);
@@ -236,8 +236,8 @@ void GameWidget::m_drawIntroScreen1() {
 #if 0
 //(@) Redundant, over-booked in size, and therefore removed.
    m_setFont(p, asteroid::lfSmall);
-   m_textOut(p, APP_COPYRIGHT_STR, m_txs(), y, Qt::AlignBottom);
-   y -= m_textOut(p, APP_DOMAIN_STR, w - m_txs(), y, Qt::AlignRight | Qt::AlignBottom);
+   m_textOut(p, AppCopyRight, m_txs(), y, Qt::AlignBottom);
+   y -= m_textOut(p, AppDomain, w - m_txs(), y, Qt::AlignRight | Qt::AlignBottom);
 #endif
 
 // Additional text (not shown if there is no room).
@@ -262,7 +262,7 @@ void GameWidget::m_drawIntroScreen2() {
 
 // Hi Score.
    m_setFont(p, asteroid::lfHugeBold);
-   int th = m_textOut(p, APP_NAME_STR.toUpper(), w/2, y, Qt::AlignHCenter);
+   int th = m_textOut(p, AppName.toUpper(), w/2, y, Qt::AlignHCenter);
 
    y += 3*th;
    m_setFont(p, asteroid::lfMedium);
@@ -276,8 +276,8 @@ void GameWidget::m_drawIntroScreen2() {
 #if 0
 //(@) Redundant, over-booked in size, and therefore removed.
    m_setFont(p, asteroid::lfSmall);
-   m_textOut(p, APP_COPYRIGHT_STR, m_txs(), y, Qt::AlignBottom);
-   y -= m_textOut(p, APP_DOMAIN_STR, w - m_txs(), y, Qt::AlignRight | Qt::AlignBottom);
+   m_textOut(p, AppCopyRight, m_txs(), y, Qt::AlignBottom);
+   y -= m_textOut(p, AppDomain, w - m_txs(), y, Qt::AlignRight | Qt::AlignBottom);
 #endif
 
 // Additional text (not shown if there's no room).
