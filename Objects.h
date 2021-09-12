@@ -32,27 +32,27 @@ protected:
    std::string _Caption;
    FontT _Pts;
    double _SizeUp() const;
-   void _Replicate(TypeT t, int cnt, const double &sf = 1.0);
+   void _Replicate(TypeT T, int N, const double &SpeedUp = 1.0);
    void _Tick();
 public:
    ObjPos _Pos, _Dir; // The position and orientation vectors.
-   Thing(Engine &owner);
+   Thing(Engine &Owner);
    virtual ~Thing();
    bool GetDead() const;
    void SetDead();
    Engine *GetOwner() const;
    double GetRadius() const;
-   void Rotate(const double &a);
+   void Rotate(const double &Rad);
    int GetPoints() const;
-   ObjPos PosPoints(int idx) const;
+   ObjPos PosPoints(int Points) const;
    std::string GetCaption() const;
-   void SetCaption(const std::string &s);
+   void SetCaption(const std::string &Caption);
    FontT GetPts() const;
-   void SetPts(FontT sz);
+   void SetPts(FontT Pts);
 // Pure virtual methods which define the behavior of the object in derived classes.
    virtual bool Rocky() const = 0;
    virtual bool Kuypier() const = 0;
-   virtual bool Lethal(const Thing &other) const = 0;
+   virtual bool Lethal(const Thing &Other) const = 0;
    virtual void Tick() = 0;
    virtual int Score() const = 0;
    virtual TypeT Type() const = 0;
@@ -60,26 +60,26 @@ public:
    virtual void Boom() = 0;
    static double RandR();
    static bool RandB(double Prob = 0.5);
-   static void RotateVector(ObjPos &p, double a);
-   static void LimitAbs(ObjPos &p, const double a);
+   static void RotateVector(ObjPos &Pos, double Rad);
+   static void LimitAbs(ObjPos &Pos, const double A);
 };
 
 // The rock object abstract base class
 // ───────────────────────────────────
 class Rock: public Thing { // → Boulder, Stone, Pebble.
 protected:
-   void _Sculpt(const double &scale);
+   void _Sculpt(const double &Scale);
 public:
-   Rock(Engine &owner);
+   Rock(Engine &Owner);
    virtual bool Rocky() const;
    virtual bool Kuypier() const;
-   virtual bool Lethal(const Thing &other) const;
+   virtual bool Lethal(const Thing &Other) const;
    virtual void Tick();
 };
 
 class Boulder: public Rock {
 public:
-   Boulder(Engine &owner);
+   Boulder(Engine &Owner);
    virtual int Score() const;
    virtual TypeT Type() const;
    virtual double Mass() const;
@@ -88,7 +88,7 @@ public:
 
 class Stone: public Rock {
 public:
-   Stone(Engine &owner);
+   Stone(Engine &Owner);
    virtual int Score() const;
    virtual TypeT Type() const;
    virtual double Mass() const;
@@ -97,7 +97,7 @@ public:
 
 class Pebble: public Rock {
 public:
-   Pebble(Engine &owner);
+   Pebble(Engine &Owner);
    virtual int Score() const;
    virtual TypeT Type() const;
    virtual double Mass() const;
@@ -112,20 +112,20 @@ private:
    bool _Pushing, _Firing, _FireLock, _JustFired;
    void _ResetPoints();
 public:
-   Ship(Engine &owner);
+   Ship(Engine &Owner);
    virtual bool Rocky() const;
    virtual bool Kuypier() const;
-   virtual bool Lethal(const Thing &other) const;
+   virtual bool Lethal(const Thing &Other) const;
    virtual void Tick();
    virtual int Score() const;
    virtual TypeT Type() const;
    virtual double Mass() const;
    virtual void Boom();
-   void SetSpin(int r);
+   void SetSpin(int Spin);
    bool GetPushing() const;
-   void SetPushing(bool on);
+   void SetPushing(bool Pushing);
    void Fire();
-   void ReLoad(bool reset);
+   void ReLoad(bool ReSet);
    bool JustFired() const;
    int FireCharge() const;
 };
@@ -135,10 +135,10 @@ private:
    Thing *_Neighbor() const;
    ObjPos Push() const;
 public:
-   Alien(Engine &owner);
+   Alien(Engine &Owner);
    virtual bool Rocky() const;
    virtual bool Kuypier() const;
-   virtual bool Lethal(const Thing &other) const;
+   virtual bool Lethal(const Thing &Other) const;
    virtual void Tick();
    virtual int Score() const;
    virtual TypeT Type() const;
@@ -148,10 +148,10 @@ public:
 
 class Lance: public Thing {
 public:
-   Lance(Engine &owner);
+   Lance(Engine &Owner);
    virtual bool Rocky() const;
    virtual bool Kuypier() const;
-   virtual bool Lethal(const Thing &other) const;
+   virtual bool Lethal(const Thing &Other) const;
    virtual void Tick();
    virtual int Score() const;
    virtual TypeT Type() const;
@@ -161,10 +161,10 @@ public:
 
 class Debris: public Thing { // → Spark
 public:
-   Debris(Engine &owner);
+   Debris(Engine &Owner);
    virtual bool Rocky() const;
    virtual bool Kuypier() const;
-   virtual bool Lethal(const Thing &other) const;
+   virtual bool Lethal(const Thing &Other) const;
    virtual void Tick();
    virtual int Score() const;
    virtual TypeT Type() const;
@@ -174,17 +174,17 @@ public:
 
 class Spark: public Debris {
 public:
-   Spark(Engine &owner);
+   Spark(Engine &Owner);
    virtual void Tick();
    virtual TypeT Type() const;
 };
 
 class Thrust: public Thing {
 public:
-   Thrust(Engine &owner);
+   Thrust(Engine &Owner);
    virtual bool Rocky() const;
    virtual bool Kuypier() const;
-   virtual bool Lethal(const Thing &other) const;
+   virtual bool Lethal(const Thing &Other) const;
    virtual void Tick();
    virtual int Score() const;
    virtual TypeT Type() const;
@@ -196,12 +196,12 @@ class Label: public Thing {
 private:
    int _Life; // Lifetime (in seconds).
 public:
-   Label(Engine &owner, int life = 2);
+   Label(Engine &Owner, int Life = 2);
    int GetLife() const;
-   void SetLife(int sec);
+   void SetLife(int Life);
    virtual bool Rocky() const;
    virtual bool Kuypier() const;
-   virtual bool Lethal(const Thing &other) const;
+   virtual bool Lethal(const Thing &Other) const;
    virtual void Tick();
    virtual int Score() const;
    virtual TypeT Type() const;
