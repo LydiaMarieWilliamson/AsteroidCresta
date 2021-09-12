@@ -34,9 +34,9 @@ private:
    int _Filler() const;
    double _Scaling() const;
    void _ResizeArena();
-   void _SetFont(QPainter &p, Asteroid::FontT sz, bool bold = false);
-   int _PutStr(QPainter &p, const QString &s, int x, int y, Qt::Alignment layout = Qt::AlignLeft | Qt::AlignTop);
-   void _ResetScreen(QPainter &p);
+   void _SetFont(QPainter &Pnt, Asteroid::FontT N, bool Bold = false);
+   int _PutStr(QPainter &Pnt, const QString &Str, int X, int Y, Qt::Alignment Grid = Qt::AlignLeft | Qt::AlignTop);
+   void _ResetScreen(QPainter &Pnt);
    void _ShowPlay();
    void _ShowIntro0();
    void _ShowIntro1();
@@ -44,32 +44,32 @@ private:
 private slots:
    void _Poll();
 protected:
-   virtual void paintEvent(QPaintEvent *event);
+   virtual void paintEvent(QPaintEvent *Ev);
 public:
-   Game(QWidget *parent = nullptr);
+   Game(QWidget *Sup = nullptr);
    ~Game();
    bool GetPausing() const;
-   void SetPausing(bool p);
+   void SetPausing(bool Pausing);
    bool GetPlaying() const;
-   void SetPlaying(bool p);
+   void SetPlaying(bool Playing);
    Game::StateT GetState() const;
-   void SetState(Game::StateT gs);
+   void SetState(Game::StateT Q);
    int GetHiScore() const;
-   void SetHiScore(int hs);
+   void SetHiScore(int Score);
    bool GetSounding() const;
-   void SetSounding(bool s);
+   void SetSounding(bool Sounding);
    bool GetSinging() const;
-   void SetSinging(bool m);
+   void SetSinging(bool Singing);
    QColor GetColorFg() const;
-   void SetColorFg(const QColor &c);
+   void SetColorFg(const QColor &ColorFg);
    QColor GetColorBg() const;
-   void SetColorBg(const QColor &c);
+   void SetColorBg(const QColor &ColorBg);
    double GetLevel() const;
-   void SetLevel(const double &dif);
+   void SetLevel(const double &Level);
    int GetPollRate() const;
-   void SetPollRate(int ms);
-   bool EnKey(int k);
-   bool DeKey(int k);
+   void SetPollRate(int PollRate);
+   bool EnKey(int Key);
+   bool DeKey(int Key);
 };
 
 #endif // OnceOnly
