@@ -4,12 +4,12 @@
 #include "About.h"
 #include "Version.h"
 
-// class AboutWindow: protected members
+// class About: protected members
 // ────────────────────────────────────
 // Re-paint on displayWidget.
-void AboutWindow::paintEvent(QPaintEvent *) {
+void About::paintEvent(QPaintEvent *) {
    QPainter painter(this);
-   painter.drawPixmap(0, 0, *mp_artwork);
+   painter.drawPixmap(0, 0, *_ArtWork);
 
    painter.setPen(QPen(Qt::white));
 
@@ -18,11 +18,11 @@ void AboutWindow::paintEvent(QPaintEvent *) {
    f.setBold(true);
    painter.setFont(f);
 
-   int x = m_spacer;
-   int y = m_spacer;
+   int x = _Spacer;
+   int y = _Spacer;
 
    QRect sr = rect();
-   int sw = mp_artwork->width() - 2*m_spacer;
+   int sw = _ArtWork->width() - 2*_Spacer;
 
 // Write the text.
    QString s = AppName;
@@ -43,7 +43,7 @@ void AboutWindow::paintEvent(QPaintEvent *) {
    y += r.height();
 
 // Up from the bottom of the image.
-   y = mp_artwork->height() - r.height();
+   y = _ArtWork->height() - r.height();
    painter.drawText(x, y, sw, r.height(), Qt::AlignLeft | Qt::AlignTop, tr("No Warranty. GNU General Public License."));
    y -= r.height();
 
@@ -52,12 +52,12 @@ void AboutWindow::paintEvent(QPaintEvent *) {
 
 // class GameWidget: public members
 // ────────────────────────────────
-// Make a new AboutWindow object.
-AboutWindow::AboutWindow(QWidget *parent): QDialog(parent, Qt::Dialog | Qt::WindowCloseButtonHint) {
+// Make a new About object.
+About::About(QWidget *parent): QDialog(parent, Qt::Dialog | Qt::WindowCloseButtonHint) {
    setWindowTitle(tr("About..."));
 
 // Create the display area.
-   mp_artwork = new QPixmap(":/Artwork.png", 0);
+   _ArtWork = new QPixmap(":/Artwork.png", 0);
 
 // Create a button box.
    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok, Qt::Horizontal, this);
@@ -75,18 +75,18 @@ AboutWindow::AboutWindow(QWidget *parent): QDialog(parent, Qt::Dialog | Qt::Wind
 
    int cl, ct, cr, cb;
    layout->getContentsMargins(&cl, &ct, &cr, &cb);
-   QSpacerItem *displayArea = new QSpacerItem(mp_artwork->width() - cl - cr, mp_artwork->height());
+   QSpacerItem *displayArea = new QSpacerItem(_ArtWork->width() - cl - cr, _ArtWork->height());
 
    layout->addItem(displayArea, 0, 0);
    layout->addWidget(buttonBox, 1, 0);
 
 // Hold the contents spacing.
-   m_spacer = cl;
+   _Spacer = cl;
 }
 
-// Free the AboutWindow object.
-AboutWindow::~AboutWindow() {
+// Free the About object.
+About::~About() {
    try {
-      delete mp_artwork;
+      delete _ArtWork;
    } catch(...) { }
 }

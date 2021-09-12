@@ -143,7 +143,7 @@ void MainWindow::m_weburl() {
 void MainWindow::m_about() {
 // Create on the first show.
    if (mp_aboutWindow == nullptr) {
-      mp_aboutWindow = new AboutWindow(this);
+      mp_aboutWindow = new About(this);
    }
 
    mp_aboutWindow->exec();

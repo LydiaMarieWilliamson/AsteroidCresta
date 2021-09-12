@@ -10,7 +10,7 @@ class QAction;
 class QSettings;
 class QTimer;
 class GameWidget;
-class AboutWindow;
+class About;
 
 class MainWindow: public QMainWindow {
 Q_OBJECT
@@ -19,7 +19,7 @@ private:
    QSettings *mp_settings;
    QTimer *mp_timer;
    GameWidget *mp_gameWidget;
-   AboutWindow *mp_aboutWindow;
+   About *mp_aboutWindow;
    void m_createMainMenu();
    void m_readSettings();
    void m_writeSettings();
