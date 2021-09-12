@@ -38,8 +38,8 @@ public:
    ObjPos pos, dir; // The position and orientation vectors.
    Obj(Engine &owner);
    virtual ~Obj();
-   void die();
    bool dead() const;
+   void die();
    Engine *owner() const;
    double radius() const;
    void rotate(const double &a);

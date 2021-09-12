@@ -10,14 +10,14 @@ using namespace std;
 using namespace asteroid;
 
 #ifdef M_PI
-const double TPI = 2.0*M_PI; // 2*PI
+const double TwoPi = 2.0*M_PI; // 2π
 #else
-const double TPI = 6.28318530717958648;
+const double TwoPi = 6.28318530717958648;
 #endif
 
 // class Obj: protected methods
 // ────────────────────────────
-// The mean radius of this object.
+// The (mean) radius of this object.
 double Obj::m_calcRad() const {
    double rslt = 0.0;
 
@@ -33,15 +33,15 @@ void Obj::m_fragment(OType t, int cnt, const double &sf) {
    // Space away the main from the origin moving them in oposite directions.
       ObjPos ndir(dir), npos(dir), bdir(dir/2.0);
 
-      Obj::rotateVector(ndir, TPI/4.0);
+      Obj::rotateVector(ndir, TwoPi/4.0);
       if (ndir != 0.0) ndir *= sf/abs(ndir);
 
       if (npos != 0.0) {
          npos *= m_radius/abs(npos);
-         Obj::rotateVector(npos, TPI/4.0);
+         Obj::rotateVector(npos, TwoPi/4.0);
       }
 
-      double dr = TPI/cnt;
+      double dr = TwoPi/cnt;
       for (int n = 0; n < cnt; ++n) {
          mp_owner->add(t, pos + npos, bdir + ndir);
          Obj::rotateVector(ndir, dr);
@@ -69,9 +69,9 @@ void Obj::m_internalTick() {
 
 // class Obj: public methods
 // ─────────────────────────
-// Make a new Obj object; the base constructor to be called by derived classes in their constructors.
+// Make a new Obj object; the base constructor is to be called by derived classes in their constructors.
 Obj::Obj(Engine &owner) {
-   m_points = 0;
+   m_points = nullptr;
    m_pointCnt = 0;
    m_dead = false;
    m_radius = 0.0;
@@ -87,17 +87,17 @@ Obj::Obj(Engine &owner) {
 // Free the Obj object.
 Obj::~Obj() {
    try {
-      delete[]m_points;
+      delete[] m_points;
    } catch(...) { }
 }
 
 // Get/set the dead state.
-void Obj::die() {
-   m_dead = true;
-}
-
 bool Obj::dead() const {
    return m_dead;
+}
+
+void Obj::die() {
+   m_dead = true;
 }
 
 // Get the owner.
@@ -110,7 +110,7 @@ double Obj::radius() const {
    return m_radius;
 }
 
-// Rotate the object around a radians.
+// Rotate the object by a radians.
 void Obj::rotate(const double &a) {
    if (a != 0.0) {
       for (int n = 0; n < m_pointCnt; ++n)
@@ -182,7 +182,7 @@ void RockBase::m_createPoints(const double &scale) {
 // Rumple it.
    for (int n = 0; n < m_pointCnt - 1; ++n) {
       m_points[n] = ObjPos(20.0*sin(alpha), 20.0*cos(alpha));
-      alpha += TPI/(m_pointCnt - 1);
+      alpha += TwoPi/(m_pointCnt - 1);
       m_points[n] *= scale;
 
       x = m_points[n].real();
@@ -217,25 +217,16 @@ bool RockBase::kuypier() const {
 
 // Would a collision with other be fatal?
 // Collisions in the Kuypier region are never fatal,
-// otherwise collision with other rocks is fatal if the combined speed is large and the other mass is greater than this one.
+// otherwise a collision with other rocks is fatal if the combined speed is large and the other mass is greater than this one.
 // Collisions with fire are always fatal in the game area.
 bool RockBase::fatal(const Obj &other) const {
-   bool rslt = false;
-
-   if (!other.dead()) {
-      int w, h;
-      mp_owner->getPlayDims(&w, &h);
-
-      if (other.type() == otFire && m_tickCnt > 2) {
-         rslt = true;
-      } else if (pos.real() < 0 || pos.real() > w || pos.real() < 0 || pos.imag() > h) {
-         rslt = false;
-      } else {
-         rslt = (abs(dir - other.dir) > MAX_SPEED/5.0 && (other.mass() > mass() || (other.mass() == mass() && Obj::randFloat() < 0.5)));
-      }
-   }
-
-   return rslt;
+   if (other.dead()) return false;
+   int w, h;
+   mp_owner->getPlayDims(&w, &h);
+   return
+      other.type() == otFire && m_tickCnt > 2? true:
+      pos.real() < 0 || pos.real() > w || pos.real() < 0 || pos.imag() > h? false:
+      abs(dir - other.dir) > MAX_SPEED/5.0 && (other.mass() > mass() || (other.mass() == mass() && Obj::randFloat() < 0.5));
 }
 
 // Move and rotate, with a random end of life after a preset time period.
@@ -252,9 +243,9 @@ void RockBase::tick() {
 
 // class BigRock: public methods
 // ─────────────────────────────
-// Makew a new BigRock object; endowed with a rotation speed of approximately 1 degree per tick>
+// Make a new BigRock object; endowed with a rotation speed of approximately 1 degree per tick.
 BigRock::BigRock(Engine &owner): RockBase(owner) {
-   m_rotDelta = TPI*1.0/360.0;
+   m_rotDelta = TwoPi*1.0/360.0;
    if (Obj::randFloat() < 0.5) m_rotDelta = -m_rotDelta;
 
 // Create the points.
@@ -284,7 +275,7 @@ void BigRock::explode() {
 // ─────────────────────────────
 // Make a new MedRock object; endowed with a rotation speed of approximately 2 degrees per tick.
 MedRock::MedRock(Engine &owner): RockBase(owner) {
-   m_rotDelta = TPI*2.0/360.0;
+   m_rotDelta = TwoPi*2.0/360.0;
    if (Obj::randFloat() < 0.5) m_rotDelta = -m_rotDelta;
 
 // Create the points.
@@ -314,7 +305,7 @@ void MedRock::explode() {
 // ───────────────────────────────
 // Make a new SmallRock object; endowed with a rotation speed of approximately 4 degrees per tick.
 SmallRock::SmallRock(Engine &owner): RockBase(owner) {
-   m_rotDelta = TPI*4.0/360.0;
+   m_rotDelta = TwoPi*4.0/360.0;
    if (Obj::randFloat() < 0.5) m_rotDelta = -m_rotDelta;
 
 // Create the points.
@@ -367,7 +358,7 @@ Ship::Ship(Engine &owner): Obj(owner) {
    m_fireCharge = CHARGE_MAX;
    m_rotDir = 0;
    m_thrust = false;
-   m_alpha = TPI/8.0;
+   m_alpha = TwoPi/8.0;
 
 // Create the points.
    m_pointCnt = 5;
@@ -411,9 +402,9 @@ void Ship::tick() {
    // Spin.
       if (m_rotDir != 0) {
          if (m_rotDir == -1)
-            m_alpha -= SHIP_ROTATE_DELTA*TPI/360.0;
+            m_alpha -= SHIP_ROTATE_DELTA*TwoPi/360.0;
          else
-            m_alpha += SHIP_ROTATE_DELTA*TPI/360.0;
+            m_alpha += SHIP_ROTATE_DELTA*TwoPi/360.0;
 
       // Rotate the superstructure, then the nose and thrust plane assemblies.
          m_resetPoints();
@@ -448,7 +439,7 @@ void Ship::tick() {
       }
    // Fire (suppress, if not charged).
       if (m_fire && !m_fireLock && m_fireCharge > 0) {
-      // Create fire object (initially heading toward the ship).
+      // Create a fire object (initially heading toward the ship).
          ObjPos fvect(sin(m_alpha), -cos(m_alpha));
          fvect *= MAX_SPEED;
          fvect += dir;
@@ -529,9 +520,9 @@ int Ship::fireCharge() const {
 
 // class Alien: private methods
 // ────────────────────────────
-// The nearest fatal object to the alien or NULL, if there are no objects.
+// The nearest fatal object to the alien or nullptr, if there are no objects.
 Obj *Alien::m_nearObj() const {
-   Obj *rslt = 0;
+   Obj *rslt = nullptr;
    ObjPos ndv;
    double oabs, nabs = -1.0;
 
@@ -554,7 +545,7 @@ Obj *Alien::m_nearObj() const {
 ObjPos Alien::thrust() const {
    ObjPos rslt;
    Obj *obj = m_nearObj();
-   if (obj != 0) rslt = pos - obj->pos;
+   if (obj != nullptr) rslt = pos - obj->pos;
 
 // Thrust more, if there's anything nearby.
    double nabs = abs(rslt);
@@ -614,18 +605,12 @@ bool Alien::kuypier() const {
 
 // Would a collision with other be fatal?
 bool Alien::fatal(const Obj &other) const {
-   bool rslt = false;
-
-   if (!other.dead()) {
-      int w, h;
-      mp_owner->getPlayDims(&w, &h);
-      if (pos.real() < 0 || pos.real() > w || pos.real() < 0 || pos.imag() > h)
-         rslt = false;
-      else
-         rslt = (other.type() == otFire || other.mass() > mass());
-   }
-
-   return rslt;
+   if (other.dead()) return false;
+   int w, h;
+   mp_owner->getPlayDims(&w, &h);
+   return
+      pos.real() >= 0 && pos.real() <= w && pos.imag() >= 0 && pos.imag() <= h &&
+      (other.type() == otFire || other.mass() > mass());
 }
 
 // Move the object.
@@ -695,7 +680,7 @@ void Fire::tick() {
 
    // Allow for it to get as much as 3/4 of the way across the screen.
       double speed = abs(dir);
-      m_dead = (speed == 0.0 || speed*m_tickCnt > 3.0/4.0*mp_owner->minDim());
+      m_dead = speed == 0.0 || speed*m_tickCnt > 3.0/4.0*mp_owner->minDim();
    }
 }
 
@@ -744,10 +729,10 @@ Debris::Debris(Engine &owner): Obj(owner) {
 // Connect the final point and randomly orient it.
    m_points[m_pointCnt - 1] = m_points[0];
 
-   rotate(TPI*Obj::randFloat());
+   rotate(TwoPi*Obj::randFloat());
 
 // Endow it with a rotation speed of approximately 8 degrees per tick.
-   m_rotDelta = TPI*8.0/360.0;
+   m_rotDelta = TwoPi*8.0/360.0;
    if (Obj::randFloat() < 0.5) m_rotDelta = -m_rotDelta;
 
 // Get the collision radius.
@@ -846,7 +831,7 @@ bool Thrust::kuypier() const {
 }
 
 // Would a collision with other be fatal?
-bool Thrust::fatal(const Obj &) const {
+bool Thrust::fatal(const Obj &/*other*/) const {
    return false;
 }
 
@@ -880,7 +865,7 @@ void Thrust::explode() {
 
 // class Label: public methods
 // ───────────────────────────
-// Make a new Label: endowed with a lifespan life in seconds.
+// Make a new Label object: endowed with a lifespan life in seconds.
 Label::Label(Engine &owner, int life): Obj(owner) {
    m_life = life;
 }
@@ -905,7 +890,7 @@ bool Label::kuypier() const {
 }
 
 // Would a collision with other be fatal?
-bool Label::fatal(const Obj &) const {
+bool Label::fatal(const Obj &/*other*/) const {
    return false;
 }
 

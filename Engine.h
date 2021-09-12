@@ -21,7 +21,7 @@ const int HALF_MAX_TICK = 1500, ROCK_LIFE_LIMIT = 25, CHARGE_MOD = 12;
 const double SHIP_ROTATE_DELTA = 9.0;
 // Probabiities: rock and alien creation at 0.5 HALF_MAX_TICK; spontaneous rock explosion.
 const double ROCK_PROB = 0.02, ALIEN_PROB = 0.005, ROCK_EXPLODE_PROB = 0.001;
-// Game speed controls: ship thrust factor, ship file recoil, alien thrust factor, initial rock speed factor.
+// Game speed controls: ship thrust factor, ship file recoil, alien thrust factor and initial rock speed factor.
 const double SHIP_THRUST_MULT = 0.25, FIRE_RECOIL_MULT = 0.01, ALIEN_THRUST_MULT = 1.0, ROCK_SPEED_MULT = 0.735;
 
 // The game logic engine and game object roster

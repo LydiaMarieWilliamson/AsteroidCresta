@@ -42,15 +42,12 @@ private:
    void m_drawIntroScreen0();
    void m_drawIntroScreen1();
    void m_drawIntroScreen2();
-// Game key control id.
-   enum GameKey { GK_NONE = 0, GK_LEFT, GK_RIGHT, GK_THRUST, GK_FIRE };
-   static GameKey sm_qkToGk(int qtk);
 private slots:
    void m_poll();
 protected:
    virtual void paintEvent(QPaintEvent *event);
 public:
-   GameWidget(QWidget *parent = 0);
+   GameWidget(QWidget *parent = nullptr);
    ~GameWidget();
    void pause(bool p);
    bool isPaused() const;
@@ -64,10 +61,10 @@ public:
    void setSounds(bool s);
    bool music() const;
    void setMusic(bool m);
-   QColor background() const;
-   void setBackground(const QColor &c);
    QColor foreground() const;
    void setForeground(const QColor &c);
+   QColor background() const;
+   void setBackground(const QColor &c);
    double difficulty() const;
    void setDifficulty(const double &dif);
    int pollRate() const;

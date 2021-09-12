@@ -4,10 +4,10 @@
 #include "About.h"
 #include "Version.h"
 
-// class GameWidget: protected members
-// ───────────────────────────────────
-void AboutWindow::paintEvent(QPaintEvent *) {
+// class AboutWindow: protected members
+// ────────────────────────────────────
 // Re-paint on displayWidget.
+void AboutWindow::paintEvent(QPaintEvent *) {
    QPainter painter(this);
    painter.drawPixmap(0, 0, *mp_artwork);
 
@@ -65,7 +65,7 @@ AboutWindow::AboutWindow(QWidget *parent): QDialog(parent, Qt::Dialog | Qt::Wind
 
 // Set up the layout grid.
 // Note: we add a spacer at to create an area in which to draw the image and zero the spacing between items.
-// However, there still exists a contentsMargin spacing around the layout itself.
+// However, there is still a contentsMargin spacing around the grid itself.
 // In order to leave a margin around the button bar, we size the draw area so as to include the margin.
 // Because we will draw the image at the top left of client window, no margin will be shown around the image
 // and the top spacer area will be used to create a spacer between the image and button bar instead.

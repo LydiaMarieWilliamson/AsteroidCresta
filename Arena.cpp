@@ -7,28 +7,19 @@
 #include "Game.h"
 
 // Window constants.
-const int DEF_WIDTH = 580;
-const int DEF_POS_X = 200;
-const int DEF_HEIGHT = 435;
-const int DEF_POS_Y = 200;
+const int DEF_WIDTH = 580, DEF_POS_X = 200;
+const int DEF_HEIGHT = 435, DEF_POS_Y = 200;
 
 // Settings value names.
-const QString SET_WIN_SIZE = "win_size";
-const QString SET_WIN_POS = "win_pos";
-const QString SET_WIN_MAX = "win_max";
-const QString SET_DIFF_EASY = "diff_easy";
-const QString SET_DIFF_NORM = "diff_norm";
-const QString SET_DIFF_HARD = "diff_hard";
-const QString SET_SOUNDS = "sounds";
-const QString SET_MUSIC = "music";
-const QString SET_HISCORE = "hiscore";
+const QString SET_WIN_SIZE = "win_size", SET_WIN_POS = "win_pos", SET_WIN_MAX = "win_max";
+const QString SET_DIFF_EASY = "diff_easy", SET_DIFF_NORM = "diff_norm", SET_DIFF_HARD = "diff_hard";
+const QString SET_SOUNDS = "sounds", SET_MUSIC = "music", SET_HISCORE = "hiscore";
 
 // Game constants.
-const double DIFF_EASY = 0.25;
-const double DIFF_NORM = 0.5;
-const double DIFF_HARD = 0.75;
+const double DIFF_EASY = 0.25, DIFF_NORM = 0.5, DIFF_HARD = 0.75;
 
 // class MainWindow: private members
+// ─────────────────────────────────
 // Create and set up the main menu.
 void MainWindow::m_createMainMenu() {
 // File.
@@ -113,7 +104,7 @@ void MainWindow::m_writeSettings() {
    mp_settings->setValue(SET_DIFF_NORM, mp_diffNormAct->isChecked());
    mp_settings->setValue(SET_DIFF_HARD, mp_diffHardAct->isChecked());
 
-// Write the sound/music presets.
+// Write the sound/music action presets.
    mp_settings->setValue(SET_SOUNDS, mp_soundsAct->isChecked());
    mp_settings->setValue(SET_MUSIC, mp_musicAct->isChecked());
 
@@ -138,14 +129,7 @@ void MainWindow::m_exit() {
 
 // Handle changes to the options state.
 void MainWindow::m_setOptions() {
-   if (mp_diffEasyAct->isChecked()) {
-      mp_gameWidget->setDifficulty(DIFF_EASY);
-   } else if (mp_diffEasyAct->isChecked()) {
-      mp_gameWidget->setDifficulty(DIFF_HARD);
-   } else {
-      mp_gameWidget->setDifficulty(DIFF_NORM);
-   }
-
+   mp_gameWidget->setDifficulty(mp_diffEasyAct->isChecked()? DIFF_EASY: mp_diffEasyAct->isChecked()? DIFF_HARD: DIFF_NORM);
    mp_gameWidget->setSounds(mp_soundsAct->isChecked());
    mp_gameWidget->setMusic(mp_musicAct->isChecked());
 }
@@ -158,7 +142,7 @@ void MainWindow::m_weburl() {
 // The about box.
 void MainWindow::m_about() {
 // Create on the first show.
-   if (mp_aboutWindow == 0) {
+   if (mp_aboutWindow == nullptr) {
       mp_aboutWindow = new AboutWindow(this);
    }
 
@@ -223,7 +207,7 @@ MainWindow::MainWindow(): QMainWindow() {
    connect(mp_timer, SIGNAL(timeout()), this, SLOT(m_updateMenu()));
    mp_timer->start(250);
 
-   mp_aboutWindow = 0;
+   mp_aboutWindow = nullptr;
 }
 
 // Free the MainWindow object.

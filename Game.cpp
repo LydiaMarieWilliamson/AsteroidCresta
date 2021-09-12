@@ -22,9 +22,7 @@ int GameWidget::m_txs() const {
 double GameWidget::m_scale() const {
    int gw;
    mp_engine->getPlayDims(&gw, 0);
-
-   if (gw > 0) return (double)width()/gw;
-   else return 1.0;
+   return gw > 0? (double)width()/gw: 1.0;
 }
 
 // Resize the internal gaming area by adjusting its aspect ratio in such a way as to keep the area approximately constant.
@@ -47,19 +45,10 @@ void GameWidget::m_setFont(QPainter &p, asteroid::LFSize sz, bool bold) {
    QFont f = p.font();
 
    switch (sz) {
-      case asteroid::lfSmall:
-         ps = 10;
-         break;
-      case asteroid::lfLarge:
-         ps = 14;
-         break;
-      case asteroid::lfHugeBold:
-         ps = 16;
-         bold = true;
-         break;
-      default:
-         ps = 12;
-         break;
+      case asteroid::lfSmall: ps = 10; break;
+      case asteroid::lfLarge: ps = 14; break;
+      case asteroid::lfHugeBold: ps = 16, bold = true; break;
+      default: ps = 12; break;
    }
 
 // Rescale the point size up to a fixed lower limit.
@@ -73,22 +62,22 @@ void GameWidget::m_setFont(QPainter &p, asteroid::LFSize sz, bool bold) {
 }
 
 // Draw the text out at x, y; returning the height of the text drawn.
-// Layout options: AlignLeft, AlignRight, AlignHCenter, AlignTop, AlignBottom, AlignVCenter and AlignCenter; others are ingored.
-// These define how the text is aligned to x and y, rather than with respect to any rectangle.
-// For example, if layout AlignRight, the right hand edge of the text will be aligned to x.
+// Layout options: AlignLeft, AlignRight, AlignHCenter, AlignTop, AlignBottom, AlignVCenter and AlignCenter; others are ignored.
+// These define how the text is to be aligned to x and y, rather than with respect to any rectangle.
+// For example, if layout&AlignRight, the right hand edge of the text will be aligned to x.
 int GameWidget::m_textOut(QPainter &p, const QString &s, int x, int y, Qt::Alignment layout) {
    QRect tr = p.boundingRect(rect(), 0, s);
 
 // Horizontal.
-   if ((layout&Qt::AlignRight) != 0) {
+   if (layout&Qt::AlignRight) {
       x -= tr.width();
-   } else if ((layout&Qt::AlignHCenter) != 0 || (layout&Qt::AlignCenter) != 0) {
+   } else if (layout&(Qt::AlignHCenter | Qt::AlignCenter)) {
       x -= tr.width()/2;
    }
 // Vertical.
-   if ((layout&Qt::AlignBottom) != 0) {
+   if (layout&Qt::AlignBottom) {
       y -= tr.height();
-   } else if ((layout&Qt::AlignVCenter) != 0 || (layout&Qt::AlignCenter) != 0) {
+   } else if (layout&(Qt::AlignVCenter | Qt::AlignCenter)) {
       y -= tr.height()/2;
    }
 
@@ -103,7 +92,7 @@ void GameWidget::m_resetScreen(QPainter &p) {
    p.fillRect(rect(), m_backCol);
 }
 
-// Draw play action, including demo phase, during active game play or demo mode to render the game engine objects.
+// Draw the play action, including the demo phase, during active game play or demo mode to render the game engine objects.
 void GameWidget::m_drawPlay() {
    QPainter p(this);
    m_resetScreen(p);
@@ -231,14 +220,8 @@ void GameWidget::m_drawIntroScreen1() {
    y += m_textOut(p, tr("P - Pause"), w/2, y, Qt::AlignHCenter);
    y += m_textOut(p, tr("ESC - Quit Game"), w/2, y, Qt::AlignHCenter);
    y += m_textOut(p, tr(" "), w/2, y, Qt::AlignHCenter);
-
-   QString s = tr("(OFF)");
-   if (m_sounds) s = tr("(ON)");
-   y += m_textOut(p, tr("S - Toggle Game Sounds ") + s, w/2, y, Qt::AlignHCenter);
-
-   QString m = tr("(OFF)");
-   if (m_music) m = tr("(ON)");
-   y += m_textOut(p, tr("M - Toggle Music ") + m, w/2, y, Qt::AlignHCenter);
+   y += m_textOut(p, tr("S - Toggle Game Sounds ") + tr(m_sounds? "(ON)": "(OFF)"), w/2, y, Qt::AlignHCenter);
+   y += m_textOut(p, tr("M - Toggle Music ") + tr(m_music? "(ON)": "(OFF)"), w/2, y, Qt::AlignHCenter);
 
 // The copyright string from the bottom of the page.
    int hy = y;
@@ -300,17 +283,6 @@ void GameWidget::m_drawIntroScreen2() {
    }
 }
 
-// Map QT key presss to game control key values.
-GameWidget::GameKey GameWidget::sm_qkToGk(int qtk) {
-   switch (qtk) {
-      case Qt::Key_K: case Qt::Key_Left: return GK_LEFT;
-      case Qt::Key_L: case Qt::Key_Right: return GK_RIGHT;
-      case Qt::Key_A: case Qt::Key_Up: return GK_THRUST;
-      case Qt::Key_Control: case Qt::Key_Space: return GK_FIRE;
-      default: return GK_NONE;
-   }
-}
-
 // class GameWidget: private slots
 // ───────────────────────────────
 // Internal poller.
@@ -321,7 +293,7 @@ void GameWidget::m_poll() {
 
    if (mp_engine->active()) {
    // The game is active, i.e. in play or showing a demo.
-   // Update the game state for next poll, if active.
+   // Update the game state for the next poll, if active.
       if (!m_paused) {
          mp_engine->tick();
       }
@@ -337,64 +309,42 @@ void GameWidget::m_poll() {
       if (m_sounds && mp_engine->playing()) {
          switch (mp_engine->rockExplodeSnd()) {
             case asteroid::otBigRock:
-               mp_explodeAudio->setCurrentSource(Phonon::MediaSource(path + "explode_large.wav"));
-               mp_explodeAudio->play();
-               break;
+               mp_explodeAudio->setCurrentSource(Phonon::MediaSource(path + "explode_large.wav")), mp_explodeAudio->play();
+            break;
             case asteroid::otMedRock:
-               mp_explodeAudio->setCurrentSource(Phonon::MediaSource(path + "explode_medium.wav"));
-               mp_explodeAudio->play();
-               break;
+               mp_explodeAudio->setCurrentSource(Phonon::MediaSource(path + "explode_medium.wav")), mp_explodeAudio->play();
+            break;
             case asteroid::otSmallRock:
-               mp_explodeAudio->setCurrentSource(Phonon::MediaSource(path + "explode_small.wav"));
-               mp_explodeAudio->play();
-               break;
-            default:
-               break;
+               mp_explodeAudio->setCurrentSource(Phonon::MediaSource(path + "explode_small.wav")), mp_explodeAudio->play();
+            break;
+            default: break;
          }
 
-         if (mp_engine->fireSnd()) {
-            mp_fireAudio->setCurrentSource(Phonon::MediaSource(path + "fire.wav"));
-            mp_fireAudio->play();
-         }
+         if (mp_engine->fireSnd())
+            mp_fireAudio->setCurrentSource(Phonon::MediaSource(path + "fire.wav")), mp_fireAudio->play();
 
-         if (mp_engine->thrustSnd()) {
-            if (mp_thrustAudio->state() != Phonon::PlayingState && mp_thrustAudio->state() != Phonon::BufferingState) {
-               mp_thrustAudio->setCurrentSource(Phonon::MediaSource(path + "thrust.wav"));
-               mp_thrustAudio->play();
-            }
-         } else {
+         if (!mp_engine->thrustSnd())
             mp_thrustAudio->stop();
-         }
+         else if (mp_thrustAudio->state() != Phonon::PlayingState && mp_thrustAudio->state() != Phonon::BufferingState)
+            mp_thrustAudio->setCurrentSource(Phonon::MediaSource(path + "thrust.wav")), mp_thrustAudio->play();
 
-         if (mp_engine->alienSnd()) {
-            mp_eventAudio->setCurrentSource(Phonon::MediaSource(path + "alien.wav"));
-            mp_eventAudio->play();
-         }
+         if (mp_engine->alienSnd())
+            mp_eventAudio->setCurrentSource(Phonon::MediaSource(path + "alien.wav")), mp_eventAudio->play();
 
-         if (mp_engine->diedSnd()) {
-            mp_eventAudio->setCurrentSource(Phonon::MediaSource(path + "die.wav"));
-            mp_eventAudio->play();
-         }
+         if (mp_engine->diedSnd())
+            mp_eventAudio->setCurrentSource(Phonon::MediaSource(path + "die.wav")), mp_eventAudio->play();
       }
    } else if (time(0) >= m_timeMark + INTRO_SCREEN_SEC) {
-   // Rotate intro screens, including any change from the intro to the demo state.
+   // Rotate the intro screens, including any change from the intro to the demo state.
       switch (m_gameState) {
-         case GS_INTRO_0:
-            setGameState(GS_INTRO_1);
-            break;
-         case GS_INTRO_1:
-            setGameState(GS_INTRO_2);
-            break;
-         case GS_INTRO_2:
-            setGameState(GS_DEMO);
-            break;
-         default:
-            setGameState(GS_INTRO_0);
-            break;
+         case GS_INTRO_0: setGameState(GS_INTRO_1); break;
+         case GS_INTRO_1: setGameState(GS_INTRO_2); break;
+         case GS_INTRO_2: setGameState(GS_DEMO); break;
+         default: setGameState(GS_INTRO_0); break;
       }
    }
 
-// Start the music, change the track or top the music.
+// Start the music, change the track or stop the music.
    if (m_music && (m_playing != mp_engine->playing() || (mp_musicAudio->state() != Phonon::BufferingState && mp_musicAudio->state() != Phonon::PlayingState))) {
       if (mp_engine->playing()) {
          mp_musicAudio->setCurrentSource(Phonon::MediaSource(path + "play.mp3"));
@@ -406,7 +356,7 @@ void GameWidget::m_poll() {
    } else if (!m_music && mp_musicAudio->state() == Phonon::PlayingState) {
       mp_musicAudio->stop();
    }
-// Stop and lingering sounds.
+// Stop any lingering sounds.
    if ((!m_sounds || !mp_engine->playing()) && mp_thrustAudio->state() == Phonon::PlayingState) {
       mp_thrustAudio->stop();
    }
@@ -421,18 +371,10 @@ void GameWidget::paintEvent(QPaintEvent *) {
    m_recalcGameArea();
 
    switch (m_gameState) {
-      case GS_INTRO_0:
-         m_drawIntroScreen0();
-         break;
-      case GS_INTRO_1:
-         m_drawIntroScreen1();
-         break;
-      case GS_INTRO_2:
-         m_drawIntroScreen2();
-         break;
-      default:
-         m_drawPlay();
-         break;
+      case GS_INTRO_0: m_drawIntroScreen0(); break;
+      case GS_INTRO_1: m_drawIntroScreen1(); break;
+      case GS_INTRO_2: m_drawIntroScreen2(); break;
+      default: m_drawPlay(); break;
    }
 }
 
@@ -440,17 +382,10 @@ void GameWidget::paintEvent(QPaintEvent *) {
 // ────────────────────────────────
 // Make a new GameWidget object.
 GameWidget::GameWidget(QWidget *parent): QWidget(parent, Qt::Widget) {
-   m_paused = false;
-   m_sounds = true;
-   m_music = true;
-   m_playing = false;
-   m_soundKeydown = false;
-   m_musicKeydown = false;
-   m_pauseKeydown = false;
-   m_backCol = Qt::black;
-   m_foreCol = Qt::white;
-   m_gameState = GS_INTRO_0;
-   m_timeMark = time(0);
+   m_paused = false, m_sounds = true, m_music = true, m_playing = false;
+   m_soundKeydown = false, m_musicKeydown = false, m_pauseKeydown = false;
+   m_backCol = Qt::black, m_foreCol = Qt::white;
+   m_gameState = GS_INTRO_0, m_timeMark = time(0);
 
 // Create the media players.
    mp_musicAudio = Phonon::createPlayer(Phonon::MusicCategory, Phonon::MediaSource());
@@ -472,7 +407,7 @@ GameWidget::GameWidget(QWidget *parent): QWidget(parent, Qt::Widget) {
    mp_timer->start(DEF_POLL_RATE);
 }
 
-// Free the game object.
+// Free the GameWidget object.
 GameWidget::~GameWidget() {
    try {
       delete mp_engine;
@@ -481,38 +416,30 @@ GameWidget::~GameWidget() {
       delete mp_thrustAudio;
       delete mp_fireAudio;
       delete mp_eventAudio;
-   }
-   catch( ...) {
-   }
+   } catch(...) { }
 }
 
 // Get/set the game-pause state.
-void GameWidget::pause(bool p) {
-   m_paused = (p && isPlaying());
-}
-
 bool GameWidget::isPaused() const {
    return m_paused;
 }
 
-// Get/set the game playing state.
+void GameWidget::pause(bool p) {
+   m_paused = p && isPlaying();
+}
+
+// Get/set the game-playing state.
 void GameWidget::play(bool p) {
-   if (p != isPlaying()) {
-      if (p) {
-         setGameState(GS_PLAY);
-      } else {
-         setGameState(GS_INTRO_0);
-      }
-   }
+   if (p != isPlaying()) setGameState(p? GS_PLAY: GS_INTRO_0);
 }
 
 bool GameWidget::isPlaying() const {
-   return (gameState() == GS_PLAY);
+   return gameState() == GS_PLAY;
 }
 
 // Get/set the game state.
 // Setting can be used to start a game, a demo or to change the intro screen.
-// All changes to the game state should be made through these procedures.
+// All changes to the game state should go through these procedures.
 GameWidget::GameStateType GameWidget::gameState() const {
    return m_gameState;
 }
@@ -572,17 +499,6 @@ void GameWidget::setMusic(bool m) {
    }
 }
 
-QColor GameWidget::background() const {
-   return m_backCol;
-}
-
-void GameWidget::setBackground(const QColor &c) {
-   if (m_backCol != c) {
-      m_backCol = c;
-      update();
-   }
-}
-
 QColor GameWidget::foreground() const {
    return m_foreCol;
 }
@@ -590,6 +506,17 @@ QColor GameWidget::foreground() const {
 void GameWidget::setForeground(const QColor &c) {
    if (m_foreCol != c) {
       m_foreCol = c;
+      update();
+   }
+}
+
+QColor GameWidget::background() const {
+   return m_backCol;
+}
+
+void GameWidget::setBackground(const QColor &c) {
+   if (m_backCol != c) {
+      m_backCol = c;
       update();
    }
 }
@@ -616,107 +543,64 @@ void GameWidget::setPollRate(int ms) {
 // Handle a key down event; meant to be called from outside this class in response to key events.
 // Return true if handled.
 bool GameWidget::keyDown(int k) {
-   GameKey gk = sm_qkToGk(k);
-
-   if (gk != GK_NONE) {
+   switch (k) {
    // Game control keys down.
-      switch (gk) {
-         case GK_LEFT:
-            mp_engine->rotate(-1);
-            break;
-         case GK_RIGHT:
-            mp_engine->rotate(+1);
-            break;
-         case GK_THRUST:
-            mp_engine->thrust(true);
-            break;
-         case GK_FIRE:
-            mp_engine->fire();
-            break;
-         default:
-            break;
-      }
-
-      return true;
-   } else if (k == Qt::Key_Space) {
+      case Qt::Key_K: case Qt::Key_Left: mp_engine->rotate(-1); return true;
+      case Qt::Key_L: case Qt::Key_Right: mp_engine->rotate(+1); return true;
+      case Qt::Key_A: case Qt::Key_Up: mp_engine->thrust(true); return true;
+      case Qt::Key_Control: case Qt::Key_Space: mp_engine->fire(); return true;
+#if 0
    // Start game key down: start the game.
-      play(true);
-      return true;
-   } else if (k == Qt::Key_Escape) {
+      case Qt::Key_Space: play(true); return true;
+#endif
    // Stop game key down: stop the game.
-      play(false);
-      return true;
-   } else if (k == Qt::Key_S) {
+      case Qt::Key_Escape: play(false); return true;
    // Sound key down: toggle the sound state.
-      if (!m_soundKeydown) {
-         setSounds(!m_sounds);
-         m_soundKeydown = true;
-      }
-
+      case Qt::Key_S:
+         if (!m_soundKeydown) {
+            setSounds(!m_sounds);
+            m_soundKeydown = true;
+         }
       return true;
-   } else if (k == Qt::Key_M) {
    // Music key down: toggle the music state.
-      if (!m_musicKeydown) {
-         setMusic(!m_sounds);
-         m_musicKeydown = true;
-      }
-
+      case Qt::Key_M:
+         if (!m_musicKeydown) {
+            setMusic(!m_sounds);
+            m_musicKeydown = true;
+         }
       return true;
-   } else if (k == Qt::Key_P) {
-   // Pause key down: toggle the pausing state.
-      if (!m_pauseKeydown) {
-         pause(!m_paused);
-         m_pauseKeydown = true;
-      }
-
+   // Pause key down: toggle the pause state.
+      case Qt::Key_P:
+         if (!m_pauseKeydown) {
+            pause(!m_paused);
+            m_pauseKeydown = true;
+         }
       return true;
    }
-
    return false;
 }
 
 // Handle a key up event; meant to be called from outside this class in response to key events.
 // Return true if handled.
 bool GameWidget::keyUp(int k) {
-   GameKey gk = sm_qkToGk(k);
-
-   if (gk != GK_NONE) {
+   switch (k) {
    // Game control keys up.
-      switch (gk) {
-         case GK_LEFT:
-         case GK_RIGHT:
-            mp_engine->rotate(0);
-            break;
-         case GK_THRUST:
-            mp_engine->thrust(false);
-            break;
-         case GK_FIRE:
-            mp_engine->reload();
-            break;
-         default:
-            break;
-      }
-
-      return true;
-   } else if (k == Qt::Key_Space) {
+      case Qt::Key_K: case Qt::Key_Left: mp_engine->rotate(0); return true;
+      case Qt::Key_L: case Qt::Key_Right: mp_engine->rotate(0); return true;
+      case Qt::Key_A: case Qt::Key_Up: mp_engine->thrust(false); return true;
+      case Qt::Key_Control: case Qt::Key_Space: mp_engine->reload(); return true;
+#if 0
    // Start game key up.
-      return true;
-   } else if (k == Qt::Key_Escape) {
+      case Qt::Key_Space: return true;
+#endif
    // Stop game key up.
-      return true;
-   } else if (k == Qt::Key_S) {
+      case Qt::Key_Escape: return true;
    // Sound key up.
-      m_soundKeydown = false;
-      return true;
-   } else if (k == Qt::Key_M) {
+      case Qt::Key_S: m_soundKeydown = false; return true;
    // Music key up.
-      m_musicKeydown = false;
-      return true;
-   } else if (k == Qt::Key_P) {
+      case Qt::Key_M: m_musicKeydown = false; return true;
    // Pause key up.
-      m_pauseKeydown = false;
-      return true;
+      case Qt::Key_P: m_pauseKeydown = false; return true;
    }
-
    return false;
 }
