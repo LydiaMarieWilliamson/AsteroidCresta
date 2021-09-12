@@ -69,10 +69,10 @@ public:
    int lives() const;
    int score() const;
    int lastScore() const;
-   int hiscore() const;
-   void hiscore(int hs);
-   double difficulty() const;
-   void difficulty(const double &dif);
+   int GetHiScore() const;
+   void SetHiScore(int hs);
+   double GetLevel() const;
+   void SetLevel(const double &dif);
 // The game and ship control input.
    void addAlienCheat();
    void rotate(int r);

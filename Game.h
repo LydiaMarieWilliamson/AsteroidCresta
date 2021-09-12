@@ -19,58 +19,57 @@ class Game: public QWidget {
 Q_OBJECT
 public:
 // The game state.
-   typedef int GameStateType;
-   static const GameStateType GS_INTRO_0 = 0, GS_INTRO_1 = 1, GS_INTRO_2 = 2, GS_PLAY = 3, GS_DEMO = 4;
+   typedef enum { Intro0Q = 0, Intro1Q = 1, Intro2Q = 2, PlayQ = 3, DemoQ = 4 } StateT;
 private:
-   bool m_paused, m_sounds, m_music, m_playing;
-   bool m_soundKeydown, m_musicKeydown, m_pauseKeydown;
-   time_t m_timeMark;
-   double m_defaultGameArea;
-   GameStateType m_gameState;
-   QColor m_backCol, m_foreCol;
+   bool _Pausing, _Sounding, _Singing, _Playing;
+   bool _EnPause, _EnSound, _EnMusic;
+   time_t _Time0;
+   double _Arena;
+   StateT _State;
+   QColor _ColorFg, _ColorBg;
    QTimer *_Timer;
-   asteroid::Engine *mp_engine;
+   asteroid::Engine *_Machine;
 // Sound players
-   Phonon::MediaObject *mp_musicAudio, *mp_explodeAudio, *mp_thrustAudio, *mp_fireAudio, *mp_eventAudio;
-   int m_txs() const;
-   double m_scale() const;
-   void m_recalcGameArea();
-   void m_setFont(QPainter &p, asteroid::LFSize sz, bool bold = false);
-   int m_textOut(QPainter &p, const QString &s, int x, int y, Qt::Alignment layout = Qt::AlignLeft | Qt::AlignTop);
-   void m_resetScreen(QPainter &p);
-   void m_drawPlay();
-   void m_drawIntroScreen0();
-   void m_drawIntroScreen1();
-   void m_drawIntroScreen2();
+   Phonon::MediaObject *_MusicWav, *_BoomWav, *_ThrustWav, *_FireWav, *_EventWav;
+   int _Filler() const;
+   double _Scaling() const;
+   void _ResizeArena();
+   void _SetFont(QPainter &p, asteroid::LFSize sz, bool bold = false);
+   int _PutStr(QPainter &p, const QString &s, int x, int y, Qt::Alignment layout = Qt::AlignLeft | Qt::AlignTop);
+   void _ResetScreen(QPainter &p);
+   void _ShowPlay();
+   void _ShowIntro0();
+   void _ShowIntro1();
+   void _ShowIntro2();
 private slots:
-   void m_poll();
+   void _Poll();
 protected:
    virtual void paintEvent(QPaintEvent *event);
 public:
    Game(QWidget *parent = nullptr);
    ~Game();
-   void pause(bool p);
-   bool isPaused() const;
-   void play(bool p);
-   bool isPlaying() const;
-   Game::GameStateType gameState() const;
-   void setGameState(Game::GameStateType gs);
-   int hiscore() const;
-   void setHiscore(int hs);
-   bool sounds() const;
-   void setSounds(bool s);
-   bool music() const;
-   void setMusic(bool m);
-   QColor foreground() const;
-   void setForeground(const QColor &c);
-   QColor background() const;
-   void setBackground(const QColor &c);
-   double difficulty() const;
-   void setDifficulty(const double &dif);
-   int pollRate() const;
-   void setPollRate(int ms);
-   bool keyDown(int k);
-   bool keyUp(int k);
+   bool GetPausing() const;
+   void SetPausing(bool p);
+   bool GetPlaying() const;
+   void SetPlaying(bool p);
+   Game::StateT GetState() const;
+   void SetState(Game::StateT gs);
+   int GetHiScore() const;
+   void SetHiScore(int hs);
+   bool GetSounding() const;
+   void SetSounding(bool s);
+   bool GetSinging() const;
+   void SetSinging(bool m);
+   QColor GetColorFg() const;
+   void SetColorFg(const QColor &c);
+   QColor GetColorBg() const;
+   void SetColorBg(const QColor &c);
+   double GetLevel() const;
+   void SetLevel(const double &dif);
+   int GetPollRate() const;
+   void SetPollRate(int ms);
+   bool EnKey(int k);
+   bool DeKey(int k);
 };
 
 #endif // OnceOnly

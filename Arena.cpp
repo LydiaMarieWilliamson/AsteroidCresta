@@ -86,7 +86,7 @@ void Arena::_GetSettings() {
    _SoundAct->setChecked(_Settings->value(SET_SOUNDS, true).toBool());
    _MusicAct->setChecked(_Settings->value(SET_MUSIC, true).toBool());
 
-   _Game->setHiscore(_Settings->value(SET_HISCORE, 0).toInt());
+   _Game->SetHiScore(_Settings->value(SET_HISCORE, 0).toInt());
 
 // Apply the menu settings.
    _SetOptions();
@@ -109,18 +109,18 @@ void Arena::_PutSettings() {
    _Settings->setValue(SET_MUSIC, _MusicAct->isChecked());
 
 // Write the game widget presets.
-   _Settings->setValue(SET_HISCORE, _Game->hiscore());
+   _Settings->setValue(SET_HISCORE, _Game->GetHiScore());
 }
 
 // class Arena: private slots
 // ──────────────────────────
 // Handle the new game, end game and exit events.
 void Arena::_NewGame() {
-   _Game->play(true);
+   _Game->SetPlaying(true);
 }
 
 void Arena::_EndGame() {
-   _Game->play(false);
+   _Game->SetPlaying(false);
 }
 
 void Arena::_ExitGame() {
@@ -129,9 +129,9 @@ void Arena::_ExitGame() {
 
 // Handle changes to the options state.
 void Arena::_SetOptions() {
-   _Game->setDifficulty(_EasyAct->isChecked()? DIFF_EASY: _EasyAct->isChecked()? DIFF_HARD: DIFF_NORM);
-   _Game->setSounds(_SoundAct->isChecked());
-   _Game->setMusic(_MusicAct->isChecked());
+   _Game->SetLevel(_EasyAct->isChecked()? DIFF_EASY: _EasyAct->isChecked()? DIFF_HARD: DIFF_NORM);
+   _Game->SetSounding(_SoundAct->isChecked());
+   _Game->SetSinging(_MusicAct->isChecked());
 }
 
 // Launch a browser.
@@ -151,25 +151,25 @@ void Arena::_ShowAbout() {
 
 // Timer slot - update the game start/stop menus when the game ends.
 void Arena::_UpdateMenu() {
-   _NewGameAct->setEnabled(!_Game->isPlaying());
-   _EndGameAct->setEnabled(_Game->isPlaying());
+   _NewGameAct->setEnabled(!_Game->GetPlaying());
+   _EndGameAct->setEnabled(_Game->GetPlaying());
 
 // The sound state.
-   _SoundAct->setChecked(_Game->sounds());
+   _SoundAct->setChecked(_Game->GetSounding());
 }
 
 // class Arena: protected members
 // ──────────────────────────────
 // Handle a key down event.
 void Arena::keyPressEvent(QKeyEvent *event) {
-   if (!_Game->keyDown(event->key())) {
+   if (!_Game->EnKey(event->key())) {
       QMainWindow::keyPressEvent(event);
    }
 }
 
 // Handle a key up event.
 void Arena::keyReleaseEvent(QKeyEvent *event) {
-   if (!_Game->keyUp(event->key())) {
+   if (!_Game->DeKey(event->key())) {
       QMainWindow::keyReleaseEvent(event);
    }
 }

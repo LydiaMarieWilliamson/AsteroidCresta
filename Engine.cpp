@@ -523,20 +523,20 @@ int Engine::lastScore() const {
 
 // Get/set the high score.
 // This can be set if the high score is stored between application launches.
-int Engine::hiscore() const {
+int Engine::GetHiScore() const {
    return m_highScore;
 }
 
-void Engine::hiscore(int hs) {
+void Engine::SetHiScore(int hs) {
    m_highScore = hs;
 }
 
 // Get/set the game level; higher = more difficult games.
-double Engine::difficulty() const {
+double Engine::GetLevel() const {
    return m_diff;
 }
 
-void Engine::difficulty(const double &dif) {
+void Engine::SetLevel(const double &dif) {
    if (dif > 0.0 && dif <= 1.0)
       m_diff = dif;
 }
