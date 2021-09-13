@@ -1,4 +1,4 @@
-For now, the two sets of media files
+For now, the two sets of media files:
 ∙	Version 1.8 (the files originally distributed):
 	Intro0.mp3,
 	Play0.mp3
@@ -6,7 +6,7 @@ and
 ∙	Version 1.9 (the files)
 	Intro1.mp3 (modified by Darth Ninja in 2015, Darth Spectra's voice added in 2020)
 	Play1.mp3 (modified by Darth Ninja in 2016, refinements by Darth Spectra in 2020)
-are selected between using symbolic links; which are current set as:
+are selected between using symbolic links; which are currently set as:
 	Intro.mp3 → Intro1.mp3
 	Play.mp3 → Play1.mp3
 
