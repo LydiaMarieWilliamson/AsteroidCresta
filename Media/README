@@ -1,0 +1,37 @@
+For now, the two sets of media files
+∙	Version 1.8 (the files originally distributed):
+	Intro0.mp3,
+	Play0.mp3
+and
+∙	Version 1.9 (the files)
+	Intro1.mp3 (modified by Darth Ninja in 2015, Darth Spectra's voice added in 2020)
+	Play1.mp3 (modified by Darth Ninja in 2016, refinements by Darth Spectra in 2020)
+are selected between using symbolic links; which are current set as:
+	Intro.mp3 → Intro1.mp3
+	Play.mp3 → Play1.mp3
+
+A more ideal arrangement would be to set up the following items in a Makefile:
+
+## System link command:
+#LN=cp
+LN=ln -sf
+
+## Media Version:
+#MV=0
+MV=1
+Intro.mp3: Intro$(MV).mp3
+	$(LN) Intro$(MV).mp3 Intro.mp3
+Play.mp3: Play$(MV).mp3
+	$(LN) Play$(MV).mp3 Play.mp3
+
+However, this will require either
+∙	modifying the top-level Asteroid.pro QT makefile somehow invoke a call to a Makefile in this subdirectory,
+or
+∙	creating a new top-level Makefile that will
+	―	invoke qmake on Asteroid.pro to generate the previous top level Makefile,
+	and
+	―	also invoke the Makefile in this subdirectory.
+or otherwise
+∙	to add run-time media selection to the menu or as a start-up configuration option.
+
+The decision between these alternatives, or other alternatives as-yet-unseen, will be reserved for a later revision.
