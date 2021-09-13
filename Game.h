@@ -53,7 +53,7 @@ public:
    bool GetPlaying() const;
    void SetPlaying(bool Playing);
    Game::StateT GetState() const;
-   void SetState(Game::StateT Q);
+   void SetState(Game::StateT State);
    int GetHiScore() const;
    void SetHiScore(int Score);
    bool GetSounding() const;

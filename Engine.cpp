@@ -260,7 +260,7 @@ bool Engine::GetActive() const { return _Active; }
 bool Engine::InDemo() const { return _Active && _EndDemoMark > 0; }
 
 // Is the game in play?
-bool Engine::InGame() const { return _Active && !InDemo(); }
+bool Engine::InGame() const { return _Active && _EndDemoMark <= 0; }
 
 // Test for ‟GAME OVER” after a short pause of its being set, to allow time for the label to be seen.
 bool Engine::EndGame() const { return !_Active || (_EndGameMark > 0 && time(0) > _EndGameMark); }
@@ -302,8 +302,8 @@ void Engine::Tick() {
          Sh->ReLoad(true);
       // One in 3 chance of firing.
          if (Thing::RandB(0.3)) Sh->Fire();
+      // One in 10 chance of changing what ship was doing on last tick.
          if (Thing::RandB(0.1)) {
-         // One in 10 chance of changing what ship was doing on last tick.
             Sh->SetSpin(0), Sh->SetPushing(false);
          // New random action: 1/5 thrust, 3/10 rotate left, 3/10 rotate right, 1/5 do nothing.
             double Act = Thing::RandR();
@@ -327,11 +327,12 @@ void Engine::Tick() {
    // Avoid repetitions.
       _NewLifeWait = 0;
    // Add a new ship and re-create the initial rocks or end the game if there are no lives left.
-      if (_Lives > 0) {
+      if (_Lives <= 0) Ended = true;
+      else {
          _Empty(false);
          for (int n = 0; n < _InitRocks; n++) AddKuypier(BoulderOT, 0);
          AddThing(ShipOT, ObjPos(_Xs/2, _Ys/2));
-      } else Ended = true;
+      }
    }
 // Demo timeout.
    Ended |= InDemo() && time(0) > _EndDemoMark;
@@ -407,7 +408,7 @@ bool Engine::GetAlienSnd() const { return _AlienSnd; }
 bool Engine::GetDiedSnd() const { return _DiedSnd; }
 
 // Get/set the playing width and height.
-// Note:
+// Notes:
 // ∙	Objects may occupy positions outside this region, and if so, should not be rendered (or DC clipped).
 // ∙	The region outside *XsP and *YsP is known as the Kuypier area
 //	and allows for asteroids to wander naturally into the game area.

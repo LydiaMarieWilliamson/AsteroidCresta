@@ -92,10 +92,9 @@ void Game::_ShowPlay() {
    // Add the labels.
       QString Str = tr(Obj->GetCaption().c_str());
    // Draw the new position, if there is one.
-      if (!Str.isEmpty()) {
-         int X = (int)(Sc*Obj->_Pos.real()), Y = (int)(Sc*Obj->_Pos.imag());
-         _SetFont(Pnt, Obj->GetPts()), _PutStr(Pnt, Str, X, Y, Qt::AlignCenter);
-      }
+      if (!Str.isEmpty())
+         _SetFont(Pnt, Obj->GetPts()),
+         _PutStr(Pnt, Str, (int)(Sc*Obj->_Pos.real()), (int)(Sc*Obj->_Pos.imag()), Qt::AlignCenter);
    }
 // Indicate paused, if applicable.
    if (_Pausing) _SetFont(Pnt, Asteroid::SmallLF), _PutStr(Pnt, tr("PAUSED"), width()/2, height()/2, Qt::AlignCenter);
@@ -112,15 +111,18 @@ void Game::_ShowIntro0() {
    QPainter Pnt(this); _ResetScreen(Pnt);
    int Xs = width(), Ys = height(), Y = Ys/8;
 // Titles.
-   _SetFont(Pnt, Asteroid::HugeBoldLF), Y += _PutStr(Pnt, AppName.toUpper(), Xs/2, Y, Qt::AlignHCenter);
+   _SetFont(Pnt, Asteroid::HugeBoldLF);
+   Y += _PutStr(Pnt, AppName.toUpper(), Xs/2, Y, Qt::AlignHCenter);
    _SetFont(Pnt, Asteroid::SmallLF);
    int dY = _PutStr(Pnt, AppCopyRight, Xs/2, Y, Qt::AlignHCenter);
    Y += 2*dY;
-   _SetFont(Pnt, Asteroid::MediumLF), Y += _PutStr(Pnt, tr("INSERT COIN"), Xs/2, Y, Qt::AlignHCenter);
+   _SetFont(Pnt, Asteroid::MediumLF);
+   Y += _PutStr(Pnt, tr("INSERT COIN"), Xs/2, Y, Qt::AlignHCenter);
 // The website string from the bottom of the page.
    int Yh = Y;
    Y = 7*Ys/8;
-   _SetFont(Pnt, Asteroid::MediumLF), Y -= _PutStr(Pnt, AppDomain, Xs/2, Y, Qt::AlignHCenter | Qt::AlignBottom);
+   _SetFont(Pnt, Asteroid::MediumLF);
+   Y -= _PutStr(Pnt, AppDomain, Xs/2, Y, Qt::AlignHCenter | Qt::AlignBottom);
 // Additional text (not shown if no room).
    int Yt = 4*dY;
    if (Yt < Y - Yh) {
@@ -135,12 +137,13 @@ void Game::_ShowIntro0() {
 // Draw intro screen #1.
 void Game::_ShowIntro1() {
    QPainter Pnt(this); _ResetScreen(Pnt);
-   int Xs = width(), Ys = height(), Y = Ys/8;
+   int Xs = width(), Ys = height();
+   int Y = Ys/8;
 // Titles.
    _SetFont(Pnt, Asteroid::HugeBoldLF);
-   int dY = _PutStr(Pnt, AppName.toUpper(), Xs/2, Y, Qt::AlignHCenter);
-   Y += 2*dY;
-   _SetFont(Pnt, Asteroid::MediumLF), Y += _PutStr(Pnt, tr("CONTROLS"), Xs/2, Y, Qt::AlignHCenter);
+   Y += 2*_PutStr(Pnt, AppName.toUpper(), Xs/2, Y, Qt::AlignHCenter);
+   _SetFont(Pnt, Asteroid::MediumLF);
+   Y += _PutStr(Pnt, tr("CONTROLS"), Xs/2, Y, Qt::AlignHCenter);
 // Keys.
    _SetFont(Pnt, Asteroid::SmallLF);
    Y += _PutStr(Pnt, tr("L ARROW (or K) - Rotate Left"), Xs/2, Y, Qt::AlignHCenter);
@@ -157,23 +160,24 @@ void Game::_ShowIntro1() {
    Y = Ys - _Filler();
 #if 0
 //(@) Redundant, over-booked in size, and therefore removed.
-   _SetFont(Pnt, Asteroid::SmallLF), _PutStr(Pnt, AppCopyRight, _Filler(), Y, Qt::AlignBottom);
+   _SetFont(Pnt, Asteroid::SmallLF);
+   _PutStr(Pnt, AppCopyRight, _Filler(), Y, Qt::AlignBottom);
    Y -= _PutStr(Pnt, AppDomain, Xs - _Filler(), Y, Qt::AlignRight | Qt::AlignBottom);
 #endif
 // Additional text (not shown if there is no room).
    _SetFont(Pnt, Asteroid::MediumLF);
-   dY = _PutStr(Pnt, tr(" "), Xs/2, Y, Qt::AlignHCenter | Qt::AlignBottom);
+   int dY = _PutStr(Pnt, tr(" "), Xs/2, Y, Qt::AlignHCenter | Qt::AlignBottom);
    if (dY < Y - Yh) _PutStr(Pnt, tr("Press SPACE to Play"), Xs/2, Yh + (Y - Yh - dY)/2, Qt::AlignHCenter);
 }
 
 // Draw intro screen #2.
 void Game::_ShowIntro2() {
    QPainter Pnt(this); _ResetScreen(Pnt);
-   int Xs = width(), Ys = height(), Y = Ys/8;
+   int Xs = width(), Ys = height();
+   int Y = Ys/8;
 // Hi Score.
    _SetFont(Pnt, Asteroid::HugeBoldLF);
-   int dY = _PutStr(Pnt, AppName.toUpper(), Xs/2, Y, Qt::AlignHCenter);
-   Y += 3*dY;
+   Y += 3*_PutStr(Pnt, AppName.toUpper(), Xs/2, Y, Qt::AlignHCenter);
    _SetFont(Pnt, Asteroid::MediumLF);
    Y += _PutStr(Pnt, tr("HIGHEST SCORE : ") + QString::number(_Machine->GetHiScore()), Xs/2, Y, Qt::AlignHCenter);
    Y += _PutStr(Pnt, tr("LAST SCORE : ") + QString::number(_Machine->GetExScore()), Xs/2, Y, Qt::AlignHCenter);
@@ -182,12 +186,13 @@ void Game::_ShowIntro2() {
    Y = Ys - _Filler();
 #if 0
 //(@) Redundant, over-booked in size, and therefore removed.
-   _SetFont(Pnt, Asteroid::SmallLF), _PutStr(Pnt, AppCopyRight, _Filler(), Y, Qt::AlignBottom);
+   _SetFont(Pnt, Asteroid::SmallLF);
+   _PutStr(Pnt, AppCopyRight, _Filler(), Y, Qt::AlignBottom);
    Y -= _PutStr(Pnt, AppDomain, Xs - _Filler(), Y, Qt::AlignRight | Qt::AlignBottom);
 #endif
 // Additional text (not shown if there's no room).
    _SetFont(Pnt, Asteroid::MediumLF);
-   dY = _PutStr(Pnt, tr(" "), Xs/2, Y, Qt::AlignHCenter | Qt::AlignBottom);
+   int dY = _PutStr(Pnt, tr(" "), Xs/2, Y, Qt::AlignHCenter | Qt::AlignBottom);
    if (dY < Y - Yh) _PutStr(Pnt, tr("Press SPACE to Play"), Xs/2, Yh + (Y - Yh - dY)/2, Qt::AlignHCenter);
 }
 
@@ -197,7 +202,7 @@ void Game::_ShowIntro2() {
 // Called repeatedly to update the game state; also responsible for paging through the intro screens.
 void Game::_Poll() {
 // The media file's pathname.
-   const QString Path = QCoreApplication::applicationDirPath() + "/media/";
+   const QString Path = QCoreApplication::applicationDirPath() + "/Media/";
    if (_Machine->GetActive()) {
    // The game is active, i.e. in play or showing a demo.
    // Update the game state for the next poll, if active.
@@ -208,22 +213,22 @@ void Game::_Poll() {
       if (_Sounding && _Machine->InGame()) {
          switch (_Machine->GetBoomSnd()) {
             case Asteroid::BoulderOT:
-               _BoomWav->setCurrentSource(PhononFile(Path, "explode_large.wav")), _BoomWav->play();
+               _BoomWav->setCurrentSource(PhononFile(Path, "Boom.wav")), _BoomWav->play();
             break;
             case Asteroid::StoneOT:
-               _BoomWav->setCurrentSource(PhononFile(Path, "explode_medium.wav")), _BoomWav->play();
+               _BoomWav->setCurrentSource(PhononFile(Path, "Blast.wav")), _BoomWav->play();
             break;
             case Asteroid::PebbleOT:
-               _BoomWav->setCurrentSource(PhononFile(Path, "explode_small.wav")), _BoomWav->play();
+               _BoomWav->setCurrentSource(PhononFile(Path, "Pop.wav")), _BoomWav->play();
             break;
             default: break;
          }
-         if (_Machine->GetLanceSnd()) _FireWav->setCurrentSource(PhononFile(Path, "fire.wav")), _FireWav->play();
+         if (_Machine->GetLanceSnd()) _FireWav->setCurrentSource(PhononFile(Path, "Fire.wav")), _FireWav->play();
          if (!_Machine->GetThrustSnd()) _ThrustWav->stop();
          else if (_ThrustWav->state() != Phonon::PlayingState && _ThrustWav->state() != Phonon::BufferingState)
-            _ThrustWav->setCurrentSource(PhononFile(Path, "thrust.wav")), _ThrustWav->play();
-         if (_Machine->GetAlienSnd()) _EventWav->setCurrentSource(PhononFile(Path, "alien.wav")), _EventWav->play();
-         if (_Machine->GetDiedSnd()) _EventWav->setCurrentSource(PhononFile(Path, "die.wav")), _EventWav->play();
+            _ThrustWav->setCurrentSource(PhononFile(Path, "Thrust.wav")), _ThrustWav->play();
+         if (_Machine->GetAlienSnd()) _EventWav->setCurrentSource(PhononFile(Path, "Alien.wav")), _EventWav->play();
+         if (_Machine->GetDiedSnd()) _EventWav->setCurrentSource(PhononFile(Path, "Die.wav")), _EventWav->play();
       }
    } else if (time(0) >= _Time0 + IntroScreenTime)
    // Rotate the intro screens, including any change from the intro to the demo state.
@@ -235,7 +240,7 @@ void Game::_Poll() {
       }
 // Start the music, change the track or stop the music.
    if (_Singing && (_Playing != _Machine->InGame() || (_MusicWav->state() != Phonon::BufferingState && _MusicWav->state() != Phonon::PlayingState)))
-      _MusicWav->setCurrentSource(PhononFile(Path, _Machine->InGame()? "play.mp3": "intro.mp3")), _MusicWav->play();
+      _MusicWav->setCurrentSource(PhononFile(Path, _Machine->InGame()? "Play.mp3": "Intro.mp3")), _MusicWav->play();
    else if (!_Singing && _MusicWav->state() == Phonon::PlayingState)
       _MusicWav->stop();
 // Stop any lingering sounds.
@@ -302,16 +307,16 @@ void Game::SetPlaying(bool Playing) {
 // All changes to the game state should go through these procedures.
 Game::StateT Game::GetState() const { return _State; }
 
-void Game::SetState(Game::StateT Q) {
-   if (Q != _State) {
+void Game::SetState(Game::StateT State) {
+   if (State != _State) {
    // Start engine playing, engine demo or kill play/demo.
-      switch (Q) {
+      switch (State) {
          case PlayQ: _Pausing = false, _Machine->BegGame(); break;
          case DemoQ: _Machine->BegDemo(); break;
          default: _Pausing = false, _Machine->Stop(); break;
       }
    // Update the state and hold the time when it was done.
-      _State = Q, _Time0 = time(0), update();
+      _State = State, _Time0 = time(0), update();
    }
 }
 

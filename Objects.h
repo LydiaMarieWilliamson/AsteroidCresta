@@ -10,7 +10,7 @@
 namespace Asteroid {
 class Engine;
 
-// Object position type, borrow complex type and user real as x, and imag as y.
+// Object position type, borrow complex type and user real as X, and imag as Y.
 typedef std::complex<double> ObjPos;
 
 // Object type IDs.
