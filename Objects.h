@@ -39,7 +39,7 @@ public:
    Thing(Engine &Owner);
    virtual ~Thing();
    bool GetDead() const;
-   void SetDead();
+   void SetDead(bool Dead = true);
    Engine *GetOwner() const;
    double GetRadius() const;
    void Rotate(const double &Rad);

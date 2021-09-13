@@ -67,7 +67,7 @@ Thing::~Thing() {
 
 // Get/set the dead state.
 bool Thing::GetDead() const { return _Dead; }
-void Thing::SetDead() { _Dead = true; }
+void Thing::SetDead(bool Dead/* = true*/) { _Dead = Dead; }
 
 // Get the owner.
 Engine *Thing::GetOwner() const { return _Owner; }
