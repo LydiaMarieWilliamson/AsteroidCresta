@@ -23,7 +23,7 @@ You will need to install the QT development SDK, and build the software from the
 On successful compilation, the application binary will be written to the ‟bin directory” that you specified -
 which is the top-level directory, by default.
 In order to run it from there,
-you will need to copy the *.wav files shipped with the installation into the ‟media” sub-directory of the bin directory.
+you will need to copy the *.wav files shipped with the installation into the ‟Media” sub-directory of the bin directory.
 For Windows:
 ∙	the application depends on QT and Microsoft runtime DLLs,
 	which should be in the place appropriate for run-time DLL's on your system,
